@@ -31,4 +31,4 @@ makedocs(;
     checkdocs=:exports
 )
 
-deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver", devbranch="main")
+deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver")
