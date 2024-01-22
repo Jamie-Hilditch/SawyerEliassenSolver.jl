@@ -21,7 +21,7 @@ pages = [
 makedocs(;
     modules=[SawyerEliassenSolver],
     authors="Jamie Hilditch <hilditch@stanford.edu> and contributors",
-    sitename="SawyerEliassenSolver.jl",
+    sitename="SawyerEliassenSolver",
     format=Documenter.HTML(;
         canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver",
         edit_link="master",
