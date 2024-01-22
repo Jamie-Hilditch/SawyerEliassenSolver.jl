@@ -23,7 +23,7 @@ makedocs(;
     authors="Jamie Hilditch <hilditch@stanford.edu> and contributors",
     sitename="SawyerEliassenSolver.jl",
     format=Documenter.HTML(;
-        canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver.jl",
+        canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver",
         edit_link="master",
         assets=String[],
     ),
