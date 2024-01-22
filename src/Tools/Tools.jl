@@ -11,12 +11,7 @@ include("initial_conditions.jl")
 include("output_writer.jl")
 include("wall_time_stop.jl")
 
-export
-    OutputWriter,
-    VerticalSliceWriter,
-    write_attribute,
-    WallTimeStop,
-    ics_from_u!,
-    set_ψt!
+export OutputWriter,
+    VerticalSliceWriter, write_attribute, WallTimeStop, ics_from_u!, set_ψt!
 
 end

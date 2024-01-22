@@ -1,11 +1,10 @@
 module SawyerEliassenSolver
 
-using LinearAlgebra 
-using Printf 
+using LinearAlgebra
+using Printf
 
-import FFTW
+using FFTW: FFTW
 FFTW.set_num_threads(Threads.nthreads())
-
 
 include("display.jl")
 include("grid.jl")
@@ -16,7 +15,7 @@ include("timestepper.jl")
 # submodules
 include("Tools/Tools.jl")
 
-export 
+export
     # structs
     Grid,
     BackgroundFlow,

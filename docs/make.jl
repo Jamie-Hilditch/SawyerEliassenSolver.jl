@@ -1,7 +1,9 @@
 using SawyerEliassenSolver
 using Documenter
 
-DocMeta.setdocmeta!(SawyerEliassenSolver, :DocTestSetup, :(using SawyerEliassenSolver); recursive=true)
+DocMeta.setdocmeta!(
+    SawyerEliassenSolver, :DocTestSetup, :(using SawyerEliassenSolver); recursive=true
+)
 
 makedocs(;
     modules=[SawyerEliassenSolver],
@@ -12,12 +14,7 @@ makedocs(;
         edit_link="master",
         assets=String[],
     ),
-    pages=[
-        "Home" => "index.md",
-    ],
+    pages=["Home" => "index.md"],
 )
 
-deploydocs(;
-    repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.jl",
-    devbranch="master",
-)
+deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.jl", devbranch="master")
