@@ -27,7 +27,8 @@ makedocs(;
         edit_link="master",
         assets=String[],
     ),
-    pages=pages
+    pages=pages,
+    checkdocs=:exports
 )
 
 deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver", devbranch="main")
