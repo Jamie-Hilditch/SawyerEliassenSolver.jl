@@ -5,6 +5,19 @@ DocMeta.setdocmeta!(
     SawyerEliassenSolver, :DocTestSetup, :(using SawyerEliassenSolver); recursive=true
 )
 
+pages = [
+    "Home" => "index.md",
+    "Library" => [
+        "Public" => "library/public.md",
+        "Internals" => "library/internals.md"
+    ],
+    "Examples" => [
+        "Barotropic NIWs" => "examples/barotropic_niws.md",
+        "Variably Stratified Frontal Zone" => "examples/variably_stratified_frontal_zone.md",
+        "Baroclinic Vorticity Filament" => "examples/baroclinic_vorticity_filament.md"
+    ]
+]
+
 makedocs(;
     modules=[SawyerEliassenSolver],
     authors="Jamie Hilditch <hilditch@stanford.edu> and contributors",
@@ -14,7 +27,7 @@ makedocs(;
         edit_link="master",
         assets=String[],
     ),
-    pages=["Home" => "index.md"],
+    pages=pages
 )
 
-deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.jl", devbranch="master")
+deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver", devbranch="main")

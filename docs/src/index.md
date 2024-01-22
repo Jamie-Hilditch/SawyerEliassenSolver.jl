@@ -9,6 +9,3 @@ Documentation for [SawyerEliassenSolver](https://github.com/Jamie-Hilditch/Sawye
 ```@index
 ```
 
-```@autodocs
-Modules = [SawyerEliassenSolver]
-```
