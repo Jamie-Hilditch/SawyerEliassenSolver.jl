@@ -17,7 +17,7 @@ const Variables = (
 
 function extend_dims(dset::HDF5.Dataset)
     dims, _ = HDF5.get_extent_dims(dset)
-    return new_dims = (dims[1:(end - 1)]..., dims[end] + 1)
+    return (dims[1:(end - 1)]..., dims[end] + 1)
 end
 
 const HDF5_OBJECT = Union{HDF5.File,HDF5.Group}
