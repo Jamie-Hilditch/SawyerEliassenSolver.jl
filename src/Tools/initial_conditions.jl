@@ -1,4 +1,4 @@
-function ics_from_u!(state :: SE.State, problem :: SE.Problem, u :: Union{Float64,Vector{Float64},Matrix{Float64}})
+function ics_from_u!(state :: SES.State, problem :: SES.Problem, u :: Union{Float64,Vector{Float64},Matrix{Float64}})
     # copy u into the temporary storage broadcasting as necessary
     rtmp1 = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -19,7 +19,7 @@ end
 """
 Compute ψt in spectral space from b and v in physical space
 """
-function set_ψt!(state :: SE.State, problem :: SE.Problem)
+function set_ψt!(state :: SES.State, problem :: SES.Problem)
         
     CNX = problem.spectral_domain.CNX
     CNZ = problem.spectral_domain.CNZ

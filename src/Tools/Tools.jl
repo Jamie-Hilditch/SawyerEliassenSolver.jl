@@ -5,7 +5,7 @@ module Tools
 using HDF5
 using LinearAlgebra
 
-import ..SawyerEliassen as SE
+import ..SawyerEliassenSolver as SES
 
 include("initial_conditions.jl")
 include("output_writer.jl")

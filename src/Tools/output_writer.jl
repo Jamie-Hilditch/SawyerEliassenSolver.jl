@@ -27,11 +27,11 @@ abstract type AbstractWriter end
 mutable struct OutputWriter <: AbstractWriter
     const fid :: HDF5.File
     const object_handle :: HDF5_OBJECT
-    const problem :: SE.Problem
-    const state :: SE.State
+    const problem :: SES.Problem
+    const state :: SES.State
     const variables :: NTuple{N,Symbol} where N
 
-    function OutputWriter(filepath :: String, problem :: SE.Problem, state :: SE.State, variables :: Symbol ...; group :: Union{String,Nothing} = nothing, overwrite :: Bool = false)
+    function OutputWriter(filepath :: String, problem :: SES.Problem, state :: SES.State, variables :: Symbol ...; group :: Union{String,Nothing} = nothing, overwrite :: Bool = false)
         size(problem) == size(state) || throw(ArgumentError("problem and state don't have the same size"))
         
         # open the group
@@ -96,13 +96,13 @@ end
 mutable struct VerticalSliceWriter <: AbstractWriter
     const fid :: HDF5.File
     const object_handle :: HDF5_OBJECT
-    const problem :: SE.Problem
-    const state :: SE.State
+    const problem :: SES.Problem
+    const state :: SES.State
     const slices :: NTuple{M,Pair{Int,String}} where M
     const variables :: NTuple{N,Symbol} where N
     
 
-    function VerticalSliceWriter(filepath :: String, problem :: SE.Problem, state :: SE.State,
+    function VerticalSliceWriter(filepath :: String, problem :: SES.Problem, state :: SES.State,
         slices :: NTuple{N,Pair{Int,String}}, variables :: Symbol ...;
         group :: Union{String,Nothing} = nothing, overwrite :: Bool = false) where N
         size(problem) == size(state) || throw(ArgumentError("problem and state don't have the same size"))
@@ -196,14 +196,14 @@ Base.close(aw :: AbstractWriter) = close(aw.fid)
 """
 Thin wrapper around HDF5.write_attribute
 """
-function write_attribute(ow :: OutputWriter,attributes :: Pair{String,T}...) where T
+function write_attribute(ow :: OutputWriter,attributes :: Pair{String,Any}...)
     for attribute in attributes
         HDF5.write_attribute(ow.object_handle, attribute.first, attribute.second)
     end
     return nothing 
 end
 
-function write_attribute(vsw :: VerticalSliceWriter,attributes :: Pair{String,T}...) where T
+function write_attribute(vsw :: VerticalSliceWriter,attributes :: Pair{String,Any}...)
     for attribute in attributes
         HDF5.write_attribute(vsw.object_handle, attribute.first, attribute.second)
     end

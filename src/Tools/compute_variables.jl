@@ -1,9 +1,9 @@
-function missing_variable(problem :: SE.Problem,state :: SE.State)
+function missing_variable(problem :: SES.Problem,state :: SES.State)
     problem.scratch.rtmp1 .= NaN
     return problem.scratch.rtmp1
 end
 
-function compute_u!(problem :: SE.Problem,state :: SE.State)
+function compute_u!(problem :: SES.Problem,state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -21,7 +21,7 @@ function compute_u!(problem :: SE.Problem,state :: SE.State)
     return out
 end
 
-function compute_w!(problem :: SE.Problem,state :: SE.State)
+function compute_w!(problem :: SES.Problem,state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -38,10 +38,10 @@ function compute_w!(problem :: SE.Problem,state :: SE.State)
     return out
 end
 
-get_v(problem :: SE.Problem,state :: SE.State) = state.v
-get_b(problem :: SE.Problem,state :: SE.State) = state.b
+get_v(problem :: SES.Problem,state :: SES.State) = state.v
+get_b(problem :: SES.Problem,state :: SES.State) = state.b
 
-function compute_ux!(problem :: SE.Problem,state :: SE.State)
+function compute_ux!(problem :: SES.Problem,state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -60,7 +60,7 @@ function compute_ux!(problem :: SE.Problem,state :: SE.State)
     return out
 end
 
-function compute_uz!(problem :: SE.Problem, state :: SE.State)
+function compute_uz!(problem :: SES.Problem, state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -77,7 +77,7 @@ function compute_uz!(problem :: SE.Problem, state :: SE.State)
     return out
 end
 
-function compute_wx!(problem :: SE.Problem,state :: SE.State)
+function compute_wx!(problem :: SES.Problem,state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
@@ -107,21 +107,21 @@ function _differentiate_z!(out :: Matrix{T}, in :: Matrix{T}, dz :: Float64) whe
     return nothing
 end
 
-function compute_vz!(problem :: SE.Problem, state :: SE.State)
+function compute_vz!(problem :: SES.Problem, state :: SES.State)
     out = problem.scratch.rtmp1
     dz = problem.grid.z[2] - problem.grid.z[1]
     _differentiate_z!(out,state.v,dz)
     return out 
 end
 
-function compute_bz!(problem :: SE.Problem, state :: SE.State)
+function compute_bz!(problem :: SES.Problem, state :: SES.State)
     out = problem.scratch.rtmp1
     dz = problem.grid.z[2] - problem.grid.z[1]
     _differentiate_z!(out,state.b,dz)
     return out 
 end
 
-function compute_ψ!(problem :: SE.Problem,state :: SE.State)
+function compute_ψ!(problem :: SES.Problem,state :: SES.State)
     ctmp = problem.scratch.ctmp
     out = problem.scratch.rtmp1
     rtmp2 = problem.scratch.rtmp2
