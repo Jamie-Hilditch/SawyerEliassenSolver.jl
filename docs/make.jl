@@ -24,11 +24,10 @@ makedocs(;
     sitename="SawyerEliassenSolver",
     format=Documenter.HTML(;
         canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver",
-        edit_link="master",
         assets=String[],
     ),
     pages=pages,
     checkdocs=:exports
 )
 
-deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver")
+deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.git")
