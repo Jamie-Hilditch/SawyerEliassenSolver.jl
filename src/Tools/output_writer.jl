@@ -239,14 +239,14 @@ Base.close(aw::AbstractWriter) = close(aw.fid)
 """
 Thin wrapper around HDF5.write_attribute
 """
-function write_attribute(ow::OutputWriter, attributes::Pair{String,Any}...)
+function write_attribute(ow::OutputWriter, attributes::Pair{String,<:Any}...)
     for attribute in attributes
         HDF5.write_attribute(ow.object_handle, attribute.first, attribute.second)
     end
     return nothing
 end
 
-function write_attribute(vsw::VerticalSliceWriter, attributes::Pair{String,Any}...)
+function write_attribute(vsw::VerticalSliceWriter, attributes::Pair{String,<:Any}...)
     for attribute in attributes
         HDF5.write_attribute(vsw.object_handle, attribute.first, attribute.second)
     end
