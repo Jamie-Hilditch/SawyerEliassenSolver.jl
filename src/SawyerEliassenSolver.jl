@@ -6,15 +6,6 @@ using Printf
 using FFTW: FFTW
 FFTW.set_num_threads(Threads.nthreads())
 
-include("display.jl")
-include("grid.jl")
-include("background.jl")
-include("problem.jl")
-include("timestepper.jl")
-
-# submodules
-include("Tools/Tools.jl")
-
 export
     # structs
     Grid,
@@ -28,5 +19,14 @@ export
 
     # submodules
     Tools
+
+include("display.jl")
+include("grid.jl")
+include("background.jl")
+include("problem.jl")
+include("timestepper.jl")
+
+# submodules
+include("Tools/Tools.jl")
 
 end

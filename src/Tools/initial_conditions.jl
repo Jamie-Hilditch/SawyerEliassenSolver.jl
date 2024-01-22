@@ -1,6 +1,6 @@
 function ics_from_u!(
-    state::SES.State,
-    problem::SES.Problem,
+    state::State,
+    problem::Problem,
     u::Union{Float64,Vector{Float64},Matrix{Float64}},
 )
     # copy u into the temporary storage broadcasting as necessary
@@ -23,7 +23,7 @@ end
 """
 Compute ψt in spectral space from b and v in physical space
 """
-function set_ψt!(state::SES.State, problem::SES.Problem)
+function set_ψt!(state::State, problem::Problem)
     CNX = problem.spectral_domain.CNX
     CNZ = problem.spectral_domain.CNZ
     kx = problem.spectral_domain.kx
