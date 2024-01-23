@@ -1,5 +1,6 @@
 .vscode
 /docs/Manifest.toml
 /docs/build/
+Manifest.toml
 *.h5
 *.pb.gz
