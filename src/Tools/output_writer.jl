@@ -60,7 +60,7 @@ mutable struct OutputWriter <: AbstractWriter
             end
         end
 
-        # clear attributes 
+        # clear attributes
         for key in keys(HDF5.attrs(object_handle))
             if overwrite
                 HDF5.delete_attribute(object_handle, key)
@@ -131,7 +131,7 @@ mutable struct VerticalSliceWriter <: AbstractWriter
         size(problem) == size(state) ||
             throw(ArgumentError("problem and state don't have the same size"))
 
-        # open root 
+        # open root
         fid = h5open(filepath, "cw")
         if group === nothing
             object_handle = fid
@@ -149,7 +149,7 @@ mutable struct VerticalSliceWriter <: AbstractWriter
             end
         end
 
-        # clear attributes 
+        # clear attributes
         for key in keys(HDF5.attrs(object_handle))
             if overwrite
                 HDF5.delete_attribute(object_handle, key)
@@ -172,7 +172,7 @@ mutable struct VerticalSliceWriter <: AbstractWriter
         dspace = dataspace((0,); max_dims=(-1,))
         create_dataset(problem_group, "t", dtype, dspace; chunk=(1,))
 
-        # now loop through slices 
+        # now loop through slices
         for (idx, group) in slices
             group != "Problem" || throw(ArgumentError("'Problem' is a reserved group name"))
             haskey(object_handle, group) || create_group(object_handle, group)
@@ -187,7 +187,7 @@ mutable struct VerticalSliceWriter <: AbstractWriter
                 end
             end
 
-            # clear attributes 
+            # clear attributes
             for key in keys(HDF5.attrs(gid))
                 if overwrite
                     HDF5.delete_attribute(gid, key)
