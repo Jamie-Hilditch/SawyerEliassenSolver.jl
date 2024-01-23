@@ -1,4 +1,12 @@
-"""Physical grid"""
+"""Grid(NX,NZ,x_bounds,z_bounds)
+Grid(NX,NZ,x_bounds,LZ)
+Grid(NX,NZ,LX,z_bounds)
+Grid(NX,NZ,LX,LZ)
+
+Create a physical grid with (NX,NZ) points. The lateral bounds, [x0,x1) are set with a
+2-tuple x_bounds or a width LX in which case x0 = 0, x1 = LX. The vertical bounds [z0,z1]
+are set by the 2-tuple z_bounds or a height LZ in which case z0=-LZ, z1 = 0.
+"""
 struct Grid
     NX::Int
     NZ::Int
