@@ -1,5 +1,5 @@
 """
-    struct Grid
+    $(TYPEDEF)
 
 The physical grid. ``x`` is uniformly spaced and periodic with the left boundary at
 ``x[1]`` and the right boundary at ``x[NX + 1] = x[1]`` as is standard for DFTs. ``z`` is a
@@ -100,8 +100,10 @@ Grid:
 """
 Grid(NX, NZ, LX::Real, LZ::Real) = Grid(NX, NZ, (0, LX), (-LZ, 0))
 
+"""$(TYPEDSIGNATURES)"""
 Base.size(grid::Grid) = (grid.NX, grid.NZ)
 
+"""$(TYPEDSIGNATURES)"""
 function Base.show(io::IO, ::MIME"text/plain", grid::Grid)
     return print(
         io,
@@ -113,4 +115,5 @@ function Base.show(io::IO, ::MIME"text/plain", grid::Grid)
     )
 end
 
+"""$(TYPEDSIGNATURES)"""
 Base.summary(io::IO, grid::Grid) = print(io, "Grid of size ($(grid.NX),$(grid.NZ))")
