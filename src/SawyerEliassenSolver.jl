@@ -1,5 +1,14 @@
+"""
+`SawyerEliassenSolver.jl` -- Solve the Sawyer-Eliassen equation using a pseudo-spectral
+discretisation and 3rd order accurate implicit timestepping for arbitrary balanced
+background flows.
+
+# Exports
+
+"""
 module SawyerEliassenSolver
 
+using DocStringExtensions
 using LinearAlgebra
 using Printf
 

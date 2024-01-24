@@ -1,6 +1,13 @@
-# Public Doumentation
+# Public Documentation
 
 Documentation for `Sawyer-Eliassen Solver`'s public interface.
+
+```@autodocs
+Modules = [SawyerEliassenSolver]
+Private = false
+Pages = ["SawyerEliassenSolver.jl"]
+Order = [:module]
+```
 
 ## Grid 
 
