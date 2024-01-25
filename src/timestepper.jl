@@ -20,6 +20,15 @@ const a11 = c^2 / 2
 const a22 = c^2 / 2
 const a21 = -2 * (9 * c^4 - 9 * c^3 + 3 * c - 1) / (9 * (2 * c - 1)^2)
 
+"""
+    $(TYPEDEF)
+
+Timesteps the state using a 2-stage 3rd order accurate Diagonally Implicit Runge-Kutta
+Nyström (DIRKN) scheme.
+
+# Fields
+$(TYPEDFIELDS)
+"""
 struct Timestepper!
     state::State
     h::Float64
@@ -67,9 +76,20 @@ function Timestepper!(problem::Problem, h, cg_tol)
     return Timestepper!(problem, convert(Float64, h), cg_tol)
 end
 
-"""Advance the state one timestep using the DIRKN scheme"""
+"""$(TYPEDSIGNATURES)
+
+Advance the state one timestep using the DIRKN scheme
+
+# Examples
+
+```
+[...]
+timestepper, state = setup_simulation(problem,0.1)
+timestepper()
+```
+"""
 function (t::Timestepper!)()
-    # alias state arrays 
+    # alias state arrays
     ψ = t.state.ψ
     ψt = t.state.ψt
     v = t.state.v
@@ -82,7 +102,7 @@ function (t::Timestepper!)()
     # solve for f1
     t.cgs!(t.f1, t.r)
 
-    # construct RHS of f2 equation, storing in r 
+    # construct RHS of f2 equation, storing in r
     @. t.r = ψ + c2 * t.h * ψt + t.h^2 * a21 * t.f1
     t.L!(t.r)
 
@@ -104,7 +124,18 @@ function (t::Timestepper!)()
     return update_clock!(t.state.clock, t.h)
 end
 
-"""Advance the state n timesteps"""
+"""$(TYPEDSIGNATURES)
+
+Advance the state `n` timesteps
+
+# Examples
+
+```
+[...]
+timestepper, state = setup_simulation(problem,0.1)
+timestepper(10)
+```
+"""
 function (t::Timestepper!)(n::Int)
     for _ in 1:n
         t()

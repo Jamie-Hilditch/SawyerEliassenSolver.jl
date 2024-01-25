@@ -23,7 +23,7 @@ struct Grid
     """Vector of ``z`` gridpoints"""
         z::Vector{Float64}
 
-    @doc """$(SIGNATURES)
+    @doc """$(TYPEDSIGNATURES)
     Create a physical [`Grid`](@ref) with `(NX,NZ)` points. The lateral bounds, `[x0,x1)` are
     set with a 2-tuple `x_bounds` or a width `LX` in which case `x0 = 0, x1 = LX`. The
     vertical bounds `[z0,z1]` are set by the 2-tuple `z_bounds` or a height `LZ` in which
@@ -55,7 +55,7 @@ struct Grid
     end
 end
 
-"""$(SIGNATURES)
+"""$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
 
 # Examples
@@ -70,7 +70,7 @@ Grid:
 """
 Grid(NX, NZ, LX::Real, z_bounds) = Grid(NX, NZ, (0, LX), z_bounds)
 
-"""$(SIGNATURES)
+"""$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
 
 # Examples
@@ -85,7 +85,7 @@ Grid:
 """
 Grid(NX, NZ, x_bounds, LZ::Real) = Grid(NX, NZ, x_bounds, (-LZ, 0))
 
-"""$(SIGNATURES)
+"""$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
 
 # Examples
