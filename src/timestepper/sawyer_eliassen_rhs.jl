@@ -46,31 +46,31 @@ function (SE::SawyerEliassenRHS!)(out, in)
     # transform to physical space
     ldiv!(tmp1, SE.transforms.fourier, ctmp)
     ldiv!(tmp2, SE.transforms.sine, tmp1)
-    # start constructing ζtt 
+    # start constructing ζtt
     @. ζtt = -f * (f + bg.Vx) * tmp2
 
     # now 2*Bx*ψxz which requires a cosine transform and a shift in the coefficients
     @inbounds @. ctmp[1:CNX, 2:(CNZ + 1)] = 1 * im * kx * kz * in[1:CNX, 1:CNZ]
     @inbounds @. ctmp[(CNX + 1):end, :] = 0
-    @inbounds @. ctmp[1:CNX, 1] = 0 # constant 0th cosine mode 
+    @inbounds @. ctmp[1:CNX, 1] = 0 # constant 0th cosine mode
     @inbounds @. ctmp[1:CNX, (CNZ + 2):end] = 0
-    # transform to physical space 
+    # transform to physical space
     ldiv!(tmp1, SE.transforms.fourier, ctmp)
     ldiv!(tmp2, SE.transforms.cosine, tmp1)
-    # add to ζtt 
+    # add to ζtt
     @. ζtt += 2 * bg.Bx * tmp2
 
-    # now - Bz*ψxx 
+    # now - Bz*ψxx
     @inbounds @. ctmp[1:CNX, 1:CNZ] = -kx^2 * in[1:CNX, 1:CNZ]
     @inbounds @. ctmp[(CNX + 1):end, :] = 0
     @inbounds @. ctmp[1:CNX, (CNZ + 1):end] = 0
     # transform to physcial space
     ldiv!(tmp1, SE.transforms.fourier, ctmp)
     ldiv!(tmp2, SE.transforms.sine, tmp1)
-    # start constructing ζtt 
+    # subtract from ζtt
     @. ζtt -= bg.Bz * tmp2
 
-    # transform back to spectral space 
+    # transform back to spectral space
     mul!(tmp1, SE.transforms.sine, ζtt)
     mul!(ctmp, SE.transforms.fourier, tmp1)
 
