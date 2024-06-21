@@ -14,10 +14,11 @@ The Sawyer-Eliassen equation [Sawyer_Sutton_1956,Eliassen_1962](@citep) describe
 where the non-linear terms have been absorbed into the arbitary RHS forcing. Introducing a streamfunction ``\psi`` such that ``u = -\partial\psi/\partial z`` and ``w = \partial\psi/\partial x`` we form the evolution equation for the component of vorticity into the page.
 
 ```math
-\begin{equation} \label{eq:derivation-vorticity-evolution}
-    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial\psi}{\partial t} = \frac{\partial b}{\partial x} - f\frac{\partial v}{\partial z} + \frac{\partial \mathcal{F}^{(x)}}{\partial x} - \frac{\partial \mathcal{F}^{(z)}}{\partial z}.
+\begin{equation}
+    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial\psi}{\partial t} = \frac{\partial b}{\partial x} - f\frac{\partial v}{\partial z} + \frac{\partial \mathcal{F}^{(x)}}{\partial x} - \frac{\partial \mathcal{F}^{(z)}}{\partial z}
 \end{equation}
 ```
+
 and the ``v`` and ``b`` perturbations are determined by 
 ```math
 \begin{align}
