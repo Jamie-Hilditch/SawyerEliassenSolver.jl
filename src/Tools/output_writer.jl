@@ -105,7 +105,7 @@ function (ow::OutputWriter)()
     for var in ow.variables
         data = get(Variables, var, missing_variable)(ow.problem, ow.state)
 
-        dset = HDF5.open_dataset(ow.object_handle,String(var))
+        dset = HDF5.open_dataset(ow.object_handle, String(var))
         HDF5.set_extent_dims(dset, extend_dims(dset))
         dset[:, :, end] = data
     end
@@ -219,8 +219,8 @@ end
 
 function (vsw::VerticalSliceWriter)()
     # save time
-    problem_group = HDF5.open_group(vsw.object_handle,"Problem")
-    dset = HDF5.open_dataset(problem_group,"t")
+    problem_group = HDF5.open_group(vsw.object_handle, "Problem")
+    dset = HDF5.open_dataset(problem_group, "t")
     HDF5.set_extent_dims(dset, (HDF5.get_extent_dims(dset)[1][1] + 1,))
     dset[end] = vsw.state.clock.t
 
@@ -228,8 +228,8 @@ function (vsw::VerticalSliceWriter)()
         data = get(Variables, var, missing_variable)(vsw.problem, vsw.state)
 
         for (idx, group) in vsw.slices
-            grp = HDF5.open_group(vsw.object_handle,group)
-            dset = HDF5.open_dataset(grp,String(var))
+            grp = HDF5.open_group(vsw.object_handle, group)
+            dset = HDF5.open_dataset(grp, String(var))
             HDF5.set_extent_dims(dset, extend_dims(dset))
             @inbounds dset[:, end] = data[idx, :]
         end

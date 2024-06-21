@@ -13,15 +13,14 @@ Components of a Sawyer-Eliassen problem.
 $(TYPEDFIELDS)
 """
 struct Problem
-
-        grid::Grid
-        background_flow::BackgroundFlow
+    grid::Grid
+    background_flow::BackgroundFlow
     """Wavenumbers and metadata for spectral domain"""
-        spectral_domain::SpectralDomain
+    spectral_domain::SpectralDomain
     """Transforms between physical and spectral space"""
-        transforms::Transforms
+    transforms::Transforms
     """Temporary working arrays"""
-        scratch::Scratch
+    scratch::Scratch
 
     @doc """
         Problem(
@@ -56,7 +55,9 @@ struct Problem
       └────────── scratch: SawyerEliassenSolver.Scratch
     ```
     """
-    function Problem(grid::Grid, background_flow::BackgroundFlow; dealias_x::Int=0, dealias_z::Int=0)
+    function Problem(
+        grid::Grid, background_flow::BackgroundFlow; dealias_x::Int=0, dealias_z::Int=0
+    )
         check_consistent_grid(grid, background_flow)
         scratch = Scratch(grid.NX, grid.NZ)
         return new(

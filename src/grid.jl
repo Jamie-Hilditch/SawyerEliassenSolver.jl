@@ -11,17 +11,17 @@ $(TYPEDFIELDS)
 """
 struct Grid
     """Number of grid points in ``x``"""
-        NX::Int
+    NX::Int
     """Number of grid points in ``z``"""
-        NZ::Int
+    NZ::Int
     """Lower and upper ``x`` bounds: ``[x0,x1)``"""
-        x_bounds::NTuple{2,Float64}
+    x_bounds::NTuple{2,Float64}
     """Lower and upper ``z`` bounds: ``[z0,z1]``"""
-        z_bounds::NTuple{2,Float64}
+    z_bounds::NTuple{2,Float64}
     """Vector of ``x`` gridpoints"""
-        x::Vector{Float64}
+    x::Vector{Float64}
     """Vector of ``z`` gridpoints"""
-        z::Vector{Float64}
+    z::Vector{Float64}
 
     @doc """$(TYPEDSIGNATURES)
     Create a physical [`Grid`](@ref) with `(NX,NZ)` points. The lateral bounds, `[x0,x1)` are
