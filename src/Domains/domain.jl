@@ -1,4 +1,4 @@
-struct Domain{T<:AbstractFloat}
+struct Domain{T<:SingleOrDouble}
     grid::Grid{T}
     spectral::Spectral{T}
     transforms::Transforms{T}

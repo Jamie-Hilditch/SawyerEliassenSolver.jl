@@ -8,7 +8,7 @@ function test_data_element_type(FT)
     grid = Grid(NZ,NX,LX,LZ)
     domain = Domain(grid)
     complex_types = map(T -> Complex{T}, float_types)
-    test_data_types = (float_types..., complex_types..., Int8)
+    test_data_types = (float_types..., complex_types..., Integer, Float16, Float64)
 
     for data_FT in test_data_types
         for variable_type in real_variable_types

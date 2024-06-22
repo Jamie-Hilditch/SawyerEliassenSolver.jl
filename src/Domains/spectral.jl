@@ -1,6 +1,6 @@
 """Size of spectral domain and wavenumbers
 """
-struct Spectral{T<:AbstractFloat}
+struct Spectral{T<:SingleOrDouble}
     SX::Int
     NZ::Int
     CNX::Int
