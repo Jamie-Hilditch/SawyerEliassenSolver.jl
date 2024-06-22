@@ -1,7 +1,5 @@
 function ics_from_u!(
-    state::State,
-    problem::Problem,
-    u::Union{Float64,Vector{Float64},Matrix{Float64}},
+    state::State, problem::Problem, u::Union{Float64,Vector{Float64},Matrix{Float64}}
 )
     # copy u into the temporary storage broadcasting as necessary
     rtmp1 = problem.scratch.rtmp1

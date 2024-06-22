@@ -47,8 +47,14 @@ CVariable = Union{XCVariable,FCVariable}
 
 # constructors
 XZVariable(domain::Domain{T}) where {T} = XZVariable(domain, zeros(T, size(domain)))
-FZVariable(domain::Domain{T}) where {T} = FZVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+function FZVariable(domain::Domain{T}) where {T}
+    return FZVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+end
 XSVariable(domain::Domain{T}) where {T} = XSVariable(domain, zeros(T, size(domain)))
-FSVariable(domain::Domain{T}) where {T} = FSVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+function FSVariable(domain::Domain{T}) where {T}
+    return FSVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+end
 XCVariable(domain::Domain{T}) where {T} = XCVariable(domain, zeros(T, size(domain)))
-FCVariable(domain::Domain{T}) where {T} = FCVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+function FCVariable(domain::Domain{T}) where {T}
+    return FCVariable(domain, zeros(Complex{T}, size(domain.spectral)))
+end

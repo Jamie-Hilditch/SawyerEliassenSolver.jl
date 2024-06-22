@@ -1,10 +1,10 @@
-struct Transforms{T <: AbstractFloat}
+struct Transforms{T<:AbstractFloat}
     fourier
     sine
     cosine
 end
 
-function Transforms(real_variable::Array{T, 2}) where {T <: AbstractFloat}
+function Transforms(real_variable::Array{T,2}) where {T<:AbstractFloat}
 
     # plan the forward transforms
     fourier = FFTW.plan_rfft(real_variable, 1; flags=FFTW.PATIENT)

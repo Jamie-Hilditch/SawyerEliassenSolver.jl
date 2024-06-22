@@ -9,19 +9,19 @@ standard DCT/DST type II grid -- uniformly spaced interior points with the bound
 # Fields
 $(TYPEDFIELDS)
 """
-struct Grid{T <: AbstractFloat}
+struct Grid{T<:AbstractFloat}
     """Number of grid points in ``x``"""
-        NX::Int
+    NX::Int
     """Number of grid points in ``z``"""
-        NZ::Int
+    NZ::Int
     """Lower and upper ``x`` bounds: ``[x0,x1)``"""
-        x_bounds::NTuple{2,T}
+    x_bounds::NTuple{2,T}
     """Lower and upper ``z`` bounds: ``[z0,z1]``"""
-        z_bounds::NTuple{2,T}
+    z_bounds::NTuple{2,T}
     """Vector of ``x`` gridpoints"""
-        x::Vector{T}
+    x::Vector{T}
     """Vector of ``z`` gridpoints"""
-        z::Vector{T}
+    z::Vector{T}
 end
 
 """$(TYPEDSIGNATURES)
@@ -40,7 +40,7 @@ Grid:
     └─── z: [-1,0]
 ```
 """
-function Grid(NX, NZ, x_bounds::NTuple{2,T}, z_bounds::NTuple{2,T}) where {T <: AbstractFloat}
+function Grid(NX, NZ, x_bounds::NTuple{2,T}, z_bounds::NTuple{2,T}) where {T<:AbstractFloat}
     NX > 0 || throw(DomainError(NX, "NX must be positive"))
     NZ > 0 || throw(DomainError(NZ, "NZ must be positive"))
     x_bounds[1] != x_bounds[2] ||
@@ -68,7 +68,8 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, LX::T, z_bounds::NTuple{2,T}) where {T <: AbstractFloat} = Grid(NX, NZ, (zero(T), LX), z_bounds)
+Grid(NX, NZ, LX::T, z_bounds::NTuple{2,T}) where {T<:AbstractFloat} =
+    Grid(NX, NZ, (zero(T), LX), z_bounds)
 
 """$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
@@ -83,7 +84,8 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, x_bounds::NTuple{2,T}, LZ::T) where{T <: AbstractFloat} = Grid(NX, NZ, x_bounds, (-LZ, zero(T)))
+Grid(NX, NZ, x_bounds::NTuple{2,T}, LZ::T) where {T<:AbstractFloat} =
+    Grid(NX, NZ, x_bounds, (-LZ, zero(T)))
 
 """$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
@@ -98,7 +100,8 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, LX::T, LZ::T) where {T <: AbstractFloat} = Grid(NX, NZ, (zero(T), LX), (-LZ, zero(T)))
+Grid(NX, NZ, LX::T, LZ::T) where {T<:AbstractFloat} =
+    Grid(NX, NZ, (zero(T), LX), (-LZ, zero(T)))
 
 """$(TYPEDSIGNATURES)"""
 Base.size(grid::Grid) = (grid.NX, grid.NZ)

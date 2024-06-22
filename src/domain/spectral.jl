@@ -1,6 +1,6 @@
 """Size of spectral domain and wavenumbers
 """
-struct Spectral{T <: AbstractFloat}
+struct Spectral{T<:AbstractFloat}
     SX::Int
     NZ::Int
     CNX::Int
@@ -19,7 +19,7 @@ function Spectral(grid::Grid{T}, CNX, CNZ) where {T}
 end
 
 """$(TYPEDSIGNATURES)"""
-Base.eltype(::Spectral{T}) where{T} = T
+Base.eltype(::Spectral{T}) where {T} = T
 
 """$(TYPEDSIGNATURES)"""
 Base.size(spectral::Spectral) = (spectral.SX, spectral.NZ)
