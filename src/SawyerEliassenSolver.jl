@@ -8,43 +8,18 @@ background flows.
 """
 module SawyerEliassenSolver
 
-using DocStringExtensions
-using LinearAlgebra
 using Printf
+using Reexport
 
 using FFTW: FFTW
 FFTW.set_num_threads(Threads.nthreads())
 
-export
-    # structs
-    Grid,
-    Domain,
-    XZVariable,
-    XSVariable,
-    XCVariable,
-    FZVariable,
-    FSVariable,
-    FCVariable
-    # BackgroundFlow,
-    # Problem,
-    # Timestepper!,
-    # State,
+include("Utils/Utils.jl")
+include("Domains/Domains.jl")
+include("Variables/Variables.jl")
 
-    # functions
-    # setup_simulation,
-
-    # submodules
-    # Tools
-
-include("display.jl")
-
-include("domain/grid.jl")
-include("domain/spectral.jl")
-include("domain/transforms.jl")
-include("domain/domain.jl")
-
-include("variables/variables.jl")
-include("variables/transforms.jl")
+@reexport using .Domains
+@reexport using .Variables
 
 # include("background.jl")
 # include("problem.jl")

@@ -16,4 +16,8 @@ float_types = (Float32, Float64)
         @info "Testing variables ..."
         include("test_variables.jl")
     end
+    @testset "Transforms" begin
+        @info "Testing transforms ..."
+        include("test_transforms.jl")
+    end
 end
