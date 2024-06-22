@@ -44,7 +44,7 @@ end
 end
 
 """Unsafe cosine transformation from spectral to physical space."""
-@inline function Tˢ!(out::ZVariable{T}, in::CVariable{T}) where {T}
+@inline function Tᶜ!(out::ZVariable{T}, in::CVariable{T}) where {T}
     cosine = in.domain.transforms.cosine
     return ldiv!(out.data, cosine, in.data)
 end

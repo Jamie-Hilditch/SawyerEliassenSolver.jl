@@ -18,24 +18,39 @@ FFTW.set_num_threads(Threads.nthreads())
 export
     # structs
     Grid,
-    BackgroundFlow,
-    Problem,
-    Timestepper!,
-    State,
+    Domain,
+    XZVariable,
+    XSVariable,
+    XCVariable,
+    FZVariable,
+    FSVariable,
+    FCVariable
+    # BackgroundFlow,
+    # Problem,
+    # Timestepper!,
+    # State,
 
     # functions
-    setup_simulation,
+    # setup_simulation,
 
     # submodules
-    Tools
+    # Tools
 
 include("display.jl")
-include("grid.jl")
-include("background.jl")
-include("problem.jl")
-include("timestepper.jl")
+
+include("domain/grid.jl")
+include("domain/spectral.jl")
+include("domain/transforms.jl")
+include("domain/domain.jl")
+
+include("variables/variables.jl")
+include("variables/transforms.jl")
+
+# include("background.jl")
+# include("problem.jl")
+# include("timestepper.jl")
 
 # submodules
-include("Tools/Tools.jl")
+# include("Tools/Tools.jl")
 
 end
