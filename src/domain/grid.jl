@@ -9,50 +9,50 @@ standard DCT/DST type II grid -- uniformly spaced interior points with the bound
 # Fields
 $(TYPEDFIELDS)
 """
-struct Grid
+struct Grid{T <: AbstractFloat}
     """Number of grid points in ``x``"""
         NX::Int
     """Number of grid points in ``z``"""
         NZ::Int
     """Lower and upper ``x`` bounds: ``[x0,x1)``"""
-        x_bounds::NTuple{2,Float64}
+        x_bounds::NTuple{2,T}
     """Lower and upper ``z`` bounds: ``[z0,z1]``"""
-        z_bounds::NTuple{2,Float64}
+        z_bounds::NTuple{2,T}
     """Vector of ``x`` gridpoints"""
-        x::Vector{Float64}
+        x::Vector{T}
     """Vector of ``z`` gridpoints"""
-        z::Vector{Float64}
+        z::Vector{T}
+end
 
-    @doc """$(TYPEDSIGNATURES)
-    Create a physical [`Grid`](@ref) with `(NX,NZ)` points. The lateral bounds, `[x0,x1)` are
-    set with a 2-tuple `x_bounds` or a width `LX` in which case `x0 = 0, x1 = LX`. The
-    vertical bounds `[z0,z1]` are set by the 2-tuple `z_bounds` or a height `LZ` in which
-    case `z0 = -LZ, z1 = 0`.
+"""$(TYPEDSIGNATURES)
+Create a physical [`Grid`](@ref) with `(NX,NZ)` points. The lateral bounds, `[x0,x1)` are
+set with a 2-tuple `x_bounds` or a width `LX` in which case `x0 = 0, x1 = LX`. The
+vertical bounds `[z0,z1]` are set by the 2-tuple `z_bounds` or a height `LZ` in which
+case `z0 = -LZ, z1 = 0`.
 
-    # Examples
-    ```jldoctest
-    julia> grid = Grid(256,128,(-1000,1000),(-1,0))
-    Grid:
-      ├── NX: 256
-      ├── NZ: 128
-      ├─── x: [-1000,1000)
-      └─── z: [-1,0]
-    ```
-    """
-    function Grid(NX, NZ, x_bounds, z_bounds)
-        NX > 0 || throw(DomainError(NX, "NX must be positive"))
-        NZ > 0 || throw(DomainError(NZ, "NZ must be positive"))
-        x_bounds[1] != x_bounds[2] ||
-            throw(ArgumentError("Length (x) of the domain cannot be 0"))
-        z_bounds[1] != z_bounds[2] ||
-            throw(ArgumentError("Length (z) of the domain cannot be 0"))
+# Examples
+```jldoctest
+julia> grid = Grid(256,128,(-1000,1000),(-1,0))
+Grid:
+    ├── NX: 256
+    ├── NZ: 128
+    ├─── x: [-1000,1000)
+    └─── z: [-1,0]
+```
+"""
+function Grid(NX, NZ, x_bounds::NTuple{2,T}, z_bounds::NTuple{2,T}) where {T <: AbstractFloat}
+    NX > 0 || throw(DomainError(NX, "NX must be positive"))
+    NZ > 0 || throw(DomainError(NZ, "NZ must be positive"))
+    x_bounds[1] != x_bounds[2] ||
+        throw(ArgumentError("Length (x) of the domain cannot be 0"))
+    z_bounds[1] != z_bounds[2] ||
+        throw(ArgumentError("Length (z) of the domain cannot be 0"))
 
-        x = LinRange(x_bounds[1], x_bounds[2], NX + 1)[1:(end - 1)]
-        tmp = LinRange(z_bounds[1], z_bounds[2], NZ + 1)
-        z = (tmp[1:(end - 1)] + tmp[2:end]) / 2
+    x = LinRange(x_bounds[1], x_bounds[2], NX + 1)[1:(end - 1)]
+    tmp = LinRange(z_bounds[1], z_bounds[2], NZ + 1)
+    z = (tmp[1:(end - 1)] + tmp[2:end]) / 2
 
-        return new(NX, NZ, x_bounds, z_bounds, x, z)
-    end
+    return Grid{T}(NX, NZ, x_bounds, z_bounds, x, z)
 end
 
 """$(TYPEDSIGNATURES)
@@ -68,7 +68,7 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, LX::Real, z_bounds) = Grid(NX, NZ, (0, LX), z_bounds)
+Grid(NX, NZ, LX::T, z_bounds::NTuple{2,T}) where {T <: AbstractFloat} = Grid(NX, NZ, (zero(T), LX), z_bounds)
 
 """$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
@@ -83,7 +83,7 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, x_bounds, LZ::Real) = Grid(NX, NZ, x_bounds, (-LZ, 0))
+Grid(NX, NZ, x_bounds::NTuple{2,T}, LZ::T) where{T <: AbstractFloat} = Grid(NX, NZ, x_bounds, (-LZ, zero(T)))
 
 """$(TYPEDSIGNATURES)
 See [`Grid(NX,NZ,x_bounds,z_bounds)`](@ref)
@@ -98,10 +98,13 @@ Grid:
   └─── z: [-1,0]
 ```
 """
-Grid(NX, NZ, LX::Real, LZ::Real) = Grid(NX, NZ, (0, LX), (-LZ, 0))
+Grid(NX, NZ, LX::T, LZ::T) where {T <: AbstractFloat} = Grid(NX, NZ, (zero(T), LX), (-LZ, zero(T)))
 
 """$(TYPEDSIGNATURES)"""
 Base.size(grid::Grid) = (grid.NX, grid.NZ)
+
+"""$(TYPEDSIGNATURES)"""
+Base.eltype(::Grid{T}) where {T} = T
 
 """$(TYPEDSIGNATURES)"""
 function Base.show(io::IO, ::MIME"text/plain", grid::Grid)
