@@ -15,8 +15,21 @@ export
     transform!,
     horizontal_transform,
     sine_transform,
-    cosine_transform
+    cosine_transform,
+    ∂x!,
+    ∂x,
+    ∂z!,
+    ∂z,
+    ∂z²!,
+    ∂z²,
+    ∫dx!,
+    ∫dx,
+    ∫dz!,
+    ∫dz,
+    ∫dz²!,
+    ∫dz²
 
 include("variable_constructors.jl")
 include("transforms.jl")
+include("operators.jl")
 end

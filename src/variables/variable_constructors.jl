@@ -100,3 +100,17 @@ end
 function FCVariable(domain::Domain{T}) where {T}
     return FCVariable(domain, zeros(Complex{T}, size(domain.spectral)))
 end
+
+XZVariable(v::AbstractVariable) = XZVariable(v.domain)
+XSVariable(v::AbstractVariable) = XSVariable(v.domain)
+XCVariable(v::AbstractVariable) = XCVariable(v.domain)
+FZVariable(v::AbstractVariable) = FZVariable(v.domain)
+FSVariable(v::AbstractVariable) = FSVariable(v.domain)
+FCVariable(v::AbstractVariable) = FCVariable(v.domain)
+
+Base.similar(v::XZVariable) = XZVariable(v.domain)
+Base.similar(v::XSVariable) = XSVariable(v.domain)
+Base.similar(v::XCVariable) = XCVariable(v.domain)
+Base.similar(v::FZVariable) = FZVariable(v.domain)
+Base.similar(v::FSVariable) = FSVariable(v.domain)
+Base.similar(v::FCVariable) = FCVariable(v.domain)
