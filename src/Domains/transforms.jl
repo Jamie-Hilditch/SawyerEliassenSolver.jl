@@ -18,7 +18,7 @@ function Transforms(real_variable::Array{T,2}) where {T<:SingleOrDouble}
     return Transforms{T}(fourier, sine, cosine)
 end
 
-Transforms(grid::Grid{T}) where {T} = Transforms(zeros(T,size(grid)))
+Transforms(grid::Grid{T}) where {T} = Transforms(zeros(T, size(grid)))
 
 function Base.show(io::IO, ::MIME"text/plain", transforms::Transforms)
     return print(

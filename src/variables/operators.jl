@@ -35,7 +35,7 @@ end
 # new output nth derivative in Fourier space
 @inline function ∂x(v::FVariable, n::Int)
     out = similar(v)
-    ∂x!(out, in, n)
+    ∂x!(out, v, n)
     return out
 end
 
@@ -122,7 +122,6 @@ end
     return out
 end
 
-
 @inline function ∂z(v::FSVariable)
     out = FCVariable(v.domain)
     ∂z!(out, v)
@@ -135,7 +134,7 @@ end
     return out
 end
 
-@inline function ∂z²!(out::T, in::T) where {T <: Union{XSVariable,FSVariable}}
+@inline function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
@@ -143,7 +142,7 @@ end
     return nothing
 end
 
-@inline function ∂z²!(out::T, in::T) where {T <: Union{XCVariable,FCVariable}}
+@inline function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 0] = 0
@@ -152,9 +151,9 @@ end
     return nothing
 end
 
-@inline ∂z²!(v::AbstractVariable) = ∂z²!(v,v)
+@inline ∂z²!(v::AbstractVariable) = ∂z²!(v, v)
 
-@inline function ∫dz!(out::XCVariable,in::XSVariable)
+@inline function ∫dz!(out::XCVariable, in::XSVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1] = 0
@@ -163,7 +162,7 @@ end
     return nothing
 end
 
-@inline function ∫dz!(out::XSVariable,in::XCVariable)
+@inline function ∫dz!(out::XSVariable, in::XCVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
@@ -200,7 +199,6 @@ end
     return out
 end
 
-
 @inline function ∫dz(v::FSVariable)
     out = FCVariable(v.domain)
     ∫dz!(out, v)
@@ -213,7 +211,7 @@ end
     return out
 end
 
-@inline function ∫dz²!(out::T, in::T) where {T <: Union{XSVariable,FSVariable}}
+@inline function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
@@ -221,7 +219,7 @@ end
     return nothing
 end
 
-@inline function ∫dz²!(out::T, in::T) where {T <: Union{XCVariable,FCVariable}}
+@inline function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 0] = 0
@@ -230,4 +228,4 @@ end
     return nothing
 end
 
-@inline ∫dz²!(v::AbstractVariable) = ∫dz²!(v,v)
+@inline ∫dz²!(v::AbstractVariable) = ∫dz²!(v, v)

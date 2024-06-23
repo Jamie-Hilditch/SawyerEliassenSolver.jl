@@ -5,8 +5,7 @@ using LinearAlgebra
 
 using SawyerEliassenSolver.Domains
 
-export
-    XZVariable,
+export XZVariable,
     XSVariable,
     XCVariable,
     FZVariable,

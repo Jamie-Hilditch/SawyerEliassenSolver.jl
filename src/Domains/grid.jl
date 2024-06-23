@@ -40,7 +40,9 @@ Grid:
     └─── z: [-1,0]
 ```
 """
-function Grid(NX, NZ, x_bounds::NTuple{2,T}, z_bounds::NTuple{2,T}) where {T<:SingleOrDouble}
+function Grid(
+    NX, NZ, x_bounds::NTuple{2,T}, z_bounds::NTuple{2,T}
+) where {T<:SingleOrDouble}
     NX > 0 || throw(DomainError(NX, "NX must be positive"))
     NZ > 0 || throw(DomainError(NZ, "NZ must be positive"))
     x_bounds[1] != x_bounds[2] ||

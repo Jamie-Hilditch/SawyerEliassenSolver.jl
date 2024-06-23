@@ -4,7 +4,7 @@ struct Domain{T<:SingleOrDouble}
     transforms::Transforms{T}
 end
 
-function Domain(grid::Grid{T}, dealias_x::Int = 0, dealias_z::Int = 0) where {T}
+function Domain(grid::Grid{T}, dealias_x::Int=0, dealias_z::Int=0) where {T}
     dealias_x >= 0 || throw(DomainError(dealias_x, "dealias_x must be non negative"))
     dealias_z >= 0 || throw(DomainError(dealias_z, "dealias_z must be non negative"))
 
