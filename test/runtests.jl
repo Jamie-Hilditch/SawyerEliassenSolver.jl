@@ -20,4 +20,8 @@ float_types = (Float32, Float64)
         @info "Testing transforms ..."
         include("test_transforms.jl")
     end
+    @testset "Operators" begin
+        @info "Testing operators ..."
+        include("test_operators/test_xderivatives.jl")
+    end
 end

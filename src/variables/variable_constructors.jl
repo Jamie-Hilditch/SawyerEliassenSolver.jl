@@ -5,11 +5,24 @@ Abstract supertype for all variables with eltype `T`.
 """
 abstract type AbstractVariable{T} <: AbstractMatrix{T} end
 
-Base.size(v::AbstractVariable) = size(v.data)
-Base.getindex(v::AbstractVariable, i) = getindex(v.data, i)
-Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} = getindex(v.data, I)
-Base.setindex!(v::AbstractVariable, value, i) = setindex!(v.data, value, i)
-Base.setindex!(v::AbstractVariable, value, I...) = setindex!(v.data, value, I...)
+# Variables are just wrappers around a matrix with some domain metadata
+Base.parent(v::AbstractVariable) = v.data
+Base.IndexStyle(::AbstractVariable) = IndexLinear()
+Base.size(v::AbstractVariable) = size(parent(v))
+
+Base.getindex(v::AbstractVariable, i::Int) = getindex(parent(v), i)
+Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} = getindex(parent(v), I...)
+Base.getindex(v::AbstractVariable, I...) = getindex(parent(v), I...)
+Base.setindex!(v::AbstractVariable, value, i::Int) = setindex!(parent(v), value, i)
+Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} = setindex!(parent(v), value, I...)
+Base.setindex!(v::AbstractVariable, value, I...) = setindex!(parent(v), value, I...)
+
+# forward strided arrays methods onto underlying matrix
+Base.strides(v::AbstractVariable) = strides(parent(v))
+Base.unsafe_convert(::Type{Ptr{T}}, v::AbstractVariable{T}) where {T} = Base.unsafe_convert(Type{Ptr{T}}, parent(v))
+Base.elsize(::AbstractVariable{T}) where {T} = Base.elsize(Matrix{T})
+Base.eltype(::AbstractVariable{T}) where {T} = T
+Base.pointer(v::AbstractVariable) = pointer(parent(v))
 
 struct XZVariable{T} <: AbstractVariable{T}
     domain::Domain{T}
@@ -114,3 +127,21 @@ Base.similar(v::XCVariable) = XCVariable(v.domain)
 Base.similar(v::FZVariable) = FZVariable(v.domain)
 Base.similar(v::FSVariable) = FSVariable(v.domain)
 Base.similar(v::FCVariable) = FCVariable(v.domain)
+
+# do we actually need to deinfe these?
+# Base.copyto!(x::AbstractVariable, y) = copyto!(parent(x), y)
+# Base.copyto!(x, y::AbstractVariable) = copyto!(x,parent(y))
+# Base.copyto!(x::AbstractVariable, y::AbstractVariable) = copyto!(parent(x), parent(y))
+# Base.fill!(v::AbstractVariable, x) = fill!(parent(v), x)
+
+# comparison operators
+Base.isapprox(x::V, y::V; kws...) where {V <: AbstractVariable} = x.domain == y.domain && isapprox(parent(x), parent(y); kws...)
+Base.:(==)(x::V, y::V) where {V <: AbstractVariable} = x.domain == y.domain && parent(x) == parent(y)
+
+"""Return the fourier (physical) counterpart to a physical (fourier) variable."""
+horizontal_counterpart(::XZVariable) = FZVariable
+horizontal_counterpart(::XSVariable) = FSVariable
+horizontal_counterpart(::XCVariable) = FCVariable
+horizontal_counterpart(::FZVariable) = XZVariable
+horizontal_counterpart(::FSVariable) = XSVariable
+horizontal_counterpart(::FCVariable) = XCVariable
