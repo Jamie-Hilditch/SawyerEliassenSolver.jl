@@ -28,7 +28,9 @@ function ∫dz² end
 ###################
 
 # out-of-place nth x derivative in Fourier space
-@inline function ∂x!(out::V, in::V, n::Int) where {V<:FVariable}
+# propagate_inbounds so that we can skip bounds checks when we can guarantee out and in have
+# the same domain
+@propagate_inbounds function ∂x!(out::V, in::V, n::Int) where {V<:FVariable}
     CNX = in.domain.spectral.CNX
     kx = in.domain.spectral.kx
     @. out[1, :] = 0
@@ -40,11 +42,16 @@ end
 # new output nth derivative in Fourier space
 @inline function ∂x(v::FVariable, n::Int)
     out = similar(v)
-    ∂x!(out, v, n)
+    @inbounds ∂x!(out, v, n)
     return out
 end
 
+# inplace nth x derivatives in both Fourier and physical space
+@inline ∂x!(v::AbstractVariable, n::Int) = @inbounds ∂x!(v, v, n)
+
 # out-of-place nth x derivative in physical space
+# propagate_inbounds so that we can skip bounds checks when we can guarantee out and in have
+# the same domain
 @inline function ∂x!(out::V, in::V, n::Int) where {V<:XVariable}
     v˜ = horizontal_transform(in)
     ∂x!(v˜, n)
@@ -74,12 +81,11 @@ end
     return horizontal_transform(tmp)
 end
 
-# inplace nth x derivatives in both Fourier and physical space and physical space with scratch
-@inline ∂x!(v::AbstractVariable, n::Int) = ∂x!(v, v, n)
+# inplace nth x derivatives in both physical space with scratch
 @inline ∂x!(v::XVariable, tmp::FVariable, n::Int) = ∂x!(v, v, tmp, n)
 
 # single derivative
-@inline ∂x!(out::V, in::V) where {V<:AbstractVariable} = ∂x!(out, in, 1)
+@propagate_inbounds ∂x!(out::V, in::V) where {V<:AbstractVariable} = ∂x!(out, in, 1)
 @inline ∂x(v::AbstractVariable) = ∂x(v, 1)
 @inline ∂x!(out::V, in::V, tmp::FVariable) where {V<:XVariable} = ∂x!(out, in, tmp, 1)
 @inline ∂x!(v::AbstractVariable) = ∂x!(v, v, 1)
@@ -112,7 +118,7 @@ end
 ###################
 
 # out-of-place sine to cosine in physical X space
-@inline function ∂z!(out::XCVariable, in::XSVariable)
+@propagate_inbounds function ∂z!(out::XCVariable, in::XSVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1] = 0
@@ -122,7 +128,7 @@ end
 end
 
 # out-of-place cosine to sine in physical X space
-@inline function ∂z!(out::XSVariable, in::XCVariable)
+@propagate_inbounds function ∂z!(out::XSVariable, in::XCVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
@@ -131,7 +137,7 @@ end
 end
 
 # out-of-place sine to cosine in Fourier space
-@inline function ∂z!(out::FCVariable, in::FSVariable)
+@propagate_inbounds function ∂z!(out::FCVariable, in::FSVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1] = 0
@@ -141,7 +147,7 @@ end
 end
 
 # out-of-place cosine to sine in Fourier space
-@inline function ∂z!(out::FSVariable, in::FCVariable)
+@propagate_inbounds function ∂z!(out::FSVariable, in::FCVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
@@ -152,28 +158,28 @@ end
 # new output sine to cosine in physical X space
 @inline function ∂z(v::XSVariable)
     out = XCVariable(v.domain)
-    ∂z!(out, v)
+    @inbounds ∂z!(out, v)
     return out
 end
 
 # new output cosine to sine in physical X space
 @inline function ∂z(v::XCVariable)
     out = XSVariable(v.domain)
-    ∂z!(out, v)
+    @inbounds ∂z!(out, v)
     return out
 end
 
 # new output sine to cosine in Fourier space
 @inline function ∂z(v::FSVariable)
     out = FCVariable(v.domain)
-    ∂z!(out, v)
+    @inbounds ∂z!(out, v)
     return out
 end
 
 # new output cosine to sine in Fourier space
 @inline function ∂z(v::FCVariable)
     out = FSVariable(v.domain)
-    ∂z!(out, v)
+    @inbounds ∂z!(out, v)
     return out
 end
 
@@ -182,7 +188,7 @@ end
 #######################
 
 # out-of-place sine to sine
-@inline function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+@propagate_inbounds function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
@@ -191,7 +197,7 @@ end
 end
 
 # out-of-place cosine to cosine
-@inline function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+@propagate_inbounds function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 0] = 0
@@ -201,12 +207,12 @@ end
 end
 
 # in-place 2nd z derivative
-@inline ∂z²!(v::AbstractVariable) = ∂z²!(v, v)
+@inline ∂z²!(v::AbstractVariable) = @inbounds ∂z²!(v, v)
 
 # new output 2nd z derivative
 @inline function ∂z²(v::T) where {T<:Union{XSVariable,FSVariable,XCVariable,FCVariable}}
     out = similar(v)
-    ∂z²!(out, v)
+    @inbounds ∂z²!(out, v)
     return out
 end
 
@@ -215,7 +221,7 @@ end
 #################
 
 # out-of-place sine to cosine in physical X space
-@inline function ∫dz!(out::XCVariable, in::XSVariable)
+@propagate_inbounds function ∫dz!(out::XCVariable, in::XSVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1] = 0
@@ -225,7 +231,7 @@ end
 end
 
 # out-of-place cosine to sine in physical X space
-@inline function ∫dz!(out::XSVariable, in::XCVariable)
+@propagate_inbounds function ∫dz!(out::XSVariable, in::XCVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
@@ -234,7 +240,7 @@ end
 end
 
 # out-of-place sine to cosine in Fourier space
-@inline function ∫dz!(out::FCVariable, in::FSVariable)
+@propagate_inbounds function ∫dz!(out::FCVariable, in::FSVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1] = 0
@@ -244,7 +250,7 @@ end
 end
 
 # out-of-place cosine to sine in Fourier space
-@inline function ∫dz!(out::FSVariable, in::FCVariable)
+@propagate_inbounds function ∫dz!(out::FSVariable, in::FCVariable)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
@@ -255,28 +261,28 @@ end
 # new output sine to cosine in physical X space
 @inline function ∫dz(v::XSVariable)
     out = XCVariable(v.domain)
-    ∫dz!(out, v)
+    @inbounds ∫dz!(out, v)
     return out
 end
 
 # new output cosine to sine in physical X space
 @inline function ∫dz(v::XCVariable)
     out = XSVariable(v.domain)
-    ∫dz!(out, v)
+    @inbounds ∫dz!(out, v)
     return out
 end
 
 # new output sine to cosine in Fourier space
 @inline function ∫dz(v::FSVariable)
     out = FCVariable(v.domain)
-    ∫dz!(out, v)
+    @inbounds ∫dz!(out, v)
     return out
 end
 
 # new output cosine to sine in Fourier space
 @inline function ∫dz(v::FCVariable)
     out = FSVariable(v.domain)
-    ∫dz!(out, v)
+    @inbounds ∫dz!(out, v)
     return out
 end
 
@@ -285,7 +291,7 @@ end
 #####################
 
 # out-of-place sine to sine
-@inline function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+@propagate_inbounds function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
@@ -294,7 +300,7 @@ end
 end
 
 # out-of-place cosine to cosine
-@inline function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+@propagate_inbounds function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
     @. out[:, 0] = 0
@@ -304,11 +310,26 @@ end
 end
 
 # in-place 2nd Z integral
-@inline ∫dz²!(v::AbstractVariable) = ∫dz²!(v, v)
+@inline ∫dz²!(v::AbstractVariable) = @inbounds ∫dz²!(v, v)
 
 # new output 2nd z integral
 @inline function ∫dz²(v::T) where {T<:Union{XSVariable,FSVariable,XCVariable,FCVariable}}
     out = similar(v)
-    ∫dz²!(out, v)
+    @inbounds ∫dz²!(out, v)
     return out
+end
+
+
+#######################
+## Inverse Laplacian ##
+#######################
+
+@propagate_inbounds function ∇⁻²!(out::FSVariable,in::FSVariable)
+    CNX = in.domain.spectral.CNX
+    CNZ = in.domain.spectral.CNZ
+    kx = in.domain.spectral.kx
+    kz = in.domain.spectral.kz
+    @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
+    @. out[(CNX + 1):end, :] = 0
+    @. out[1:CNX, (CNZ + 1):end] = 0
 end

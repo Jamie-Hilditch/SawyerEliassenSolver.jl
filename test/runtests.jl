@@ -22,6 +22,7 @@ float_types = (Float32, Float64)
     end
     @testset "Operators" begin
         @info "Testing operators ..."
-        include("test_operators/test_xderivatives.jl")
+        include("test_operators/test_x_derivatives_and_integrals.jl")
+        include("test_operators/test_sine_derivatives_and_integrals.jl")
     end
 end

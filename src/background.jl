@@ -7,15 +7,15 @@ therefore assumed to be steady.
 # Fields
 $(TYPEDFIELDS)
 """
-struct BackgroundFlow
+struct BackgroundFlow{T}
     """Coriolis frequency ``f``"""
-    f::Float64
+    f::T
     raw"""Lateral shear ``\partial V/\partial x``"""
-    Vx::Array{Float64,2}
+    Vx::Matrix{T}
     raw"""Horizontal buoyancy gradient ``\partial B/\partial x = f\partial V/\partial z``"""
-    Bx::Array{Float64,2}
+    Bx::Matrix{T}
     raw"""Vertical buoyancy gradient ``\partial B/\partial z``"""
-    Bz::Array{Float64,2}
+    Bz::Matrix{T}
 
     @doc """$(TYPEDSIGNATURES)
 
@@ -24,7 +24,7 @@ struct BackgroundFlow
 
     # Examples
     ```jldoctest
-    grid = Grid(256,128,2000,1)
+    grid = Grid(256,128,2000.0,1.0)
     bg = BackgroundFlow(grid)
 
     # output
@@ -38,11 +38,9 @@ struct BackgroundFlow
               [0.0 0.0 … 0.0 0.0; 0.0 0.0 … 0.0 0.0; … ; 0.0 0.0 … 0.0 0.0; 0.0 0.0 … 0.0 0.0]
     ```
     """
-    function BackgroundFlow(grid::Grid, f::Float64=1.0)
+    function BackgroundFlow(grid::Grid{T}, f::T=one(T)) where {T}
         NX, NZ = grid.NX, grid.NZ
-        return new(
-            f, zeros(Float64, NX, NZ), zeros(Float64, NX, NZ), zeros(Float64, NX, NZ)
-        )
+        return new{T}(f, zeros(T, NX, NZ), zeros(T, NX, NZ), zeros(T, NX, NZ))
     end
 end
 

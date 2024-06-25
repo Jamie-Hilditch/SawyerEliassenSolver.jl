@@ -1,5 +1,6 @@
 module Variables
 
+using Base: @propagate_inbounds
 using DocStringExtensions
 using LinearAlgebra
 

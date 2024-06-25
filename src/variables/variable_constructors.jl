@@ -10,12 +10,12 @@ Base.parent(v::AbstractVariable) = v.data
 Base.IndexStyle(::AbstractVariable) = IndexLinear()
 Base.size(v::AbstractVariable) = size(parent(v))
 
-Base.getindex(v::AbstractVariable, i::Int) = getindex(parent(v), i)
-Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} = getindex(parent(v), I...)
-Base.getindex(v::AbstractVariable, I...) = getindex(parent(v), I...)
-Base.setindex!(v::AbstractVariable, value, i::Int) = setindex!(parent(v), value, i)
-Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} = setindex!(parent(v), value, I...)
-Base.setindex!(v::AbstractVariable, value, I...) = setindex!(parent(v), value, I...)
+@propagate_inbounds Base.getindex(v::AbstractVariable, i::Int) = getindex(v.data, i)
+@propagate_inbounds Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} = getindex(v.data, I...)
+@propagate_inbounds Base.getindex(v::AbstractVariable, I...) = getindex(v.data, I...)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, i::Int) = setindex!(v.data, value, i)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} = setindex!(v.data, value, I...)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I...) = setindex!(v.data, value, I...)
 
 # forward strided arrays methods onto underlying matrix
 Base.strides(v::AbstractVariable) = strides(parent(v))
