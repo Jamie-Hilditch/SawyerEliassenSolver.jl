@@ -4,9 +4,11 @@ NZ = 16
 
 @inline trial_function(z) = sin(π * z) - sin(5 * π * z)
 @inline derivative_of_trial_function(z) = π * cos(π * z) - 5 * π * cos(5 * π * z)
-@inline second_derivative_of_trial_function(z) = - π^2 * sin(π * z) + 25 * π^2 * sin(5 * π * z)
+@inline second_derivative_of_trial_function(z) =
+    -π^2 * sin(π * z) + 25 * π^2 * sin(5 * π * z)
 @inline integral_of_trial_function(z) = -1 / π * cos(π * z) + 1 / (5 * π) * cos(5 * π * z)
-@inline second_integral_of_trial_function(z) = -1 / π^2 * sin(π * z) + 1 / (25 * π^2) * cos(5 * π * z)
+@inline second_integral_of_trial_function(z) =
+    -1 / π^2 * sin(π * z) + 1 / (25 * π^2) * cos(5 * π * z)
 
 function test_z_derivatives_method_types()
     grid = Grid(NX, NZ, one(FT), one(FT))

@@ -19,3 +19,9 @@ function Domain(grid::Grid{T}, dealias_x::Int=0, dealias_z::Int=0) where {T}
 end
 
 Base.size(domain::Domain) = size(domain.grid)
+
+function get_domain end
+
+get_domain(domain::Domain) = domain
+
+@inline consistent_domains(A...) = isempty(A) || mapreduce(get_domain, ==, A)

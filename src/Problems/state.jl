@@ -1,51 +1,45 @@
-mutable struct Clock
-    t::Float64
+mutable struct Clock{T}
+    t::T
     iteration::Int
 end
 
 """Default initialiser for Clock"""
-function Clock()
-    return Clock(0, 0)
-end
+Clock(::T) where {T} = Clock{T}(zero(T), 0)
 
-struct State
-    ψ::Matrix{ComplexF64}
-    ψt::Matrix{ComplexF64}
-    v::Matrix{Float64}
-    b::Matrix{Float64}
-    clock::Clock
+struct State{T}
+    ζ::FSVariable{T}
+    ζₜ::FSVariable{T}
+    v::XZVariable{T}
+    b::XZVariable{T}
+    clock::Clock{T}
 
-    function State(problem::Problem, clock::Clock)
-        return new(
-            zeros(ComplexF64, size(problem.spectral_domain)),
-            zeros(ComplexF64, size(problem.spectral_domain)),
-            zeros(Float64, size(problem.grid)),
-            zeros(Float64, size(problem.grid)),
+    function State(domain::Domain{T}, clock::Clock{T}) where {T}
+        return new{T}(
+            FSVariable(domain),
+            FSVariable(domain),
+            XZVariable(domain),
+            XZVariable(domain),
             clock,
         )
     end
 end
 
-function State(problem::Problem)
-    return State(problem, Clock())
-end
+State(domain::Domain{T}) where {T} = State(domain, clock(T))
 
-function update_clock!(clock::Clock, h::Float64)
+@inline function update_clock!(clock::Clock{T}, h::T) where {T}
     clock.t += h
     clock.iteration += 1
     return nothing
 end
 
-Base.size(state::State) = size(state.v)
-
 function Base.show(io::IO, ::MIME"text/plain", state::State)
     return print(
         io,
         "State:\n",
-        "  ├────── ψ: $(summary(state.ψ)))\n",
-        "  │          $(sprint(show,state.ψ, context=:limit => true))\n",
-        "  ├──────ψt: $(summary(state.ψt))\n",
-        "  │          $(sprint(show,state.ψt, context=:limit => true))\n",
+        "  ├────── ζ: $(summary(state.ζ)))\n",
+        "  │          $(sprint(show,state.ζ, context=:limit => true))\n",
+        "  ├───── ζₜ: $(summary(state.ζt))\n",
+        "  │          $(sprint(show,state.ζt, context=:limit => true))\n",
         "  ├────── v: $(summary(state.v))\n",
         "  │          $(sprint(show,state.v, context=:limit => true))\n",
         "  ├────── b: $(summary(state.b))\n",
@@ -66,7 +60,7 @@ end
 function Base.summary(io::IO, state::State)
     return print(
         io,
-        "State:  ψ,ψt = $(summary(state.ψ)), v,b = $(summary(state.v)), clock = $(summary(state.clock))",
+        "State:  ζ,ζₜ = $(summary(state.ζ)), v,b = $(summary(state.v)), clock = $(summary(state.clock))",
     )
 end
 

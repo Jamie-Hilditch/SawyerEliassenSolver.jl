@@ -30,12 +30,13 @@ function ∫dz² end
 # out-of-place nth x derivative in Fourier space
 # propagate_inbounds so that we can skip bounds checks when we can guarantee out and in have
 # the same domain
-@propagate_inbounds function ∂x!(out::V, in::V, n::Int) where {V<:FVariable}
+@inline function ∂x!(out::V, in::V, n::Int) where {V<:FVariable}
+    @boundscheck consistent_domains(out, in)
     CNX = in.domain.spectral.CNX
     kx = in.domain.spectral.kx
-    @. out[1, :] = 0
-    @. out[2:CNX, :] = (1im * kx[2:CNX])^n * in[2:CNX, :]
-    @. out[(CNX + 1):end, :] = 0
+    @inbounds @. out[1, :] = 0
+    @inbounds @. out[2:CNX, :] = (1im * kx[2:CNX])^n * in[2:CNX, :]
+    @inbounds @. out[(CNX + 1):end, :] = 0
     return nothing
 end
 
@@ -118,40 +119,44 @@ end
 ###################
 
 # out-of-place sine to cosine in physical X space
-@propagate_inbounds function ∂z!(out::XCVariable, in::XSVariable)
+@inline function ∂z!(out::XCVariable, in::XSVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1] = 0
-    @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 1] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
 # out-of-place cosine to sine in physical X space
-@propagate_inbounds function ∂z!(out::XSVariable, in::XCVariable)
+@inline function ∂z!(out::XSVariable, in::XCVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
 # out-of-place sine to cosine in Fourier space
-@propagate_inbounds function ∂z!(out::FCVariable, in::FSVariable)
+@inline function ∂z!(out::FCVariable, in::FSVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1] = 0
-    @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 1] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
 # out-of-place cosine to sine in Fourier space
-@propagate_inbounds function ∂z!(out::FSVariable, in::FCVariable)
+@inline function ∂z!(out::FSVariable, in::FCVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
@@ -188,21 +193,23 @@ end
 #######################
 
 # out-of-place sine to sine
-@propagate_inbounds function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+@inline function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
 # out-of-place cosine to cosine
-@propagate_inbounds function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+@inline function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 0] = 0
-    @. out[:, 2:(CNZ + 1)] = -kz^2 * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 0] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = -kz^2 * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
@@ -221,40 +228,44 @@ end
 #################
 
 # out-of-place sine to cosine in physical X space
-@propagate_inbounds function ∫dz!(out::XCVariable, in::XSVariable)
+@inline function ∫dz!(out::XCVariable, in::XSVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1] = 0
-    @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 1] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
 # out-of-place cosine to sine in physical X space
-@propagate_inbounds function ∫dz!(out::XSVariable, in::XCVariable)
+@inline function ∫dz!(out::XSVariable, in::XCVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
 # out-of-place sine to cosine in Fourier space
-@propagate_inbounds function ∫dz!(out::FCVariable, in::FSVariable)
+@inline function ∫dz!(out::FCVariable, in::FSVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1] = 0
-    @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 1] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
 # out-of-place cosine to sine in Fourier space
-@propagate_inbounds function ∫dz!(out::FSVariable, in::FCVariable)
+@inline function ∫dz!(out::FSVariable, in::FCVariable)
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
@@ -291,21 +302,23 @@ end
 #####################
 
 # out-of-place sine to sine
-@propagate_inbounds function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+@inline function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
-    @. out[:, (CNZ + 1):end] = 0
+    @inbounds @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
+    @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
 
 # out-of-place cosine to cosine
-@propagate_inbounds function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+@inline function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
+    @boundscheck consistent_domains(out, in)
     CNZ = in.domain.spectral.CNZ
     kz = in.domain.spectral.kz
-    @. out[:, 0] = 0
-    @. out[:, 2:(CNZ + 1)] = -1 / kz^2 * in[:, 2:(CNZ + 1)]
-    @. out[:, (CNZ + 2):end] = 0
+    @inbounds @. out[:, 0] = 0
+    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz^2 * in[:, 2:(CNZ + 1)]
+    @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
 
@@ -319,17 +332,17 @@ end
     return out
 end
 
-
 #######################
 ## Inverse Laplacian ##
 #######################
 
-@propagate_inbounds function ∇⁻²!(out::FSVariable,in::FSVariable)
+@inline function ∇⁻²!(out::FSVariable, in::FSVariable)
+    @boundscheck consistent_domains(out, in)
     CNX = in.domain.spectral.CNX
     CNZ = in.domain.spectral.CNZ
     kx = in.domain.spectral.kx
     kz = in.domain.spectral.kz
-    @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
-    @. out[(CNX + 1):end, :] = 0
-    @. out[1:CNX, (CNZ + 1):end] = 0
+    @inbounds @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
+    @inbounds @. out[(CNX + 1):end, :] = 0
+    @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
 end

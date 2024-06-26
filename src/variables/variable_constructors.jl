@@ -11,15 +11,21 @@ Base.IndexStyle(::AbstractVariable) = IndexLinear()
 Base.size(v::AbstractVariable) = size(parent(v))
 
 @propagate_inbounds Base.getindex(v::AbstractVariable, i::Int) = getindex(v.data, i)
-@propagate_inbounds Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} = getindex(v.data, I...)
+@propagate_inbounds Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} =
+    getindex(v.data, I...)
 @propagate_inbounds Base.getindex(v::AbstractVariable, I...) = getindex(v.data, I...)
-@propagate_inbounds Base.setindex!(v::AbstractVariable, value, i::Int) = setindex!(v.data, value, i)
-@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} = setindex!(v.data, value, I...)
-@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I...) = setindex!(v.data, value, I...)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, i::Int) =
+    setindex!(v.data, value, i)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} =
+    setindex!(v.data, value, I...)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, I...) =
+    setindex!(v.data, value, I...)
 
 # forward strided arrays methods onto underlying matrix
 Base.strides(v::AbstractVariable) = strides(parent(v))
-Base.unsafe_convert(::Type{Ptr{T}}, v::AbstractVariable{T}) where {T} = Base.unsafe_convert(Type{Ptr{T}}, parent(v))
+function Base.unsafe_convert(::Type{Ptr{T}}, v::AbstractVariable{T}) where {T}
+    return Base.unsafe_convert(Type{Ptr{T}}, parent(v))
+end
 Base.elsize(::AbstractVariable{T}) where {T} = Base.elsize(Matrix{T})
 Base.eltype(::AbstractVariable{T}) where {T} = T
 Base.pointer(v::AbstractVariable) = pointer(parent(v))
@@ -135,8 +141,12 @@ Base.similar(v::FCVariable) = FCVariable(v.domain)
 # Base.fill!(v::AbstractVariable, x) = fill!(parent(v), x)
 
 # comparison operators
-Base.isapprox(x::V, y::V; kws...) where {V <: AbstractVariable} = x.domain == y.domain && isapprox(parent(x), parent(y); kws...)
-Base.:(==)(x::V, y::V) where {V <: AbstractVariable} = x.domain == y.domain && parent(x) == parent(y)
+function Base.isapprox(x::V, y::V; kws...) where {V<:AbstractVariable}
+    return x.domain == y.domain && isapprox(parent(x), parent(y); kws...)
+end
+function Base.:(==)(x::V, y::V) where {V<:AbstractVariable}
+    return x.domain == y.domain && parent(x) == parent(y)
+end
 
 """Return the fourier (physical) counterpart to a physical (fourier) variable."""
 horizontal_counterpart(::XZVariable) = FZVariable
@@ -145,3 +155,5 @@ horizontal_counterpart(::XCVariable) = FCVariable
 horizontal_counterpart(::FZVariable) = XZVariable
 horizontal_counterpart(::FSVariable) = XSVariable
 horizontal_counterpart(::FCVariable) = XCVariable
+
+@inline Domains.get_domain(v::AbstractVariable) = v.domain

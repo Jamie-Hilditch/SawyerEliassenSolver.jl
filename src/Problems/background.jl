@@ -38,19 +38,16 @@ struct BackgroundFlow{T}
               [0.0 0.0 … 0.0 0.0; 0.0 0.0 … 0.0 0.0; … ; 0.0 0.0 … 0.0 0.0; 0.0 0.0 … 0.0 0.0]
     ```
     """
-    function BackgroundFlow(grid::Grid{T}, f::T=one(T)) where {T}
+    function BackgroundFlow(grid::Grid{T}, f::T) where {T}
         NX, NZ = grid.NX, grid.NZ
         return new{T}(f, zeros(T, NX, NZ), zeros(T, NX, NZ), zeros(T, NX, NZ))
     end
 end
 
-function check_consistent_grid(grid::Grid, bg::BackgroundFlow)
-    if size(bg.Vx) == size(bg.Bx) == size(bg.Bz) == size(grid)
-        return nothing
-    else
-        error("grid and background flow do not have compatible sizes")
-    end
-end
+BackgroundFlow(grid::Grid{T}) where {T} = BackgroundFlow(grid, one(T))
+
+"""$(TYPEDSIGNATURES)"""
+Base.size(bg::BackgroundFlow) = size(bg.Vx)
 
 """$(TYPEDSIGNATURES)"""
 function Base.show(io::IO, ::MIME"text/plain", bg::BackgroundFlow)

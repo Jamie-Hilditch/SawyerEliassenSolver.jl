@@ -3,8 +3,13 @@ module Forcing
 using SawyerEliassenSolver.Domains
 using SawyerEliassenSolver.Variables
 
-export PointwisePhysicalForcing,
-    GlobalPhysicalForcing, PointwiseSpectralForcing, GlobalSpectralForcing
+export AbstractForcingFunction,
+    PhysicalForcing,
+    SpectralForcing,
+    PointwisePhysicalForcing,
+    GlobalPhysicalForcing,
+    PointwiseSpectralForcing,
+    GlobalSpectralForcing
 
-    include("forcing_options.jl")
+include("forcing_options.jl")
 end
