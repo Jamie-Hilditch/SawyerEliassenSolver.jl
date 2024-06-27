@@ -1,5 +1,5 @@
 """ζₜₜ = -𝓛ζ + F"""
-struct 𝓛!{T}
+struct SawyerEliassenOperator!{T}
     problem::Problem{T}
     fs_tmp::FSVariable{T}
     xs_tmp::XSVariable{T}
@@ -9,17 +9,18 @@ struct 𝓛!{T}
     𝓛ζ::XZVariable{T}
 end
 
-"""Construct 𝓛! given working arrays.
-We only need 4 as we are never working in sine and cosine space at the same time.
-"""
-function 𝓛!{T}(
+"""Construct 𝓛!"""
+function SawyerEliassenOperator!{T}(
     problem::Problem{T},
     fsc_array::Matrix{Complex{T}},
     xsc_array::Matrix{T},
     xz_array::Matrix{T},
     𝓛ζ_array::Matrix{T},
 ) where {T}
-    domain = problem.domain
+    domain = get_domain(problem)
+    size(fsc_array) == size(domain.spectral) &&
+        size(xsc_array) == size(xz_array) == size(𝓛ζ_array) == size(domain.grid) ||
+        throw(ArgumentError("arrays are not compatible size with `domain`"))
     return new{T}(
         problem,
         FSVariable(domain, fsc_array),
@@ -31,15 +32,17 @@ function 𝓛!{T}(
     )
 end
 
-@inline function (L::𝓛!{T})(out::FSVariable{T}, in::FSVariable{T}) where {T}
+@inline function (𝓛::SawyerEliassenOperator!{T})(
+    out::FSVariable{T}, in::FSVariable{T}
+) where {T}
 
     # unpack working arrays and the background flow
-    (; problem, fs_tmp, xs_tmp, xz_tmp, fc_tmp, xc_tmp, 𝓛ζ) = 𝓛!
+    (; problem, fs_tmp, xs_tmp, xz_tmp, fc_tmp, xc_tmp, 𝓛ζ) = 𝓛
     (; f, Vx, Bx, Bz) = problem.background
 
     # if the domains are the same then everything will be inbounds
-    @boundscheck consistent_domains(𝓛!, out, in) ||
-        throw(ArgumentError("Domains of `𝓛!`, `out` and `in` must match."))
+    @boundscheck consistent_domains(𝓛, out, in) ||
+        throw(ArgumentError("Domains of `𝓛`, `out` and `in` must match."))
 
     # first compute ψ in xs with the inverse Laplacian, we can store this in the output array
     @inbounds ∇⁻²!(out, in)
@@ -70,20 +73,20 @@ end
     return nothing
 end
 
-@inline Domains.get_domain(L::𝓛!) = get_domain(L.problem)
+@inline Domains.get_domain(𝓛::SawyerEliassenOperator!) = get_domain(𝓛.problem)
 
-"""𝓛♯ = 1 + aᵢᵢ h² 𝓛"""
-struct 𝓛♯!{T}
+"""𝓛ᴵ = 1 + aᵢᵢ h² 𝓛"""
+struct ImplicitSawyerEliassenOperator!{T}
     aᵢᵢ::T
     h::T
-    L::𝓛!{T}
+    𝓛::SawyerEliassenOperator!{T}
 end
 
-@propagate_inbounds function (L♯::𝓛♯!{T})(out::XSVariable, in::XSVariable)
-    (; aᵢᵢ, h, L) = L♯
-    return 1 + aᵢᵢ * h^2 * L(out, in)
+@propagate_inbounds function (𝓛ᴵ::ImplicitSawyerEliassenOperator!{T})(
+    out::XSVariable, in::XSVariable
+)
+    (; aᵢᵢ, h, 𝓛) = 𝓛ᴵ
+    return 1 + aᵢᵢ * h^2 * 𝓛(out, in)
 end
 
-@inline Domains.get_domain(A::𝓛♯!) = get_domain(A.L)
-
-abstract type Preconditioner end
+@inline Domains.get_domain(𝓛ᴵ::ImplicitSawyerEliassenOperator!{T}) = get_domain(𝓛ᴵ.𝓛)

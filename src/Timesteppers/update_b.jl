@@ -17,7 +17,7 @@ end
 """Time evolution of buoyancy perturbations
 
     arguments:
-        b: real array 
+        b: real array
         in: complex array (not modified) containing h*(b1'*ψ^n+c1 + b2'*ψ^n+c2)
     """
 
@@ -40,7 +40,7 @@ function (bt::UpdateB!)(b, in)
     # compute -u
     @inbounds @. ctmp[1:CNX, 2:(CNZ + 1)] = kz * in[1:CNX, 1:CNZ]
     @inbounds @. ctmp[(CNX + 1):end, :] = 0
-    @inbounds @. ctmp[1:CNX, 1] = 0 # constant 0th cosine mode 
+    @inbounds @. ctmp[1:CNX, 1] = 0 # constant 0th cosine mode
     @inbounds @. ctmp[1:CNX, (CNZ + 2):end] = 0
     ldiv!(rtmp1, bt.transforms.fourier, ctmp)
     ldiv!(rtmp2, bt.transforms.cosine, rtmp1)
@@ -48,11 +48,11 @@ function (bt::UpdateB!)(b, in)
     # b = b -u*Bx
     @. b += rtmp2 * bg.Bx
 
-    # compute w 
+    # compute w
     @inbounds @. ctmp[1:CNX, 1:CNZ] = kx * im * in[1:CNX, 1:CNZ]
     @inbounds @. ctmp[(CNX + 1):end, :] = 0
     @inbounds @. ctmp[1:CNX, (CNZ + 1):end] = 0
-    # transform to physcial space
+    # transform to physical space
     ldiv!(rtmp1, bt.transforms.fourier, ctmp)
     ldiv!(rtmp2, bt.transforms.sine, rtmp1)
 

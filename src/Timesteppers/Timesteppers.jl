@@ -1,4 +1,4 @@
-module Timestepper
+module Timesteppers
 
 using SawyerEliassenSolver.Domains
 using SawyerEliassenSolver.Forcing
