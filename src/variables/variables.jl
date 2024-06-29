@@ -28,7 +28,8 @@ export XZVariable,
     ∫dz!,
     ∫dz,
     ∫dz²!,
-    ∫dz²
+    ∫dz²,
+    ∇⁻²!
 
 include("variable_constructors.jl")
 include("transforms.jl")

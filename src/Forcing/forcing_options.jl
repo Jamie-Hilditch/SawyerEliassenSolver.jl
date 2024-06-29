@@ -1,6 +1,10 @@
 
 abstract type AbstractForcingFunction{T} end
 
+struct NoForcing{T} <: AbstractForcingFunction{T}
+    domain::Domain{T}
+end
+
 """
     $(TYPEDEF)
 
@@ -70,3 +74,74 @@ PhysicalForcing{T} =
     Union{PointwisePhysicalForcing{T,P},GlobalPhysicalForcing{T,Q}} where {T,P,Q}
 SpectralForcing{T} =
     Union{PointwiseSpectralForcing{T,P},GlobalSpectralForcing{T,Q}} where {T,P,Q}
+
+get_domain(F::AbstractForcingFunction) = F.domain
+
+@inline function evaluate_physical_forcing(
+    ::NoForcing{T}, XZ::XZVariable{T}, t::T
+) where {T}
+    @. XZ = 0
+    return nothing
+end
+
+@inline function evaluate_physical_forcing(
+    F::PointwisePhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
+) where {T,P}
+    @boundscheck consistent_domains(F, XZ) ||
+        throw(ArgumentError("`F` and `XZ` must have the same domain."))
+    x = reshape(F.domain.grid.x, :, 1)
+    z = reshape(F.domain.grid.z, 1, :)
+    @inbounds @. XZ = F.func(x, z, tuple(t), tuple(F.params))
+    return nothing
+end
+
+@inline function evaluate_physical_forcing(
+    F::GlobalPhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
+) where {T,P}
+    @boundscheck consistent_domains(F, XZ) ||
+        throw(ArgumentError("`F` and `XZ` must have the same domain."))
+    F.func(F, XZ, t, F.params)
+    return nothing
+end
+
+@inline function evaluate_ζ_forcing(
+    ::NoForcing, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
+) where {T}
+    @. out = 0
+    return nothing
+end
+
+@inline function evaluate_ζ_forcing(
+    F::PointwiseSpectralForcing{T,P},
+    out::FSVariable{T},
+    t::T,
+    ::XSVariable{T},
+    ::XZVariable{T},
+) where {T,P}
+    @boundscheck consistent_domains(F, out) ||
+        throw(ArgumentError("`F` and `out` must have the same domain."))
+    kx = F.domain.spectral.kx
+    kz = F.domain.spectral.kz
+    @inbounds @. F.func(kx, kz, tuple(t), tuple(params))
+    return nothing
+end
+
+@inline function evaluate_ζ_forcing(
+    F::GlobalSpectralForcing{T,P}, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
+) where {T,P}
+    @boundscheck consistent_domains(F, out) ||
+        throw(ArgumentError("`F` and `out` must have the same domain."))
+    F.func(out, t, F.params)
+    return nothing
+end
+
+@inline function evaluate_ζ_forcing(
+    F::PhysicalForcing{T}, out::FSVariable{T}, t::T, XS::XSVariable, XZ::XZVariable
+) where {T}
+    @boundscheck consistent_domains(F, out, XS, XZ) ||
+        throw(ArgumentError("`F`, `out`, `XS` and`XZ` must have the same domain."))
+    @inbounds evaluate_physical_forcing(F, XZ, t)
+    Tˢ!(XS, XZ)
+    Tᴴ!(out, XS)
+    return nothing
+end

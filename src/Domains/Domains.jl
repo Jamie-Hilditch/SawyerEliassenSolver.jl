@@ -5,7 +5,16 @@ using FFTW
 
 using SawyerEliassenSolver.Utils
 
-export Grid, Domain, get_domain, consistent_domains
+export Grid,
+    xgridpoints,
+    zgridpoints,
+    gridpoints,
+    xwavenumbers,
+    zwavenumbers,
+    wavenumbers,
+    Domain,
+    get_domain,
+    consistent_domains
 
 # Since we use FFTW we are limited to Float32 or Float64
 SingleOrDouble = Union{Float32,Float64}

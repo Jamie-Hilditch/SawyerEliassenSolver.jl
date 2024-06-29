@@ -50,7 +50,7 @@ end
     # first term is - Bz * ψxx
     @inbounds ∂x!(fs_tmp, out, 2) # ψxx in fs
     Tᴴ!(xs_tmp, fs_tmp) # ψxx in xs
-    Τˢ!(xz_tmp, xs_tmp) # ψxx in xz
+    Tˢ!(xz_tmp, xs_tmp) # ψxx in xz
     @inbounds @. 𝓛ζ = -Bz * xz_tmp
 
     # second term is  2 * Bx * ψxz
@@ -83,10 +83,10 @@ struct ImplicitSawyerEliassenOperator!{T}
 end
 
 @propagate_inbounds function (𝓛ᴵ::ImplicitSawyerEliassenOperator!{T})(
-    out::XSVariable, in::XSVariable
-)
+    out::FSVariable{T}, in::FSVariable{T}
+) where {T}
     (; aᵢᵢ, h, 𝓛) = 𝓛ᴵ
     return 1 + aᵢᵢ * h^2 * 𝓛(out, in)
 end
 
-@inline Domains.get_domain(𝓛ᴵ::ImplicitSawyerEliassenOperator!{T}) = get_domain(𝓛ᴵ.𝓛)
+@inline Domains.get_domain(𝓛ᴵ::ImplicitSawyerEliassenOperator!) = get_domain(𝓛ᴵ.𝓛)

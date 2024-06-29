@@ -19,7 +19,14 @@ example_pages = [
     "Baroclinic Vorticity Filament" => "examples/baroclinic_vorticity_filament.md",
 ]
 
-library_pages = ["Public" => "library/public.md", "Internals" => "library/internals.md"]
+library_pages = [
+    "Domains" => "library/domains.md",
+    "Variables" => "library/variables.md",
+    "Problems" => "library/problems.md",
+    "Forcing" => "library/forcing.md",
+    "Timesteppers" => "library/timesteppers.md",
+    "Internals" => "library/internals.md",
+]
 
 pages = [
     "Home" => "index.md",
@@ -35,6 +42,7 @@ format = Documenter.HTML(;
     canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver",
     mathengine=MathJax3(),
     assets=String[],
+    collapselevel=1,
 )
 
 # references

@@ -1,6 +1,6 @@
 name = "SawyerEliassenSolver"
 uuid = "4160a140-ed77-4dbe-8316-dcd1d4ea2f4e"
-authors = ["Jamie Hilditch <hilditch@stanford.edu> and contributors"]
+authors = ["Jamie Hilditch <hilditch@stanford.edu>"]
 version = "1.0.0-DEV"
 
 [deps]

@@ -5,21 +5,26 @@ struct Spectral{T<:SingleOrDouble}
     NZ::Int
     CNX::Int
     CNZ::Int
-    kx::Array{T,2}
-    kz::Array{T,2}
+    Δkx::T
+    Δkz::T
 end
 
 function Spectral(grid::Grid{T}, CNX, CNZ) where {T}
     SX = grid.NX ÷ 2 + 1
     LX = grid.x_bounds[2] - grid.x_bounds[1]
     LZ = grid.z_bounds[2] - grid.z_bounds[1]
-    kx = 2 * π / LX * UnitRange{T}(0, CNX - 1)
-    kz = π / LZ * UnitRange{T}(1, CNZ)
-    return Spectral{T}(SX, grid.NZ, CNX, CNZ, reshape(kx, :, 1), reshape(kz, 1, :))
+    Δkx = 2 * π / LX
+    Δkz = π / LZ
+    return Spectral{T}(SX, grid.NZ, CNX, CNZ, Δkx, Δkz)
 end
 
-"""$(TYPEDSIGNATURES)"""
 Base.eltype(::Spectral{T}) where {T} = T
-
-"""$(TYPEDSIGNATURES)"""
 Base.size(spectral::Spectral) = (spectral.SX, spectral.NZ)
+
+@inline xwavenumbers(spectral::Spectral) = spectral.Δkx * UnitRange(0, spectral.CNX - 1)
+@inline zwavenumbers(spectral::Spectral) = spectral.Δkz * UnitRange(1, spectral.CNZ)
+@inline function wavenumbers(spectral::Spectral)
+    kx = xwavenumbers(spectral)
+    kz = zwavenumbers(spectral)
+    return reshape(kx, :, 1), reshape(kz, 1, :)
+end

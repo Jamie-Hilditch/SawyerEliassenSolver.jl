@@ -42,7 +42,7 @@ function AuxillaryVariables(domain::Domain{T}) where {T}
     ζⁿ⁺ᶜ² = FSVariable(domain)
     tmp = FSVariable(domain)
     rhs = FSVariable(domain)
-    return new{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
+    return AuxillaryVariables{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
 end
 
 struct WorkingVariables{T}
@@ -61,7 +61,7 @@ function WorkingVariables(
     size(fc_array) == size(domain.spectral) &&
         size(xsc_array) == size(xz_array) == size(domain.grid) ||
         throw(ArgumentError("arrays are not compatible size with `domain`"))
-    return AdvectionVariables{T}(
+    return WorkingVariables{T}(
         FCVariable(domain, fc_array),
         XCVariable(domain, xsc_array),
         XSVariable(domain, xsc_array),
@@ -80,14 +80,13 @@ struct Timestepper{T}
     cgs::ConjugateGradientSolver{T}
     𝓟::AbstractPreconditioner{T}
 
-
     function Timestepper(
         problem::Problem{T},
         h::T,
         𝓒::DIRKNCoefficients{T},
         cgs::ConjugateGradientSolver{T},
         𝓟::AbstractPreconditioner{T},
-    )
+    ) where {T}
         consistent_domains(problem, 𝓒, cgs, 𝓟) ||
             throw(ArgumentError("`problem`, `𝓒`, `cgs` and `𝓟` must have the same domain."))
 
@@ -104,13 +103,18 @@ struct Timestepper{T}
         𝓛! = SawyerEliassenOperator(problem, fsc_array, xsc_array, xz_array, 𝓛ζ_array)
         𝓛ᴵ! = ImplicitSawyerEliassenOperator(𝓒.a₁₁, h, 𝓛!)
         return new{T}(
-            problem, h, 𝓒, auxillary_variables, working_variables, 𝓛!, 𝓛ᴵ!, cgs, 𝓟,
+            problem, h, 𝓒, auxillary_variables, working_variables, 𝓛!, 𝓛ᴵ!, cgs, 𝓟
         )
     end
 end
 
 function Timestepper(
-    problem{T}, h::T; c=nothing, cg_max_iterations=nothing, cg_tol=nothing, 𝓟=nothing
+    problem::Problem{T},
+    h::T;
+    c=nothing,
+    cg_max_iterations=nothing,
+    cg_tol=nothing,
+    𝓟=nothing,
 ) where {T}
     domain = get_domain(problem)
     𝓒 = isnothing(c) ? DIRKNCoefficients(T) : DIRKNCoefficients(c)

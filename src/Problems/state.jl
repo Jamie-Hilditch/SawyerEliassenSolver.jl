@@ -1,3 +1,10 @@
+"""
+    $(TYPEDEF)
+
+Current simulation time and iteration.
+
+$(TYPEDFIELDS)
+"""
 mutable struct Clock{T}
     t::T
     iteration::Int
@@ -6,6 +13,13 @@ end
 """Default initialiser for Clock"""
 Clock(::T) where {T} = Clock{T}(zero(T), 0)
 
+"""
+    $(TYPEDEF)
+
+State variables of the problem.
+
+$(TYPEDFIELDS)
+"""
 struct State{T}
     ζ::FSVariable{T}
     ζₜ::FSVariable{T}
@@ -24,7 +38,7 @@ struct State{T}
     end
 end
 
-State(domain::Domain{T}) where {T} = State(domain, clock(T))
+State(domain::Domain{T}) where {T} = State(domain, Clock(T))
 
 @inline function update_clock!(clock::Clock{T}, h::T) where {T}
     clock.t += h
@@ -67,3 +81,5 @@ end
 function Base.summary(io::IO, clock::Clock)
     return print(io, "Clock(t = $(sfmt(clock.t)), iteration = $(clock.iteration))")
 end
+
+Domains.get_domain(state::State) = get_domain(state.ζ)

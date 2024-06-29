@@ -17,7 +17,7 @@ function test_physical_x_derivatives(FT)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
-        x_array = reshape(grid.x, :, 1)
+        x_array = xgridpoints(grid)
         expected_output = x_variable_type(domain)
         @. expected_output = derivative_of_trial_function(x_array)
 
@@ -69,7 +69,7 @@ function test_physical_x_second_derivatives(FT)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
-        x_array = reshape(grid.x, :, 1)
+        x_array = xgridpoints(grid)
         expected_output = x_variable_type(domain)
         @. expected_output = second_derivative_of_trial_function(x_array)
 
@@ -121,7 +121,7 @@ function test_physical_x_integrals(FT)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
-        x_array = reshape(grid.x, :, 1)
+        x_array = xgridpoints(domain)
         expected_output = x_variable_type(domain)
         @. expected_output = integral_of_trial_function(x_array)
 
@@ -173,7 +173,7 @@ function test_physical_x_second_integrals(FT)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
-        x_array = reshape(grid.x, :, 1)
+        x_array = xgridpoints(grid)
         expected_output = x_variable_type(domain)
         @. expected_output = second_integral_of_trial_function(x_array)
 

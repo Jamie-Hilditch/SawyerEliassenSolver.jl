@@ -53,7 +53,7 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = cgs.domain
     (; domain, p, q, z, max_iterations, tol) = cgs
     aᵢᵢ, h = 𝓛ᴵ!.aᵢᵢ, 𝓛ᴵ!.h
 
-    @boundscheck consistent_domains(domain, A, x, b, 𝓟) || throw(
+    @boundscheck consistent_domains(domain, 𝓛ᴵ!, x, b, 𝓟) || throw(
         ArgumentError("`cgs`, `𝓛ᴵ!`, `x`, `b` and `𝓟` must have the same domain.")
     )
 

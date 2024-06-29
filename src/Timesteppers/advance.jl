@@ -5,16 +5,18 @@ Advance the timestepper one timestep.
 """
 function advance!(ts::Timestepper)
     # unpack structs
-    (; problem, h, 𝓒, auxillary_variables, 𝓛, 𝓛ᴵ!, cgs, 𝓟, advection_variables) = ts
+    (; problem, h, 𝓒, auxillary_variables, working_variables, 𝓛, 𝓛ᴵ!, cgs, 𝓟) = ts
     (; a₁₁, a₂₁, a₂₂, b₁, b₂, b₁ᵗ, b₂ᵗ, c₁, c₂) = 𝓒
     (; ζ, ζₜ, v, b, clock) = problem.state
     (; f, Vx, Bx, Bz) = problem.background
-    ζ_forcing, v_forcing, b_forcing = problem.ζ_forcing, problem.v_forcing, problem.b_forcing
+    ζ_forcing, v_forcing, b_forcing = problem.ζ_forcing,
+    problem.v_forcing,
+    problem.b_forcing
     (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², rhs) = auxillary_variables
     (; FC, XC, XS, XZ) = working_variables
 
     # get forcing at n + c₁
-    @inbounds evaluate_ζ_forcing!(tmp, ζ_forcing, clock.t + c₁ * h, XS, XZ)
+    @inbounds evaluate_ζ_forcing!(ζ_forcing, tmp, clock.t + c₁ * h, XS, XZ)
     # construct rhs of implicit equation for ζⁿ⁺ᶜ¹
     @inbounds @. rhs = ζ + c₁ * h * ζₜ + a₁₁ * h^2 * tmp
     solve_implicit_equation(cgs, 𝓛ᴵ!, ζⁿ⁺ᶜ¹, rhs, 𝓟)
@@ -29,14 +31,14 @@ function advance!(ts::Timestepper)
     @inbounds @. ζₜ += b₁ᵗ * h * tmp
 
     # now we are done with Fⁿ⁺ᶜ¹ and can use tmp for 𝓛ζⁿ⁺ᶜ¹
-    @inbounds 𝓛(tmp,ζⁿ⁺ᶜ¹)
+    @inbounds 𝓛(tmp, ζⁿ⁺ᶜ¹)
     # add 𝓛ζⁿ⁺ᶜ¹ term to rhs and ζⁿ⁺¹, ζₜⁿ⁺¹
     @inbounds @. rhs -= a₂₁ * h^2 * tmp
     @inbounds @. ζ -= b₁ * h^2 * tmp
     @inbounds @. ζₜ -= b₁ᵗ * h * tmp
 
     # now we are done with 𝓛ζⁿ⁺ᶜ¹ and can use tmp for Fⁿ⁺ᶜ²
-    @inbounds evaluate_ζ_forcing!(tmp, ζ_forcing, clock.t + c₂ * h, XS, XZ)
+    @inbounds evaluate_ζ_forcing!(ζ_forcing, tmp, clock.t + c₂ * h, XS, XZ)
     # add the Fⁿ⁺ᶜ² terms to rhs, ζⁿ⁺¹ and ζₜⁿ⁺¹
     @inbounds @. rhs += a₂₂ * h^2 * tmp
     @inbounds @. ζ += b₂ * h^2 * tmp
@@ -46,7 +48,7 @@ function advance!(ts::Timestepper)
     solve_implicit_equation(cgs, 𝓛ᴵ!, ζⁿ⁺ᶜ², rhs, 𝓟)
 
     # now compute 𝓛ζⁿ⁺ᶜ² and add those terms to ζⁿ⁺¹ and ζₜⁿ⁺¹
-    @inbounds 𝓛(tmp,ζⁿ⁺ᶜ²)
+    @inbounds 𝓛(tmp, ζⁿ⁺ᶜ²)
     @inbounds @. ζ -= b₂ * h^2 * tmp
     @inbounds @. ζₜ -= b₂ᵗ * h * tmp
 
@@ -65,18 +67,18 @@ function advance!(ts::Timestepper)
     @inbounds ∇⁻²!(Ψ, Z)
 
     # form -U in physical space
-    @inbounds ∂z!(FC,ψ)
+    @inbounds ∂z!(FC, ψ)
     Tᴴ!(XC, FC)
-    Tᶜ!(XZ,XC)
+    Tᶜ!(XZ, XC)
 
     # update v and b with -U *(f + Vx) and -U * Bx
     @inbounds @. v += XZ * (f + Vx)
     @inbounds @. b += XZ * Bx
 
     # form W in physical space
-    @inbounds ∂x!(tmp,ψ)
-    Tᴴ!(XS,tmp)
-    Tˢ!(XZ,XS)
+    @inbounds ∂x!(tmp, ψ)
+    Tᴴ!(XS, tmp)
+    Tˢ!(XZ, XS)
 
     # update v and b with - W * Bx / f and - W * Bz
     @inbounds @. v -= XZ * Bx / f
@@ -95,5 +97,5 @@ function advance!(ts::Timestepper)
     @inbounds @. b += b₂ᵗ * h * XZ
 
     # finally update the clock
-    update_clock!(clock, h)
+    return update_clock!(clock, h)
 end

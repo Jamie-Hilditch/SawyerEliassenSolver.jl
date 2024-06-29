@@ -23,7 +23,7 @@ function test_z_derivatives_method_types()
 end
 
 function setup_input_XS(domain)
-    z_array = reshape(domain.grid.z, 1, :)
+    z_array = zgridpoints(domain)'
     input_XZ = XZVariable(domain)
     @. input_XZ = trial_function(z_array)
     return sine_transform(input_XZ)
@@ -32,7 +32,7 @@ end
 function test_sine_derivative(FT)
     grid = Grid(NX, NZ, one(FT), one(FT))
     domain = Domain(grid)
-    z_array = reshape(grid.z, 1, :)
+    z_array = zgridpoints(domain)'
 
     # expected output in physical x and z space
     expected_output = XZVariable(domain)

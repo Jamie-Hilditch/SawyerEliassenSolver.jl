@@ -44,6 +44,7 @@ struct BackgroundFlow{T}
     end
 end
 
+"""$(TYPEDSIGNATURES)"""
 BackgroundFlow(grid::Grid{T}) where {T} = BackgroundFlow(grid, one(T))
 
 """$(TYPEDSIGNATURES)"""
