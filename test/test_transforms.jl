@@ -96,9 +96,7 @@ end
     end
 end
 
-@testset "Cosine transforms" begin
-    for FT in float_types
-        @info "Testing cosine transforms with $(FT)"
-        test_cosine_transforms(FT)
-    end
+@testset "Cosine transforms" for FT in float_types
+    @info "Testing cosine transforms with $(FT)"
+    test_cosine_transforms(FT)
 end

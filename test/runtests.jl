@@ -12,6 +12,10 @@ float_types = (Float32, Float64)
     @testset "Code linting (JET.jl)" begin
         JET.test_package(SawyerEliassenSolver; target_defined_modules=true)
     end
+    @testset "Grid" begin
+        @info "Testing grids ..."
+        include("test_grid.jl")
+    end
     @testset "Variables" begin
         @info "Testing variables ..."
         include("test_variables.jl")
@@ -22,7 +26,11 @@ float_types = (Float32, Float64)
     end
     @testset "Operators" begin
         @info "Testing operators ..."
-        include("test_operators/test_x_derivatives_and_integrals.jl")
-        include("test_operators/test_sine_derivatives_and_integrals.jl")
+        @testset "x operators" begin
+            include("test_operators/test_x_derivatives_and_integrals.jl")
+        end
+        @testset "sine operators" begin
+            include("test_operators/test_sine_derivatives_and_integrals.jl")
+        end
     end
 end
