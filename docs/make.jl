@@ -20,12 +20,12 @@ example_pages = [
 ]
 
 library_pages = [
+    "SawyerEliassenSolver" => "library/SawyerEliassenSolver.md",
     "Domains" => "library/domains.md",
     "Variables" => "library/variables.md",
     "Problems" => "library/problems.md",
     "Forcing" => "library/forcing.md",
-    "Timesteppers" => "library/timesteppers.md",
-    "Internals" => "library/internals.md",
+    "Timesteppers" => "library/timesteppers.md"
 ]
 
 pages = [
