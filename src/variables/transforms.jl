@@ -82,6 +82,8 @@ end
 end
 
 # horizontal transformations creating the output variable
+"""Transform the variable from physical space to Fourier space or vice verse in the horizontal."""
+function horizontal_transform end
 horizontal_transform(in::XZVariable) = Tᴴ!(FZVariable(in.domain), in)
 horizontal_transform(in::XSVariable) = Tᴴ!(FSVariable(in.domain), in)
 horizontal_transform(in::XCVariable) = Tᴴ!(FCVariable(in.domain), in)
@@ -92,12 +94,16 @@ horizontal_transform!(out::FVariable, in::XVariable) = transform!(out, in)
 horizontal_transform!(out::XVariable, in::FVariable) = transform!(out, in)
 
 # sine transforms creating the output variable
+"""Transform the variable from physical space to sine space or vice verse in the vertical."""
+function sine_transform end
 sine_transform(in::XZVariable) = Tˢ!(XSVariable(in.domain), in)
 sine_transform(in::XSVariable) = Tˢ!(XZVariable(in.domain), in)
 sine_transform!(out::XSVariable, in::XZVariable) = transform!(out, in)
 sine_transform!(out::XZVariable, in::XSVariable) = transform!(out, in)
 
 # cosine transforms creating the output variable
+"""Transform the variable from physical space to cosine space or vice verse in the vertical."""
+function cosine_transform end
 cosine_transform(in::XZVariable) = Tᶜ!(XCVariable(in.domain), in)
 cosine_transform(in::XCVariable) = Tᶜ!(XZVariable(in.domain), in)
 cosine_transform!(out::XCVariable, in::XZVariable) = transform!(out, in)

@@ -1,4 +1,11 @@
+"""
+    $(TYPEDEF)
 
+A struct representing a Sawyer-Eliassen problem.
+
+# Fields
+$(TYPEDFIELDS)
+"""
 struct Problem{T}
     domain::Domain{T}
     background::BackgroundFlow{T}

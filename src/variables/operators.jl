@@ -22,6 +22,8 @@ function ∫dz end
 function ∫dz²! end
 """Document me!"""
 function ∫dz² end
+"""Document me!"""
+function ∇⁻²! end
 
 ###################
 ## X derivatives ##
@@ -207,7 +209,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 0] = 0
+    @inbounds @. out[:, 1] = 0
     @inbounds @. out[:, 2:(CNZ + 1)] = -kz^2 * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
@@ -316,7 +318,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 0] = 0
+    @inbounds @. out[:, 1] = 0
     @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz^2 * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing

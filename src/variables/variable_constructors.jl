@@ -30,6 +30,7 @@ Base.elsize(::AbstractVariable{T}) where {T} = Base.elsize(Matrix{T})
 Base.eltype(::AbstractVariable{T}) where {T} = T
 Base.pointer(v::AbstractVariable) = pointer(parent(v))
 
+"""A variable expressed in physical space in the horizontal and vertical."""
 struct XZVariable{T} <: AbstractVariable{T}
     domain::Domain{T}
     data::Matrix{T}
@@ -39,6 +40,7 @@ struct XZVariable{T} <: AbstractVariable{T}
     end
 end
 
+"""A variable expressed in physical space in the horizontal and sine space in the vertical."""
 struct XSVariable{T} <: AbstractVariable{T}
     domain::Domain{T}
     data::Matrix{T}
@@ -48,6 +50,7 @@ struct XSVariable{T} <: AbstractVariable{T}
     end
 end
 
+"""A variable expressed in physical space in the horizontal and cosine space in the vertical."""
 struct XCVariable{T} <: AbstractVariable{T}
     domain::Domain{T}
     data::Matrix{T}
@@ -57,6 +60,7 @@ struct XCVariable{T} <: AbstractVariable{T}
     end
 end
 
+"""A variable expressed in Fourier space in the horizontal and physical space in the vertical."""
 struct FZVariable{T} <: AbstractVariable{Complex{T}}
     domain::Domain{T}
     data::Matrix{Complex{T}}
@@ -66,6 +70,7 @@ struct FZVariable{T} <: AbstractVariable{Complex{T}}
     end
 end
 
+"""A variable expressed in Fourier space in the horizontal and sine space in the vertical."""
 struct FSVariable{T} <: AbstractVariable{Complex{T}}
     domain::Domain{T}
     data::Matrix{Complex{T}}
@@ -75,6 +80,7 @@ struct FSVariable{T} <: AbstractVariable{Complex{T}}
     end
 end
 
+"""A variable expressed in Fourier space in the horizontal and cosine space in the vertical."""
 struct FCVariable{T} <: AbstractVariable{Complex{T}}
     domain::Domain{T}
     data::Matrix{Complex{T}}
@@ -84,7 +90,9 @@ struct FCVariable{T} <: AbstractVariable{Complex{T}}
     end
 end
 
+"""Union of types for variables expressed in physical space in the horizontal."""
 XVariable{T} = Union{XZVariable{T},XSVariable{T},XCVariable{T}} where {T}
+"""Union of types for variables expressed in Fourier space in the horizontal."""
 FVariable{T} = Union{FZVariable{T},FSVariable{T},FCVariable{T}} where {T}
 
 # validate arrays are correct size

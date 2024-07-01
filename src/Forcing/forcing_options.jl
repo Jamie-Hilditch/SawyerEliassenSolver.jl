@@ -1,6 +1,8 @@
 
+"""Abstract super type for all forcings."""
 abstract type AbstractForcingFunction{T} end
 
+"""Type representing no forcing."""
 struct NoForcing{T} <: AbstractForcingFunction{T}
     domain::Domain{T}
 end
@@ -70,12 +72,14 @@ struct GlobalSpectralForcing{T,P} <: AbstractForcingFunction{T}
     params::P
 end
 
+"""Union of types representing forcing in physical (XZ) space."""
 PhysicalForcing{T} =
     Union{PointwisePhysicalForcing{T,P},GlobalPhysicalForcing{T,Q}} where {T,P,Q}
+"""Union of types representing forcing in spectral (FS) space."""
 SpectralForcing{T} =
     Union{PointwiseSpectralForcing{T,P},GlobalSpectralForcing{T,Q}} where {T,P,Q}
 
-get_domain(F::AbstractForcingFunction) = F.domain
+Domains.get_domain(F::AbstractForcingFunction) = F.domain
 
 @inline function evaluate_physical_forcing(
     ::NoForcing{T}, XZ::XZVariable{T}, t::T

@@ -1,13 +1,3 @@
-using DocStringExtensions
-
-"""
-`SawyerEliassenSolver.jl` -- Solve the Sawyer-Eliassen equation using a pseudo-spectral
-discretisation and 3rd order accurate implicit timestepping for arbitrary balanced
-background flows.
-
-# Exports
-$(EXPORTS)
-"""
 module SawyerEliassenSolver
 
 using DocStringExtensions
@@ -30,11 +20,16 @@ include("Timesteppers/Timesteppers.jl")
 @reexport using .Problems
 @reexport using .Timesteppers
 
-# include("background.jl")
-# include("problem.jl")
-# include("timestepper.jl")
+# add a module docstring.
+# N.B. to use DocStringExtensions .e. $(EXPORTS) we need to define the docstring inside the module.
 
-# submodules
-# include("Tools/Tools.jl")
+"""
+`SawyerEliassenSolver.jl` -- Solve the Sawyer-Eliassen equation using a pseudo-spectral
+discretisation and 3rd order accurate implicit timestepping for arbitrary balanced
+background flows.
 
+# Exports
+$(EXPORTS)
+"""
+SawyerEliassenSolver
 end

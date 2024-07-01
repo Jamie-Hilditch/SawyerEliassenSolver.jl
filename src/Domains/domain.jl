@@ -56,10 +56,14 @@ zwavenumbers(domain::Domain) = zwavenumbers(domain.spectral)
 """
 wavenumbers(domain::Domain) = wavenumbers(domain.spectral)
 
+"""Get the domain this object is defined over."""
 function get_domain end
 
 get_domain(domain::Domain) = domain
 
+"""$(TYPEDSIGNATURES)
+Check that these variables have the same domain.
+"""
 @inline consistent_domains(A...) = isempty(A) || mapreduce(get_domain, ==, A)
 
 xgridpoints(x) = xgridpoints(get_domain(x))

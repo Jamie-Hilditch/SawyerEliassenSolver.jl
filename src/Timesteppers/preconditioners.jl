@@ -1,3 +1,4 @@
+"""Abstract supertype for conjugate gradient preconditioners."""
 abstract type AbstractPreconditioner{T} end
 
 @inline function apply_preconditioner!(
