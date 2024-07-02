@@ -29,3 +29,7 @@ function Base.show(io::IO, ::MIME"text/plain", transforms::Transforms)
         "  └─── cosine: $(summary(transforms.cosine))\n",
     )
 end
+
+function Base.summary(io::IO, ::Transforms)
+    return print(io, "FFTW transforms: rfft, type II DST and type II DCT.")
+end

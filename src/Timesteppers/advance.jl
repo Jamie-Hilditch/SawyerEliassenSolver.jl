@@ -99,3 +99,9 @@ function advance!(ts::Timestepper)
     # finally update the clock
     return update_clock!(clock, h)
 end
+
+function advance!(ts::Timestepper, n::Integer)
+    for _ in 1:n
+        advance!(ts)
+    end
+end

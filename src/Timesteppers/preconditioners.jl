@@ -21,6 +21,9 @@ The output `z` should be updated in-place and the input `r` must not be modified
 """
 function solve_preconditioner_equation! end
 
+"""$(TYPEDEF)
+The default preconditioner for the conjugate gradient algorithm which does nothing.
+"""
 struct IdentityPreconditioner{T} <: AbstractPreconditioner{T}
     domain::Domain{T}
 end

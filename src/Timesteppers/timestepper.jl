@@ -69,6 +69,9 @@ function WorkingVariables(
     )
 end
 
+"""$(TYPEDEF)
+Object that stores all the variables and operators required to advance a problem one timestep.
+"""
 struct Timestepper{T}
     problem::Problem{T}
     h::T
@@ -87,8 +90,8 @@ struct Timestepper{T}
         cgs::ConjugateGradientSolver{T},
         𝓟::AbstractPreconditioner{T},
     ) where {T}
-        consistent_domains(problem, 𝓒, cgs, 𝓟) ||
-            throw(ArgumentError("`problem`, `𝓒`, `cgs` and `𝓟` must have the same domain."))
+        consistent_domains(problem, cgs, 𝓟) ||
+            throw(ArgumentError("`problem`, `cgs` and `𝓟` must have the same domain."))
 
         domain = get_domain(problem)
         auxillary_variables = AuxillaryVariables(domain)
@@ -100,8 +103,9 @@ struct Timestepper{T}
         𝓛ζ_array = zeros(T, size(domain.grid))
 
         working_variables = WorkingVariables(domain, fsc_array, xsc_array, xz_array)
-        𝓛! = SawyerEliassenOperator(problem, fsc_array, xsc_array, xz_array, 𝓛ζ_array)
-        𝓛ᴵ! = ImplicitSawyerEliassenOperator(𝓒.a₁₁, h, 𝓛!)
+        𝓛! = SawyerEliassenOperator!(problem, fsc_array, xsc_array, xz_array, 𝓛ζ_array)
+        𝓛ᴵ! = ImplicitSawyerEliassenOperator!(𝓒.a₁₁, h, 𝓛!)
+
         return new{T}(
             problem, h, 𝓒, auxillary_variables, working_variables, 𝓛!, 𝓛ᴵ!, cgs, 𝓟
         )
@@ -123,4 +127,20 @@ function Timestepper(
         𝓟 = IdentityPreconditioner(domain)
     end
     return Timestepper(problem, h, 𝓒, cgs, 𝓟)
+end
+
+function Base.show(io::IO, ::MIME"text/plain", ts::Timestepper)
+    return print(
+        io,
+        "Problem:\n",
+        "  ├───────── problem: $(summary(ts.problem))\n",
+        "  ├──────── timestep: h = $(sfmt(ts.h))\n",
+        "  ├─────────────── 𝓒: $(summary(ts.𝓒))\n",
+        "  ├───────────── cgs: $(summary(ts.cgs))\n",
+        "  └─────────────── 𝓟: $(summary(ts.𝓟))\n",
+    )
+end
+
+function Base.summary(io::IO, ts::Timestepper)
+    return print(io, "Timestepper with timestep $(sfmt(ts.h))")
 end

@@ -10,7 +10,7 @@ struct SawyerEliassenOperator!{T}
 end
 
 """Construct 𝓛!"""
-function SawyerEliassenOperator!{T}(
+function SawyerEliassenOperator!(
     problem::Problem{T},
     fsc_array::Matrix{Complex{T}},
     xsc_array::Matrix{T},
@@ -21,7 +21,7 @@ function SawyerEliassenOperator!{T}(
     size(fsc_array) == size(domain.spectral) &&
         size(xsc_array) == size(xz_array) == size(𝓛ζ_array) == size(domain.grid) ||
         throw(ArgumentError("arrays are not compatible size with `domain`"))
-    return new{T}(
+    return SawyerEliassenOperator!{T}(
         problem,
         FSVariable(domain, fsc_array),
         XSVariable(domain, xsc_array),

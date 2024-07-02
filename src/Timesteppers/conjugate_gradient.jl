@@ -67,13 +67,14 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = cgs.domain
     @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢ, h) # Mz₀ = r₀
     @inbounds @. p = z # p₀ = z₀
 
-    for _ in 1:max_iterations
+    for k in 1:max_iterations
         @inbounds 𝓛ᴵ!(q, p) # qₖ = Apₖ
         s = r ⋅ z # s = rₖᵀzₖ
         α = s / (p ⋅ q) # αₖ = rₖᵀzₖ / pₖᵀApₖ = s / pₖᵀqₖ
         @inbounds @. x += α * p # xₖ₊₁ = xₖ + αₖpₖ
         @inbounds @. r -= α * q # rₖ₊₁ = rₖ - αₖApₖ = rₖ - αₖqₖ
         if real(r ⋅ r) < condition # rₖ₊₁ᵀrₖ₊₁ < tol * bᵀb
+            @debug "Conjugate gradient algorithm completed in $(k) iterations"
             return nothing
         end
         @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢ, h) # Mzₖ₊₁ = rₖ₊₁

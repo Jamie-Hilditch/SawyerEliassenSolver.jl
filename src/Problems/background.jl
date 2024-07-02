@@ -67,5 +67,7 @@ end
 
 """$(TYPEDSIGNATURES)"""
 function Base.summary(io::IO, bg::BackgroundFlow)
-    return print(io, "BackgroundFlow: f = $(sfmt(bg.f)), Vx,Bx,Bz = $(summary(bg.Vx))")
+    return print(
+        io, "BackgroundFlow with f = $(sfmt(bg.f)) and Vx,Bx,Bz = $(summary(bg.Vx))"
+    )
 end

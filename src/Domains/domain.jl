@@ -56,6 +56,22 @@ zwavenumbers(domain::Domain) = zwavenumbers(domain.spectral)
 """
 wavenumbers(domain::Domain) = wavenumbers(domain.spectral)
 
+function Base.show(io::IO, ::MIME"text/plain", domain::Domain)
+    return print(
+        io,
+        "Domain:\n",
+        "  ├─────────── grid: $(summary(domain.grid))\n",
+        "  ├─────── spectral: $(summary(domain.spectral))\n",
+        "  └───── transforms: $(summary(domain.transforms))\n",
+    )
+end
+
+function Base.summary(io::IO, domain::Domain)
+    return print(
+        io, "Domain with eltype $(eltype(domain)) and physical size $(size(domain))"
+    )
+end
+
 """Get the domain this object is defined over."""
 function get_domain end
 
@@ -64,7 +80,7 @@ get_domain(domain::Domain) = domain
 """$(TYPEDSIGNATURES)
 Check that these variables have the same domain.
 """
-@inline consistent_domains(A...) = isempty(A) || mapreduce(get_domain, ==, A)
+@inline consistent_domains(A...) = isempty(A) || allequal(map(get_domain, A))
 
 xgridpoints(x) = xgridpoints(get_domain(x))
 zgridpoints(x) = zgridpoints(get_domain(x))

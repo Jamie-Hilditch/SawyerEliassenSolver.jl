@@ -11,7 +11,7 @@ mutable struct Clock{T}
 end
 
 """Default initialiser for Clock"""
-Clock(::T) where {T} = Clock{T}(zero(T), 0)
+Clock{T}() where {T} = Clock{T}(0, 0)
 
 """
     $(TYPEDEF)
@@ -38,7 +38,7 @@ struct State{T}
     end
 end
 
-State(domain::Domain{T}) where {T} = State(domain, Clock(T))
+State(domain::Domain{T}) where {T} = State(domain, Clock{T}())
 
 @inline function update_clock!(clock::Clock{T}, h::T) where {T}
     clock.t += h
@@ -74,7 +74,7 @@ end
 function Base.summary(io::IO, state::State)
     return print(
         io,
-        "State:  ζ,ζₜ = $(summary(state.ζ)), v,b = $(summary(state.v)), clock = $(summary(state.clock))",
+        "ζ,ζₜ = $(summary(state.ζ)), v,b = $(summary(state.v)), clock = $(summary(state.clock))",
     )
 end
 

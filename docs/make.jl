@@ -1,31 +1,46 @@
 using SawyerEliassenSolver
 using Documenter
 using DocumenterCitations
+using Literate
 
 #metadata
 DocMeta.setdocmeta!(
     SawyerEliassenSolver, :DocTestSetup, :(using SawyerEliassenSolver); recursive=true
 )
 
-# pages
+##  pages
+
+# theory
 sawyer_eliassen_pages = [
     "Theory" => "Sawyer-Eliassen equation/theory.md",
     "Numerics" => "Sawyer-Eliassen equation/numerics.md",
 ]
 
-example_pages = [
-    "Barotropic NIWs" => "examples/barotropic_niws.md",
-    "Variably Stratified Frontal Zone" => "examples/variably_stratified_frontal_zone.md",
-    "Baroclinic Vorticity Filament" => "examples/baroclinic_vorticity_filament.md",
-]
+# examples
+const EXAMPLES_DIR = joinpath(@__DIR__, "..", "examples")
+const OUTPUT_DIR = joinpath(@__DIR__, "src/literated")
 
+example_scripts = ["Near-inertial waves" => "near-inertial_waves.jl"]
+
+example_pages = map(example_scripts) do example
+    name = first(example)
+    script = last(example)
+    example_filepath = joinpath(EXAMPLES_DIR, script)
+    Literate.markdown(
+        example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
+    )
+    page_name = replace(script, ".jl" => ".md")
+    name => joinpath("literated", page_name)
+end
+
+# library
 library_pages = [
     "SawyerEliassenSolver" => "library/SawyerEliassenSolver.md",
     "Domains" => "library/domains.md",
     "Variables" => "library/variables.md",
-    "Problems" => "library/problems.md",
     "Forcing" => "library/forcing.md",
-    "Timesteppers" => "library/timesteppers.md"
+    "Problems" => "library/problems.md",
+    "Timesteppers" => "library/timesteppers.md",
 ]
 
 pages = [

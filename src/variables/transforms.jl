@@ -76,7 +76,7 @@ end
 
 """Safe transforms with domain validation for public use."""
 @inline function transform!(out::AbstractVariable, in::AbstractVariable)
-    in.domain === out.domain || error("in and out must have the same domain")
+    consistent_domains(out, in) || error("in and out must have the same domain")
     _transform!(out, in)
     return nothing
 end
@@ -90,21 +90,29 @@ horizontal_transform(in::XCVariable) = Tᴴ!(FCVariable(in.domain), in)
 horizontal_transform(in::FZVariable) = Tᴴ!(XZVariable(in.domain), in)
 horizontal_transform(in::FSVariable) = Tᴴ!(XSVariable(in.domain), in)
 horizontal_transform(in::FCVariable) = Tᴴ!(XCVariable(in.domain), in)
-horizontal_transform!(out::FVariable, in::XVariable) = transform!(out, in)
-horizontal_transform!(out::XVariable, in::FVariable) = transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds horizontal_transform!(out::FVariable, in::XVariable) =
+    transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds horizontal_transform!(out::XVariable, in::FVariable) =
+    transform!(out, in)
 
 # sine transforms creating the output variable
 """Transform the variable from physical space to sine space or vice verse in the vertical."""
 function sine_transform end
 sine_transform(in::XZVariable) = Tˢ!(XSVariable(in.domain), in)
 sine_transform(in::XSVariable) = Tˢ!(XZVariable(in.domain), in)
-sine_transform!(out::XSVariable, in::XZVariable) = transform!(out, in)
-sine_transform!(out::XZVariable, in::XSVariable) = transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds sine_transform!(out::XSVariable, in::XZVariable) = transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds sine_transform!(out::XZVariable, in::XSVariable) = transform!(out, in)
 
 # cosine transforms creating the output variable
 """Transform the variable from physical space to cosine space or vice verse in the vertical."""
 function cosine_transform end
 cosine_transform(in::XZVariable) = Tᶜ!(XCVariable(in.domain), in)
 cosine_transform(in::XCVariable) = Tᶜ!(XZVariable(in.domain), in)
-cosine_transform!(out::XCVariable, in::XZVariable) = transform!(out, in)
-cosine_transform!(out::XZVariable, in::XCVariable) = transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds cosine_transform!(out::XCVariable, in::XZVariable) = transform!(out, in)
+"""$(TYPEDSIGNATURES)"""
+@propagate_inbounds cosine_transform!(out::XZVariable, in::XCVariable) = transform!(out, in)

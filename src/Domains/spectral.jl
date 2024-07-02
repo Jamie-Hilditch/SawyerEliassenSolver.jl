@@ -21,6 +21,13 @@ end
 Base.eltype(::Spectral{T}) where {T} = T
 Base.size(spectral::Spectral) = (spectral.SX, spectral.NZ)
 
+function Base.summary(io::IO, spectral::Spectral)
+    return print(
+        io,
+        "Spectral domain of size $(size(spectral)) and spectral resolution $((spectral.CNX,spectral.CNZ))",
+    )
+end
+
 @inline xwavenumbers(spectral::Spectral) = spectral.Δkx * UnitRange(0, spectral.CNX - 1)
 @inline zwavenumbers(spectral::Spectral) = spectral.Δkz * UnitRange(1, spectral.CNZ)
 @inline function wavenumbers(spectral::Spectral)
