@@ -61,7 +61,9 @@ problem = Problem(domain, background_flow)
 # ```
 
 ω(k, m) = √(f^2 * m^2 + N² * k^2) / √(k^2 + m^2)
-u(x, z, t, W) = -W.m * W.a * cos(W.k * x - ω(W.k, W.m) * t + W.φ) * cos(W.m * z)
+function u(x, z, t, W)
+    return -W.m * W.a * cos(W.k * x - ω(W.k, W.m) * t + W.φ) * cos(W.m * z)
+end
 function v(x, z, t, W)
     return -(f / ω(W.k, W.m)) *
            W.m *
@@ -69,7 +71,9 @@ function v(x, z, t, W)
            sin(W.k * x - ω(W.k, W.m) * t + W.φ) *
            cos(W.m * z)
 end
-w(x, z, t, W) = -W.k * W.a * sin(W.k * x - ω(W.k, W.m) * t + W.φ) * sin(W.m * z)
+function w(x, z, t, W)
+    return -W.k * W.a * sin(W.k * x - ω(W.k, W.m) * t + W.φ) * sin(W.m * z)
+end
 function b(x, z, t, W)
     return -N² / ω(W.k, W.m) *
            W.k *
@@ -97,3 +101,14 @@ set_vb!(problem; v=v₀, b=b₀)
 # Note that `set_vb!` also sets the state variable `ζₜ` using ``\zeta_t = b_x - fv_z``.
 # The functions `set_v!` and `set_b!` can be used to set `v` and `b` separately without computing `ζₜ`.
 # Furthermore, with `v` and `b` specified the function `compute_ζₜ!` can be used to compute and set `ζₜ`.
+
+# ## Timestepper
+# The next step is to create a timestepper. We use a timestep of `Δt = 2πf⁻¹/100`.
+
+Δt = 2π / f / 100
+ts = Timestepper(problem,Δt)
+
+# ## Running the simulation
+# We can now run the simulation for 1000 timesteps.
+
+advance!(ts, 1000)

@@ -47,24 +47,24 @@ end
     # first compute ψ in xs with the inverse Laplacian, we can store this in the output array
     @inbounds ∇⁻²!(out, in)
 
-    # first term is - Bz * ψxx
+    # first term is Bz * ψxx
     @inbounds ∂x!(fs_tmp, out, 2) # ψxx in fs
     Tᴴ!(xs_tmp, fs_tmp) # ψxx in xs
     Tˢ!(xz_tmp, xs_tmp) # ψxx in xz
-    @inbounds @. 𝓛ζ = -Bz * xz_tmp
+    @inbounds @. 𝓛ζ = Bz * xz_tmp
 
-    # second term is  2 * Bx * ψxz
+    # second term is  -2 * Bx * ψxz
     @inbounds ∂z!(fc_tmp, out) # ψz in fc
     ∂x!(fc_tmp) # ψxz in fc
     Tᴴ!(xc_tmp, fc_tmp) # ψxz in xc
     Tᶜ!(xz_tmp, xc_tmp) # ψxz in xz
-    @inbounds @. 𝓛ζ += 2 * Bx * xz_tmp
+    @inbounds @. 𝓛ζ -= 2 * Bx * xz_tmp
 
-    # third term is - f * (f + Vx) * ψzz
+    # third term is f * (f + Vx) * ψzz
     ∂z²!(out) # ψzz in fs, we don't need ψ again so do this inplace
     Tᴴ!(xs_tmp, out) # ψzz in xs
     Tˢ!(xz_tmp, xs_tmp) # ψzz in xz
-    @inbounds @. 𝓛ζ -= f * (f + Vx) * xz_tmp
+    @inbounds @. 𝓛ζ += f * (f + Vx) * xz_tmp
 
     # now transform back to xs
     Tˢ!(xs_tmp, 𝓛ζ)
@@ -79,14 +79,17 @@ end
 struct ImplicitSawyerEliassenOperator!{T}
     aᵢᵢ::T
     h::T
-    𝓛::SawyerEliassenOperator!{T}
+    𝓛!::SawyerEliassenOperator!{T}
 end
 
-@propagate_inbounds function (𝓛ᴵ::ImplicitSawyerEliassenOperator!{T})(
+@propagate_inbounds function (𝓛ᴵ!::ImplicitSawyerEliassenOperator!{T})(
     out::FSVariable{T}, in::FSVariable{T}
 ) where {T}
-    (; aᵢᵢ, h, 𝓛) = 𝓛ᴵ
-    return 1 + aᵢᵢ * h^2 * 𝓛(out, in)
+    (; aᵢᵢ, h, 𝓛!) = 𝓛ᴵ!
+    𝓛!(out, in)
+    @inbounds out .*= aᵢᵢ * h^2
+    @inbounds out .+= in
+    return nothing
 end
 
-@inline Domains.get_domain(𝓛ᴵ::ImplicitSawyerEliassenOperator!) = get_domain(𝓛ᴵ.𝓛)
+@inline Domains.get_domain(𝓛ᴵ!::ImplicitSawyerEliassenOperator!) = get_domain(𝓛ᴵ!.𝓛!)

@@ -81,14 +81,14 @@ SpectralForcing{T} =
 
 Domains.get_domain(F::AbstractForcingFunction) = F.domain
 
-@inline function evaluate_physical_forcing(
+@inline function evaluate_physical_forcing!(
     ::NoForcing{T}, XZ::XZVariable{T}, t::T
 ) where {T}
     @. XZ = 0
     return nothing
 end
 
-@inline function evaluate_physical_forcing(
+@inline function evaluate_physical_forcing!(
     F::PointwisePhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
 ) where {T,P}
     @boundscheck consistent_domains(F, XZ) ||
@@ -99,7 +99,7 @@ end
     return nothing
 end
 
-@inline function evaluate_physical_forcing(
+@inline function evaluate_physical_forcing!(
     F::GlobalPhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
 ) where {T,P}
     @boundscheck consistent_domains(F, XZ) ||
@@ -108,14 +108,14 @@ end
     return nothing
 end
 
-@inline function evaluate_ζ_forcing(
+@inline function evaluate_ζ_forcing!(
     ::NoForcing, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
 ) where {T}
     @. out = 0
     return nothing
 end
 
-@inline function evaluate_ζ_forcing(
+@inline function evaluate_ζ_forcing!(
     F::PointwiseSpectralForcing{T,P},
     out::FSVariable{T},
     t::T,
@@ -130,7 +130,7 @@ end
     return nothing
 end
 
-@inline function evaluate_ζ_forcing(
+@inline function evaluate_ζ_forcing!(
     F::GlobalSpectralForcing{T,P}, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
 ) where {T,P}
     @boundscheck consistent_domains(F, out) ||
@@ -139,7 +139,7 @@ end
     return nothing
 end
 
-@inline function evaluate_ζ_forcing(
+@inline function evaluate_ζ_forcing!(
     F::PhysicalForcing{T}, out::FSVariable{T}, t::T, XS::XSVariable, XZ::XZVariable
 ) where {T}
     @boundscheck consistent_domains(F, out, XS, XZ) ||
