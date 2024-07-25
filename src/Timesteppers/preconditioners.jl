@@ -2,17 +2,17 @@
 abstract type AbstractPreconditioner{T} end
 
 @inline function apply_preconditioner!(
-    P::AbstractPreconditioner{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢ::T, h::T
+    P::AbstractPreconditioner{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢh²::T
 ) where {T}
     @boundscheck consistent_domains(P, out, in) ||
         throw(ArgumentError("`P`, `out` and `in` must have the same domains."))
-    @inbounds solve_preconditioner_equation!(P, out, in, aᵢᵢ, h)
+    @inbounds solve_preconditioner_equation!(P, out, in, aᵢᵢh²)
 end
 
 Domains.get_domain(P::AbstractPreconditioner) = P.domain
 
 """
-`solve_preconditioner_equation(P::AbstractPreconditioner{T}, z::FSVariable{T}, r::FSVariable{T}, aᵢᵢ::T, h::T)::Nothing where {T}`
+`solve_preconditioner_equation(P::AbstractPreconditioner{T}, z::FSVariable{T}, r::FSVariable{T}, aᵢᵢh²::T)::Nothing where {T}`
 
 Function that solves the preconditioner equation `Mz = r` where `M ≈ I + aᵢᵢ h² 𝓛`.
 User defined preconditioners must implement this function with the given signature.
@@ -29,7 +29,7 @@ struct IdentityPreconditioner{T} <: AbstractPreconditioner{T}
 end
 
 @inline function solve_preconditioner_equation!(
-    ::IdentityPreconditioner{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢ::T, h::T
+    ::IdentityPreconditioner{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢh²::T
 ) where {T}
     @inbounds out .= in
     return nothing
@@ -54,8 +54,7 @@ end
     P::DiagonalQuadraticPreconditioner{T},
     out::FSVariable{T},
     in::FSVariable{T},
-    aᵢᵢ::T,
-    h::T,
+    aᵢᵢh²::T,
 ) where {T}
     (; domain, ω₀², ω₁²) = P
     CNX = domain.spectral.CNX
@@ -63,7 +62,7 @@ end
     kx = domain.spectral.kx
     kz = domain.kz
     @inbounds @. out[1:CNX, 1:CNZ] =
-        in[1:CNX, 1:CNZ] / (1 + aᵢᵢ * h^2 * (ω₀² * kx^2 + ω₁² * kz^2) / (kx^2 + kz^2))
+        in[1:CNX, 1:CNZ] / (1 + aᵢᵢh² * (ω₀² * kx^2 + ω₁² * kz^2) / (kx^2 + kz^2))
     @inbounds @. out[(CNX + 1):end, :] = 0
     @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
     return nothing

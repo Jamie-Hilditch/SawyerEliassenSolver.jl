@@ -45,29 +45,7 @@ function AuxillaryVariables(domain::Domain{T}) where {T}
     return AuxillaryVariables{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
 end
 
-struct WorkingVariables{T}
-    FC::FCVariable{T}
-    XC::XCVariable{T}
-    XS::XSVariable{T}
-    XZ::XZVariable{T}
-end
 
-function WorkingVariables(
-    domain::Domain{T},
-    fc_array::Matrix{Complex{T}},
-    xsc_array::Matrix{T},
-    xz_array::Matrix{T},
-) where {T}
-    size(fc_array) == size(domain.spectral) &&
-        size(xsc_array) == size(xz_array) == size(domain.grid) ||
-        throw(ArgumentError("arrays are not compatible size with `domain`"))
-    return WorkingVariables{T}(
-        FCVariable(domain, fc_array),
-        XCVariable(domain, xsc_array),
-        XSVariable(domain, xsc_array),
-        XZVariable(domain, xz_array),
-    )
-end
 
 """$(TYPEDEF)
 Object that stores all the variables and operators required to advance a problem one timestep.
@@ -77,9 +55,6 @@ struct Timestepper{T}
     h::T
     𝓒::DIRKNCoefficients{T}
     auxillary_variables::AuxillaryVariables{T}
-    working_variables::WorkingVariables{T}
-    𝓛!::SawyerEliassenOperator!{T}
-    𝓛ᴵ!::ImplicitSawyerEliassenOperator!{T}
     cgs::ConjugateGradientSolver{T}
     𝓟::AbstractPreconditioner{T}
 
@@ -96,19 +71,7 @@ struct Timestepper{T}
         domain = get_domain(problem)
         auxillary_variables = AuxillaryVariables(domain)
 
-        # create working arrays for working_variable and 𝓛!
-        fsc_array = zeros(Complex{T}, size(domain.spectral))
-        xsc_array = zeros(T, size(domain.grid))
-        xz_array = zeros(T, size(domain.grid))
-        𝓛ζ_array = zeros(T, size(domain.grid))
-
-        working_variables = WorkingVariables(domain, fsc_array, xsc_array, xz_array)
-        𝓛! = SawyerEliassenOperator!(problem, fsc_array, xsc_array, xz_array, 𝓛ζ_array)
-        𝓛ᴵ! = ImplicitSawyerEliassenOperator!(𝓒.a₁₁, h, 𝓛!)
-
-        return new{T}(
-            problem, h, 𝓒, auxillary_variables, working_variables, 𝓛!, 𝓛ᴵ!, cgs, 𝓟
-        )
+        return new{T}(problem, h, 𝓒, auxillary_variables, cgs, 𝓟)
     end
 end
 
@@ -120,10 +83,11 @@ function Timestepper(
     cg_tol=nothing,
     𝓟=nothing,
 ) where {T}
-    domain = get_domain(problem)
     𝓒 = isnothing(c) ? DIRKNCoefficients(T) : DIRKNCoefficients(c)
-    cgs = ConjugateGradientSolver(domain, cg_max_iterations, cg_tol)
+    aᵢᵢh² = 𝓒.a₁₁ * h^2
+    cgs = ConjugateGradientSolver(problem, aᵢᵢh², cg_max_iterations, cg_tol)
     if isnothing(𝓟)
+        domain = get_domain(problem)
         𝓟 = IdentityPreconditioner(domain)
     end
     return Timestepper(problem, h, 𝓒, cgs, 𝓟)

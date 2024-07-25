@@ -1,65 +1,67 @@
 const CG_TOL_DEFAULT::Float64 = 10^-10 #10^-5
 
 struct ConjugateGradientSolver{T}
-    domain::Domain{T}
+    problem::Problem{T}
     p::FSVariable{T}
     q::FSVariable{T}
     r::FSVariable{T}
     z::FSVariable{T}
+    aᵢᵢh²::T
     max_iterations::Int
     tol::T
 
     function ConjugateGradientSolver(
-        domain::Domain{T}, max_iterations::Int, cg_tol::T
+        problem::Problem{T}, aᵢᵢh²::T, max_iterations::Int, cg_tol::T
     ) where {T}
         cg_tol > 0 || throw(DomainError(cg_tol, "tolerance must be positive"))
+        domain = get_domain(problem)
         return new{T}(
-            domain,
+            problem,
             FSVariable(domain),
             FSVariable(domain),
             FSVariable(domain),
             FSVariable(domain),
+            aᵢᵢh²,
             max_iterations,
             cg_tol,
         )
     end
 end
 
-function ConjugateGradientSolver(domain::Domain{T}, ::Nothing, cg_tol::T) where {T}
+function ConjugateGradientSolver(problem::Problem{T}, aᵢᵢh²::T, ::Nothing, cg_tol::T) where {T}
     # without roundoff error the conjugate gradient method converges in at most n iterations
     # where n is the dimension of the problem
+    domain = get_domain(problem)
     max_iterations_default = prod(size(domain.spectral))
-    return ConjugateGradientSolver(domain, max_iterations_default, cg_tol)
+    return ConjugateGradientSolver(problem, aᵢᵢh², max_iterations_default, cg_tol)
 end
 
 function ConjugateGradientSolver(
-    domain::Domain{T}, max_iterations::Int, ::Nothing
+    problem::Problem{T}, aᵢᵢh²::T, max_iterations::Int, ::Nothing
 ) where {T}
-    return ConjugateGradientSolver(domain, max_iterations, convert(T, CG_TOL_DEFAULT))
+    return ConjugateGradientSolver(problem, aᵢᵢh², max_iterations, convert(T, CG_TOL_DEFAULT))
 end
 
-function ConjugateGradientSolver(domain::Domain{T}, ::Nothing, ::Nothing) where {T}
+function ConjugateGradientSolver(problem::Problem{T}, aᵢᵢh²::T, ::Nothing, ::Nothing) where {T}
     return ConjugateGradientSolver(
-        domain, nothing, convert(T, CG_TOL_DEFAULT)
+        problem, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT)
     )
 end
 
-Domains.get_domain(cgs::ConjugateGradientSolver) = cgs.domain
+Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
 
 @inline function solve_implicit_equation!(
     cgs::ConjugateGradientSolver{T},
-    𝓛ᴵ!::ImplicitSawyerEliassenOperator!,
     x::FSVariable{T},
     b::FSVariable{T},
     𝓟::AbstractPreconditioner{T},
 ) where {T}
     # some setup before we begin
     # extract variables from cg and A
-    (; domain, p, q, r, z, max_iterations, tol) = cgs
-    aᵢᵢ, h = 𝓛ᴵ!.aᵢᵢ, 𝓛ᴵ!.h
+    (; problem, p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
 
-    @boundscheck consistent_domains(domain, 𝓛ᴵ!, x, b, 𝓟) || throw(
-        ArgumentError("`cgs`, `𝓛ᴵ!`, `x`, `b` and `𝓟` must have the same domain.")
+    @boundscheck consistent_domains(problem, x, b, 𝓟) || throw(
+        ArgumentError("`cgs`, `x`, `b` and `𝓟` must have the same domain.")
     )
 
     # termination condition
@@ -85,22 +87,22 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = cgs.domain
     #   αₖ = δₖ / pₖᵀApₖ is the step size
 
     # initialise the variables
-    @inbounds 𝓛ᴵ!(q, x)
+    @inbounds 𝓛ᴵ!(problem, q, x, aᵢᵢh²)
     @inbounds @. r = b - q # r₀ = b - Ax₀
-    @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢ, h) # Mz₀ = r₀
+    @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢh²) # Mz₀ = r₀
     δ = r ⋅ z # δ = r₀ᵀz₀
     @inbounds @. p = z # p₀ = z₀
 
     # the main event
     for k in 1:max_iterations
-        @inbounds 𝓛ᴵ!(q, p) # qₖ = Apₖ
+        @inbounds 𝓛ᴵ!(problem, q, p, aᵢᵢh²) # qₖ = Apₖ
         α = δ / (p ⋅ q) # αₖ = rₖᵀzₖ / pₖᵀApₖ = δₖ / pₖᵀqₖ
         @inbounds @. x += α * p # xₖ₊₁ = xₖ + αₖpₖ
         # compute residual -- occasionally explicitly to avoid round-off error
         if k % explicit_residual_cadence != 0
             @inbounds @. r -= α * q # rₖ₊₁ = rₖ - αₖApₖ = rₖ - αₖqₖ
         else
-            @inbounds 𝓛ᴵ!(q, x)
+            @inbounds 𝓛ᴵ!(problem, q, x, aᵢᵢh²)
             @inbounds @. r = b - q # rₖ₊₁ = b - Axₖ₊₁
         end
         # terminate?
@@ -109,7 +111,7 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = cgs.domain
             return nothing
         end
         # get δₖ₊₁ = rₖ₊₁ᵀzₖ₊₁
-        @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢ, h) # Mzₖ₊₁ = rₖ₊₁
+        @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢh²) # Mzₖ₊₁ = rₖ₊₁
         δ⁺ = r ⋅ z # δₖ₊₁ = rₖ₊₁ᵀzₖ₊₁
         # update the search direction
         β = δ⁺ / δ # βₖ = rₖ₊₁ᵀzₖ₊₁ / rₖᵀzₖ = δₖ₊₁ / δₖ

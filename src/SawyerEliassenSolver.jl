@@ -13,15 +13,17 @@ include("Variables/Variables.jl")
 include("Forcing/Forcing.jl")
 include("Problems/Problems.jl")
 include("Timesteppers/Timesteppers.jl")
+include("Output/Output.jl")
 
 @reexport using .Domains
 @reexport using .Variables
 @reexport using .Forcing
 @reexport using .Problems
 @reexport using .Timesteppers
+@reexport using .Output
 
 # add a module docstring.
-# N.B. to use DocStringExtensions .e. $(EXPORTS) we need to define the docstring inside the module.
+# N.B. to use DocStringExtensions i.e. $(EXPORTS) we need to define the docstring inside the module.
 
 """
 `SawyerEliassenSolver.jl` -- Solve the Sawyer-Eliassen equation using a pseudo-spectral

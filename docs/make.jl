@@ -41,6 +41,7 @@ library_pages = [
     "Forcing" => "library/forcing.md",
     "Problems" => "library/problems.md",
     "Timesteppers" => "library/timesteppers.md",
+    "Output" => "library/output.md",
 ]
 
 pages = [

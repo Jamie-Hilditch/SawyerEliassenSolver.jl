@@ -10,7 +10,8 @@ using SawyerEliassenSolver.Forcing
 
 using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
 
-export BackgroundFlow, State, Clock, Problem, set_ζ!, set_v!, set_b!, compute_ζₜ!, set_vb!
+export BackgroundFlow,
+    State, Clock, Scratch, Problem, set_ζ!, set_v!, set_b!, compute_ζₜ!, set_vb!
 
 include("background.jl")
 include("state.jl")
