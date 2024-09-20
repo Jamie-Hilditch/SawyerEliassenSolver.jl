@@ -25,7 +25,7 @@ Check if the dimensions of the output variable exist and have the same length as
 function validate_dimensions(output_variable::OutputVariable{A,T,N}, dimension_coordinates::NamedTuple{Vector{T}}) where {A,T,N}
     # Check if the dimensions of the output variable exist and have the correct length
     for (dim, dim_name) in enumerate(output_variable.dims)
-        if !haskey(possible_dims, dim_name)
+        if !haskey(dimension_coordinates, dim_name)
             throw(ArgumentError("Dimension $dim_name on `output_variable` not found in `dimension_coordinates`"))
         end
         dimension_length = length(dimension_coordinates[dim_name])

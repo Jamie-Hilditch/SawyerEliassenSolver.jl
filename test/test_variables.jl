@@ -1,13 +1,12 @@
-NX, NZ = 4, 4
-LX, LZ = 1, 1
-SX = NX ÷ 2 + 1
-real_variable_types = [XZVariable, XSVariable, XCVariable]
-complex_variable_types = [FZVariable, FSVariable, FCVariable]
+const real_variable_types=(XZVariable, XSVariable, XCVariable)
+const complex_variable_types=(FZVariable, FSVariable, FCVariable)
 
 function test_data_element_type(domain)
     FT = eltype(domain)
-    complex_types = map(T -> Complex{T}, float_types)
-    test_data_types = (float_types..., complex_types..., Integer, Float16, Float64)
+    NX, NZ = size(domain)
+    SX, _ = size(domain.spectral)
+    complex_types = map(T -> Complex{T}, FLOAT_TYPES)
+    test_data_types = (FLOAT_TYPES..., complex_types..., Integer, Float16, Float64)
 
     for data_FT in test_data_types
         for variable_type in real_variable_types
@@ -32,6 +31,8 @@ end
 
 function test_domain_and_data_are_compatible_size(domain)
     FT = eltype(domain)
+    NX, NZ = size(domain)
+    SX, _ = size(domain.spectral)
     correct_real_array = zeros(FT, NX, NZ)
     correct_complex_array = zeros(Complex{FT}, SX, NZ)
     incorrect_real_array = zeros(FT, SX, NZ)
@@ -70,16 +71,16 @@ function test_domain_and_data_are_compatible_size(domain)
 end
 
 @testset "Variable data types" begin
-    for FT in float_types
-        grid = Grid(FT, NZ, NX, LX, LZ)
+    for FT in FLOAT_TYPES
+        grid = Grid(FT, 4, 4, 1, 1)
         domain = Domain(grid)
         test_data_element_type(domain)
     end
 end
 
 @testset "Variable sizes" begin
-    for FT in float_types
-        grid = Grid(FT, NZ, NX, LX, LZ)
+    for FT in FLOAT_TYPES
+        grid = Grid(FT, 4, 4, 1, 1)
         domain = Domain(grid)
         test_domain_and_data_are_compatible_size(domain)
     end

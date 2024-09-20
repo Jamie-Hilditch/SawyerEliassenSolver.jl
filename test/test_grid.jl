@@ -41,6 +41,6 @@ end
     test_grid_methods()
 end
 
-@testset "Gridpoints" for FT in float_types
+@testset "Gridpoints" for FT in FLOAT_TYPES
     test_gridpoints(FT)
 end

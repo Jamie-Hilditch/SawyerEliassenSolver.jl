@@ -1,7 +1,7 @@
 
 function initialise_output_file(
-    filepath::String, dimensions::NamedTuple{S,<:NTuple{N,AbstractVector{T}}}, overwrite::Bool
-) where {T,S,N}
+    filepath::String, dimensions::NamedTuple{S,<:Tuple{N,AbstractVector{T}}}, overwrite::Bool
+) where {S,N,T}
     # Check if the file already exists
     if !overwrite && isfile(filepath)
         throw(
@@ -70,6 +70,10 @@ struct OutputWriter{T,D}
         output_variables = Dict{String,OutputVariable}()
         return new{T,typeof(dimensions)}(filepath, problem, dimensions, output_variables)
     end
+end
+
+function OutputWriter(filepath::String, problem::Problem{T}; overwrite::Bool=false) where {T}
+    return OutputWriter(filepath, problem, NamedTuple(); overwrite=overwrite)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", ow::OutputWriter)

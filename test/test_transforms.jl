@@ -1,6 +1,3 @@
-NX, NZ = 4, 4
-SX = NX ÷ 2 + 1
-
 function test_inplace_transforms_from_variable(variable_type, domain, valid_outputs)
     @info "\tTesting inplace transforms of $(variable_type)"
     variables = (
@@ -23,6 +20,7 @@ function test_inplace_transforms_from_variable(variable_type, domain, valid_outp
 end
 
 function test_inplace_transforms(FT)
+    NX, NZ = 4, 4
     LX, LZ = one(FT), one(FT)
     grid = Grid(NZ, NX, LX, LZ)
     domain = Domain(grid)
@@ -37,6 +35,7 @@ function test_inplace_transforms(FT)
 end
 
 function test_horizontal_transforms(FT)
+    NX, NZ = 4, 4
     LX, LZ = one(FT), one(FT)
     grid = Grid(NZ, NX, LX, LZ)
     domain = Domain(grid)
@@ -50,6 +49,7 @@ function test_horizontal_transforms(FT)
 end
 
 function test_sine_transforms(FT)
+    NX, NZ = 4, 4
     LX, LZ = one(FT), one(FT)
     grid = Grid(NZ, NX, LX, LZ)
     domain = Domain(grid)
@@ -63,6 +63,7 @@ function test_sine_transforms(FT)
 end
 
 function test_cosine_transforms(FT)
+    NX, NZ = 4, 4
     LX, LZ = one(FT), one(FT)
     grid = Grid(NZ, NX, LX, LZ)
     domain = Domain(grid)
@@ -76,27 +77,27 @@ function test_cosine_transforms(FT)
 end
 
 @testset "Inplace transforms" begin
-    for FT in float_types
+    for FT in FLOAT_TYPES
         @info "Testing inplace transforms with $(FT)"
         test_inplace_transforms(FT)
     end
 end
 
 @testset "Horizontal transforms" begin
-    for FT in float_types
+    for FT in FLOAT_TYPES
         @info "Testing horizontal transforms with $(FT)"
         test_horizontal_transforms(FT)
     end
 end
 
 @testset "Sine transforms" begin
-    for FT in float_types
+    for FT in FLOAT_TYPES
         @info "Testing sine transforms with $(FT)"
         test_sine_transforms(FT)
     end
 end
 
-@testset "Cosine transforms" for FT in float_types
+@testset "Cosine transforms" for FT in FLOAT_TYPES
     @info "Testing cosine transforms with $(FT)"
     test_cosine_transforms(FT)
 end

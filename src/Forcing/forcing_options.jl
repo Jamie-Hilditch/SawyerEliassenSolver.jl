@@ -146,7 +146,7 @@ end
 ) where {T}
     @boundscheck consistent_domains(F, out, XS, XZ) ||
         throw(ArgumentError("`F`, `out`, `XS` and`XZ` must have the same domain."))
-    @inbounds evaluate_physical_forcing(F, XZ, t)
+    @inbounds evaluate_physical_forcing!(F, XZ, t)
     Tˢ!(XS, XZ)
     Tᴴ!(out, XS)
     return nothing
