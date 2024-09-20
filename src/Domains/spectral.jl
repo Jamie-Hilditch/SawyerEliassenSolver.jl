@@ -35,3 +35,10 @@ end
     kz = zwavenumbers(spectral)
     return reshape(kx, :, 1), reshape(kz, 1, :)
 end
+@inline xwavenumbers_full(spectral::Spectral) = spectral.Δkx * UnitRange(0, spectral.SX - 1)
+@inline zwavenumbers_full(spectral::Spectral) = spectral.Δkz * UnitRange(1, spectral.NZ)
+@inline function wavenumbers_full(spectral::Spectral)
+    kx = xwavenumbers_full(spectral)
+    kz = zwavenumbers_full(spectral)
+    return reshape(kx, :, 1), reshape(kz, 1, :)
+end

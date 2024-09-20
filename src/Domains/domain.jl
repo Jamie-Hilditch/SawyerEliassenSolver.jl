@@ -55,6 +55,18 @@ zwavenumbers(domain::Domain) = zwavenumbers(domain.spectral)
 ``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
 """
 wavenumbers(domain::Domain) = wavenumbers(domain.spectral)
+"""$(TYPEDSIGNATURES)
+The ``x`` wavenumbers ``k_x``.
+"""
+xwavenumbers_full(domain::Domain) = xwavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)
+The ``z`` wavenumbers ``k_z``.
+"""
+zwavenumbers_full(domain::Domain) = zwavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)
+``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
+"""
+wavenumbers_full(domain::Domain) = wavenumbers_full(domain.spectral)
 
 function Base.show(io::IO, ::MIME"text/plain", domain::Domain)
     return print(
