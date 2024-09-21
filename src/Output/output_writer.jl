@@ -1,6 +1,5 @@
-
 function initialise_output_file(
-    filepath::String, dimensions::NamedTuple{S,<:Tuple{N,AbstractVector{T}}}, overwrite::Bool
+    filepath::String, ::Type{T}, dimensions::NamedTuple{S,<:NTuple{N,AbstractVector{T}}}, overwrite::Bool
 ) where {S,N,T}
     # Check if the file already exists
     if !overwrite && isfile(filepath)
@@ -64,7 +63,7 @@ struct OutputWriter{T,D}
         dimensions = merge(default_dimensions, dimension_coordinates)
 
         # initialise the output file
-        initialise_output_file(filepath, dimensions, overwrite)
+        initialise_output_file(filepath, T, dimensions, overwrite)
 
         # initialise an empty dict for the variables
         output_variables = Dict{String,OutputVariable}()

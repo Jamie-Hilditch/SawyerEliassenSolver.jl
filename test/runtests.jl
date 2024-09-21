@@ -1,11 +1,20 @@
-using SawyerEliassenSolver
-using Test
 using Aqua
+using Combinatorics
 using JET
+using Test
+
+using SawyerEliassenSolver
 
 const FLOAT_TYPES = (Float32, Float64)
+const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
 
 @testset "SawyerEliassenSolver.jl" begin
+    @info "Creating clean test output directory at $TEST_OUTPUT_DIRECTORY"
+    if isdir(TEST_OUTPUT_DIRECTORY)
+        rm(TEST_OUTPUT_DIRECTORY; force=true, recursive=true)
+    end
+    mkdir(TEST_OUTPUT_DIRECTORY)
+
     @testset "Code quality (Aqua.jl)" begin
         Aqua.test_all(SawyerEliassenSolver)
     end
@@ -38,6 +47,13 @@ const FLOAT_TYPES = (Float32, Float64)
                 include("test_operators/test_cosine_derivatives_and_integrals.jl")
             end
         end
-
     end
+
+    @testset "OutputWriter" begin
+        @info "Testing OutputWriter ..."
+        include("test_output_writer.jl")
+    end
+
+    @info "Cleaning up test output directory at $TEST_OUTPUT_DIRECTORY"
+    rm(TEST_OUTPUT_DIRECTORY; force=true, recursive=true)
 end
