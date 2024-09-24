@@ -11,11 +11,11 @@ using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
 
 export OutputVariable,
     OutputWriter,
-    compute_u_from_Ψ!,
-    compute_w_from_Ψ!,
-    compute_u_and_w!
+    add_output_variables!,
+    OutputVariables
 
-include("derived_variables.jl")
 include("output_variables.jl")
 include("output_writer.jl")
-end
+include("OutputVariables/OutputVariables.jl")
+
+end  # module Output

@@ -26,15 +26,15 @@ function test_output_writer_constructor_no_dims(FT)
 
     try
         # create a file
-        OutputWriter(filepath, problem)
+        OutputWriter(problem, filepath)
         @test isfile(filepath)
 
         # check we can overwrite it
-        OutputWriter(filepath, problem, overwrite=true)
+        OutputWriter(problem, filepath, overwrite=true)
         @test isfile(filepath)
 
         # check we can't overwrite it
-        @test_throws ArgumentError OutputWriter(filepath, problem)
+        @test_throws ArgumentError OutputWriter(problem, filepath)
     finally
         rm(filepath, force=true)
     end
@@ -46,15 +46,15 @@ function test_output_writer_constructor_with_dims(FT, dims)
 
     try
         # create a file
-        OutputWriter(filepath, problem, dims)
+        OutputWriter(problem, filepath, dims)
         @test isfile(filepath)
 
         # check we can overwrite it
-        OutputWriter(filepath, problem, dims, overwrite=true)
+        OutputWriter(problem, filepath, dims, overwrite=true)
         @test isfile(filepath)
 
         # check we can't overwrite it
-        @test_throws ArgumentError OutputWriter(filepath, problem, dims)
+        @test_throws ArgumentError OutputWriter(problem, filepath, dims)
     finally
         rm(filepath, force=true)
     end
