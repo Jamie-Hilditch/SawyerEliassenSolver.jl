@@ -129,3 +129,53 @@ function Base.delete!(output_writer::OutputWriter, variable_name::String)
 end
 
 Base.delete!(output_writer::OutputWriter, variable_name::Symbol) = delete!(output_writer, String(variable_name))
+
+function extend_time_dimension(dset::HDF5.Dataset)
+    dims, _ = HDF5.get_extent_dims(dset)
+    new_dims = (dims[1:(end - 1)]..., dims[end] + 1)
+    HDF5.set_extent_dims(dset, new_dims)
+end
+
+function write_variable!(dset::HDF5.Dataset, output_variable::OutputVariable{T,N,O,A}) where {T,N,O,A}
+    # compute the output
+    compute!(output_variable)
+    # save the output
+    extend_time_dimension(dset)
+    indices = ntuple(i -> Colon(), N)
+    dset[indices...,end] = output_variable.output_array
+    return nothing
+end
+
+function write!(ow::OutputWriter)
+    # open the file
+    h5open(ow.filepath, "r+") do h5
+        # write the time to the time dataset
+        time_dset = open_dataset(h5, "time")
+        extend_time_dimension(time_dset)
+        time_dset[end] = get_time(ow.problem)
+
+        for (path, output_variable) in ow._output_variables
+            dset = open_dataset(h5, path)
+            write_variable!(dset, output_variable)
+        end
+    end
+end
+
+"""$(TYPEDSIGNATURES)
+
+Write attributes to the output file.
+
+Takes in keyword arguments which are written as attributes to the root group of the output
+file.
+
+!!! warn
+    This is just a thin wrapper around [`HDF5.write_attribute`](@ref) and will error if the
+    value is not compatible with HDF5.
+"""
+function write_attributes!(ow::OutputWriter; attributes...)
+    h5open(ow.filepath, "r+") do h5
+        for (key, value) in attributes
+            HDF5.write_attribute(h5,String(key), value)
+        end
+    end
+end

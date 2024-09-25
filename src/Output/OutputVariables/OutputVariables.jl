@@ -1,13 +1,13 @@
-"""Implementations of common output variables.
-
-$(Exports)
-
-"""
 module OutputVariables
 
+using DocStringExtensions
+
+using SawyerEliassenSolver.Domains
 using SawyerEliassenSolver.Variables
 using SawyerEliassenSolver.Problems
 using SawyerEliassenSolver.Output
+
+using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
 
 export u,
     ∂u∂x,
@@ -25,5 +25,13 @@ export u,
 
 include("u_and_derivatives.jl")
 include("w_and_derivatives.jl")
+
+"""
+Implementation of common output variables for the Sawyer-Eliassen solver.
+
+# Exports
+$(EXPORTS)
+"""
+OutputVariables
 
 end  # module OutputVariables

@@ -11,7 +11,7 @@ using SawyerEliassenSolver.Forcing
 using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
 
 export BackgroundFlow,
-    State, Clock, Scratch, Problem, set_ζ!, set_v!, set_b!, compute_ζₜ!, set_vb!
+    State, Clock, Scratch, Problem, set_ζ!, set_v!, set_b!, compute_ζₜ!, set_vb!, get_time, get_iteration
 
 include("background.jl")
 include("state.jl")

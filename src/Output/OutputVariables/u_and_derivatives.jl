@@ -58,7 +58,7 @@ function compute_∂²u∂x²!(problem::Problem{T}, ∂²u∂x²::XZVariable{T})
 
     # transform to XZ
     Tᴴ!(∂²u∂x²_XC, u_FC)
-    Tᶜ!(∂u∂x, ∂²u∂x²_XC)
+    Tᶜ!(∂²u∂x², ∂²u∂x²_XC)
 
     # negate to get ∂²u/∂x²
     ∂²u∂x² *= -1
@@ -77,7 +77,7 @@ function compute_∂u∂z!(problem::Problem{T}, ∂u∂z::XZVariable{T}) where {
     @inbounds ∂z²!(Ψ)
 
     # transform to XZ
-    Tᴴ!(∂u∂z_XS, ψ)
+    Tᴴ!(∂u∂z_XS, Ψ)
     Tˢ!(∂u∂z, ∂u∂z_XS)
 
     # negate to get ∂u/∂z
@@ -88,7 +88,7 @@ end
 function compute_∂²u∂z²!(problem::Problem{T}, ∂²u∂z²::XZVariable{T}) where {T}
     @boundscheck consistent_domains(u, problem) || throw(ArgumentError("`∂²u∂z²` and `problem` must have the same domain."))
     # use the scratch variables for storage
-    Ψ, u_FC, u_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
+    Ψ, u_FC, ∂²u∂z²_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
     ∇⁻²!(Ψ, problem.state.ζ)
@@ -123,7 +123,7 @@ function compute_∂²u∂x∂z!(problem::Problem{T}, ∂²u∂x∂z::XZVariable
     @inbounds ∂x!(Ψ)
 
     # transform to XZ
-    Tᴴ!(∂²u∂x∂z_XS, ψ)
+    Tᴴ!(∂²u∂x∂z_XS, Ψ)
     Tˢ!(∂²u∂x∂z, ∂²u∂x∂z_XS)
 
     # negate to get ∂²u/∂x∂z
@@ -142,14 +142,14 @@ end
 
 # define the output variables
 """$(TYPEDSIGNATURES)"""
-u(problem::Problem) = OutputVariable(_compute_u!, (:x, :z), problem.scratch.XZ_tmp)
+u(problem::Problem) = OutputVariable(problem, _compute_u!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂u∂x(problem::Problem) = OutputVariable(_compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
+∂u∂x(problem::Problem) = OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂x²(problem::Problem) = OutputVariable(_compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂x²(problem::Problem) = OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂u∂z(problem::Problem) = OutputVariable(_compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
+∂u∂z(problem::Problem) = OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂z²(problem::Problem) = OutputVariable(_compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂z²(problem::Problem) = OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂x∂z(problem::Problem) = OutputVariable(_compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂x∂z(problem::Problem) = OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)

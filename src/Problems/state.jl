@@ -83,3 +83,6 @@ function Base.summary(io::IO, clock::Clock)
 end
 
 Domains.get_domain(state::State) = get_domain(state.ζ)
+
+get_time(state::State) = state.clock.t
+get_iteration(state::State) = state.clock.iteration

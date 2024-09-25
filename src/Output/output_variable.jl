@@ -16,10 +16,11 @@ these labels are used to attach dimension scales (coordinates) to the output var
     Dimension labels are not required to be associated with a dimension scale.
     But if they are then the size of the dimension must match.
 """
-struct OutputVariable{A,T,N}
+struct OutputVariable{T,N,O,A}
+    problem::Problem{T}
     func::Function
     dimension_labels::NTuple{N,Union{Symbol,Nothing}}
-    output_array::AbstractArray{T,N}
+    output_array::AbstractArray{O,N}
     args::A
 end
 
@@ -27,8 +28,8 @@ end
 
 Create an output variable with a function that takes no additional arguments.
 """
-function OutputVariable(func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, output_array::AbstractArray{T,N}) where {T,N}
-    return OutputVariable{Nothing,T,N}(func, dimension_labels, output_array, nothing)
+function OutputVariable(problem::Problem{T},func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, output_array::AbstractArray{O,N}) where {T,N,O}
+    return OutputVariable{T,N,O,Tuple{}}(problem,func, dimension_labels, output_array, tuple())
 end
 
 
@@ -36,32 +37,32 @@ end
 
 Create an output variable creating the output array of shape `sizes` and type `type`.
 """
-function OutputVariable(func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, sizes::NTuple{N,Integer}, type::Type, args) where {N}
+function OutputVariable(problem::Problem{T}, func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, sizes::NTuple{N,Integer}, type::Type, args) where {T,N}
     output_array = zeros(type, sizes)
-    return OutputVariable{typeof(args),type,N}(func, dimension_labels, output_array, args)
+    return OutputVariable{T,N,type,typeof(args)}(problem, func, dimension_labels, output_array, args)
 end
 
 """$(TYPEDSIGNATURES)"""
-function OutputVariable(func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, sizes::NTuple{N,Integer}, type::Type) where {N}
+function OutputVariable(problem::Problem{T},func::Function, dimension_labels::NTuple{N,Union{Symbol,Nothing}}, sizes::NTuple{N,Integer}, type::Type) where {T,N}
     output_array = zeros(type, sizes)
-    return OutputVariable{Nothing,type,N}(func, dimension_labels, output_array, nothing)
+    return OutputVariable{T,N,type,Tuple{}}(problem, func, dimension_labels, output_array, tuple())
 end
 
 """$(TYPEDSIGNATURES)
 
 Create an output variable specifying the dimension labels and sizes in a named tuple.
 """
-function OutputVariable(func::Function, dimensions::NamedTuple{S,NTuple{N,Integer}}, type::Type, args) where {S,N}
+function OutputVariable(problem::Problem{T}, func::Function, dimensions::NamedTuple{S,NTuple{N,Integer}}, type::Type, args) where {T,S,N}
     dimension_labels = keys(dimensions)
     sizes = values(dimensions)
-    OutputVariable(func, dimension_labels, sizes, type, args)
+    OutputVariable(problem, func, dimension_labels, sizes, type, args)
 end
 
 """$(TYPEDSIGNATURES)"""
-function OutputVariable(func::Function, dimensions::NamedTuple{S,NTuple{N,Integer}}, type::Type) where {S,N}
+function OutputVariable(problem::Problem{T}, func::Function, dimensions::NamedTuple{S,NTuple{N,Integer}}, type::Type) where {T,S,N}
     dimension_labels = keys(dimensions)
     sizes = values(dimensions)
-    OutputVariable(func, dimension_labels, sizes, type)
+    OutputVariable(problem, func, dimension_labels, sizes, type)
 end
 
 Base.size(output_variable::OutputVariable) = size(output_variable.output_array)
@@ -118,4 +119,8 @@ function create_output_variable!(h5::HDF5.File, path::String, output_variable::O
     time_dset = open_dataset(h5, "time")
     HDF5.API.h5ds_attach_scale(var_dset.id, time_dset.id, 0)
     HDF5.API.h5ds_set_label(var_dset.id, 0, Vector{UInt8}("time"))
+end
+
+function compute!(output_variable::OutputVariable)
+    output_variable.func(output_variable.problem, output_variable.output_array, output_variable.args...)
 end

@@ -101,3 +101,6 @@ function Base.show(io::IO, ::MIME"text/plain", problem::Problem)
 end
 
 Domains.get_domain(problem::Problem) = problem.domain
+
+get_time(problem::Problem) = get_time(problem.state)
+get_iteration(problem::Problem) = get_iteration(problem.state)
