@@ -1,6 +1,7 @@
 using SawyerEliassenSolver
 using Documenter
 using DocumenterCitations
+# using DocumenterInterLinks
 using Literate
 
 #metadata
@@ -20,7 +21,10 @@ sawyer_eliassen_pages = [
 const EXAMPLES_DIR = joinpath(@__DIR__, "..", "examples")
 const OUTPUT_DIR = joinpath(@__DIR__, "src/literated")
 
-example_scripts = ["Near-inertial waves" => "near-inertial_waves.jl"]
+example_scripts = [
+    "Near-inertial waves" => "near-inertial_waves.jl",
+    "Barotropic zeta refraction" => "barotropic_zeta_refraction.jl",
+]
 
 example_pages = map(example_scripts) do example
     name = first(example)
@@ -59,11 +63,18 @@ format = Documenter.HTML(;
     mathengine=MathJax3(),
     assets=String[],
     collapselevel=1,
+    size_threshold=500 * 2^10, # 500 KiB
+    size_threshold_warn=200 * 2^10, # 200 KiB
 )
 
 # references
 bib_filepath = joinpath(dirname(@__FILE__), "references.bib")
 bib = CitationBibliography(bib_filepath; style=:authoryear)
+
+# interlinks
+# links = InterLinks(
+#     "HDF5" => "https://juliaio.github.io/HDF5.jl/stable/"
+# )
 
 # where the magic happens
 makedocs(;

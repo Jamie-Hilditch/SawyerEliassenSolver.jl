@@ -16,7 +16,7 @@ these labels are used to attach dimension scales (coordinates) to the output var
     Dimension labels are not required to be associated with a dimension scale.
     But if they are then the size of the dimension must match.
 """
-struct OutputVariable{T,N,O,A}
+struct OutputVariable{T,N,O,A} <: AbstractArray{O,N}
     problem::Problem{T}
     func::Function
     dimension_labels::NTuple{N,Union{Symbol,Nothing}}
@@ -121,6 +121,17 @@ function create_output_variable!(h5::HDF5.File, path::String, output_variable::O
     HDF5.API.h5ds_set_label(var_dset.id, 0, Vector{UInt8}("time"))
 end
 
+"""$(TYPEDSIGNATURES)
+
+Compute the output field in-place in `output_variable.output_array`.
+"""
 function compute!(output_variable::OutputVariable)
     output_variable.func(output_variable.problem, output_variable.output_array, output_variable.args...)
 end
+
+# methods for reading data from an output variables
+# Base.IndexStyle(::OutputVariable) = IndexLinear()
+@propagate_inbounds Base.getindex(v::OutputVariable, i::Int) = getindex(v.output_array, i)
+@propagate_inbounds Base.getindex(v::OutputVariable, I::Vararg{Int,N}) where {N} =
+    getindex(v.output_array, I...)
+@propagate_inbounds Base.getindex(v::OutputVariable, I...) = getindex(v.output_array, I...)

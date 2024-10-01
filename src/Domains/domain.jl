@@ -16,6 +16,28 @@ the higher wavenumbers can be zeroed out. The number of retained wavenumbers are
 `CNZ = grid.NZ - 1 - dealias_z`
 Note that we already drop the Nyquist wavenumber in ``x`` as well as the zeroth (barotropic)
 cosine mode / highest sine mode.
+
+# Examples
+Build an domain with no dealiasing.
+```jldoctest
+julia> grid = Grid(16,8,1,1);
+
+julia> domain = Domain(grid)
+Domain:
+  ├─────────── grid: Grid with eltype Float64 and size (16, 8)
+  ├─────── spectral: Spectral domain of size (9, 8) and spectral resolution (8, 7)
+  └───── transforms: FFTW transforms: rfft, type II DST and type II DCT.
+```
+A domain with dealising in the vertical.
+```jldoctest
+julia> grid = Grid(16,8,1,1);
+
+julia> domain = Domain(grid, dealias_z=2)
+Domain:
+  ├─────────── grid: Grid with eltype Float64 and size (16, 8)
+  ├─────── spectral: Spectral domain of size (9, 8) and spectral resolution (8, 5)
+  └───── transforms: FFTW transforms: rfft, type II DST and type II DCT.
+```
 """
 function Domain(grid::Grid{T}; dealias_x=0, dealias_z=0) where {T}
     dealias_x >= 0 || throw(DomainError(dealias_x, "dealias_x must be non negative"))
@@ -67,6 +89,12 @@ zwavenumbers_full(domain::Domain) = zwavenumbers_full(domain.spectral)
 ``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
 """
 wavenumbers_full(domain::Domain) = wavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_fourier_indices(domain::Domain) = resolved_fourier_indices(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_sine_indices(domain::Domain) = resolved_sine_indices(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_cosine_indices(domain::Domain) = resolved_cosine_indices(domain.spectral)
 
 function Base.show(io::IO, ::MIME"text/plain", domain::Domain)
     return print(
@@ -100,3 +128,7 @@ gridpoints(x) = gridpoints(get_domain(x))
 xwavenumbers(x) = xwavenumbers(get_domain(x))
 zwavenumbers(x) = zwavenumbers(get_domain(x))
 wavenumbers(x) = wavenumbers(get_domain(x))
+
+resolved_fourier_indices(x) = resolved_fourier_indices(get_domain(x))
+resolved_sine_indices(x) = resolved_sine_indices(get_domain(x))
+resolved_cosine_indices(x) = resolved_cosine_indices(get_domain(x))

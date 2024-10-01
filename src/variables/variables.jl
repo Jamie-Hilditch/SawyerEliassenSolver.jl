@@ -20,6 +20,7 @@ export XZVariable,
     sine_transform!,
     cosine_transform,
     cosine_transform!,
+    resolved,
     ∂x!,
     ∂x,
     ∂z!,
@@ -37,4 +38,12 @@ export XZVariable,
 include("variable_constructors.jl")
 include("transforms.jl")
 include("operators.jl")
+
+"""
+Module for different variable representations, transforms between representations and operators that act on variables.
+
+# Exports
+$(EXPORTS)
+"""
+Variables
 end

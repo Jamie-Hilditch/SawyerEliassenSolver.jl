@@ -15,16 +15,20 @@ export u,
     ∂u∂z,
     ∂²u∂z²,
     ∂²u∂x∂z,
+    v,
     w,
     ∂w∂x,
     ∂²w∂x²,
     ∂w∂z,
     ∂²w∂z²,
-    ∂²w∂x∂z
+    ∂²w∂x∂z,
+    b
 
 
 include("u_and_derivatives.jl")
+include("v_and_derivatives.jl")
 include("w_and_derivatives.jl")
+include("b_and_derivatives.jl")
 
 """
 Implementation of common output variables for the Sawyer-Eliassen solver.

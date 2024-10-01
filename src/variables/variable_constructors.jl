@@ -165,3 +165,12 @@ horizontal_counterpart(::FSVariable) = XSVariable
 horizontal_counterpart(::FCVariable) = XCVariable
 
 @inline Domains.get_domain(v::AbstractVariable) = v.domain
+
+"""Return a view into the resolved wavenumbers."""
+function resolved end
+@inline resolved(v::XZVariable) = view(v.data, :, :)
+@inline resolved(v::FZVariable) = view(v.data, resolved_fourier_indices(v), :)
+@inline resolved(v::XSVariable) = view(v.data, :, resolved_sine_indices(v))
+@inline resolved(v::FSVariable) = view(v.data, resolved_fourier_indices(v), resolved_sine_indices(v))
+@inline resolved(v::XCVariable) = view(v.data, :, resolved_cosine_indices(v))
+@inline resolved(v::FCVariable) = view(v.data, resolved_fourier_indices(v), resolved_cosine_indices(v))

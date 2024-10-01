@@ -84,5 +84,14 @@ end
 
 Domains.get_domain(state::State) = get_domain(state.ζ)
 
+"""$(TYPEDSIGNATURES)
+
+Get current simulation time.
+"""
 get_time(state::State) = state.clock.t
+
+"""$(TYPEDSIGNATURES)
+
+Get current iteration.
+"""
 get_iteration(state::State) = state.clock.iteration

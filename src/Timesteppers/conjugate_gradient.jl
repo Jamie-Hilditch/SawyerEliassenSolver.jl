@@ -57,7 +57,7 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
     𝓟::AbstractPreconditioner{T},
 ) where {T}
     # some setup before we begin
-    # extract variables from cg and A
+    # extract variables from cgs
     (; problem, p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
 
     @boundscheck consistent_domains(problem, x, b, 𝓟) || throw(

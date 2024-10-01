@@ -69,7 +69,7 @@ Grid(NX, NZ, x_bounds, z_bounds) = Grid(Float64, NX, NZ, x_bounds, z_bounds)
 Base.size(grid::Grid) = (grid.NX, grid.NZ)
 Base.eltype(::Grid{T}) where {T} = T
 function Base.summary(io::IO, grid::Grid)
-    return print(io, "Grid of with eltype $(eltype(grid)) and size $(size(grid))")
+    return print(io, "Grid with eltype $(eltype(grid)) and size $(size(grid))")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", grid::Grid{T}) where {T}

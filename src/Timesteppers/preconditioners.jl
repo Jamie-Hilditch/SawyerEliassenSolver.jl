@@ -39,7 +39,7 @@ end
     $(TYPEDEF)
 
 A preconditioner that approximates `𝓛ζ` in spectral space by
-``𝓛ζ ≈ (ω₀² k_x² + ω₁² k_z^2) / (k_x² + k_z²) ζ``
+``𝓛ζ ≈ (ω₀² k_z² + ω₁² k_x^2) / (k_x² + k_z²) ζ``
 
 # Fields
 $(TYPEDFIELDS)
@@ -59,11 +59,24 @@ end
     (; domain, ω₀², ω₁²) = P
     CNX = domain.spectral.CNX
     CNZ = domain.spectral.CNZ
-    kx = domain.spectral.kx
-    kz = domain.kz
+    kx, kz = wavenumbers(domain)
     @inbounds @. out[1:CNX, 1:CNZ] =
-        in[1:CNX, 1:CNZ] / (1 + aᵢᵢh² * (ω₀² * kx^2 + ω₁² * kz^2) / (kx^2 + kz^2))
+        in[1:CNX, 1:CNZ] / (1 + aᵢᵢh² * (ω₀² * kz^2 + ω₁² * kx^2) / (kx^2 + kz^2))
     @inbounds @. out[(CNX + 1):end, :] = 0
     @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
     return nothing
+end
+
+function Base.show(io::IO, ::MIME"text/plain", 𝓟::DiagonalQuadraticPreconditioner)
+    return print(
+        io,
+        "DiagonalQuadraticPreconditioner:\n",
+        "  ├───────── domain: $(summary(𝓟.domain))\n",
+        "  ├──────────── ω₀²: $(sfmt(𝓟.ω₀²))\n",
+        "  └──────────── ω₁²: $(sfmt(𝓟.ω₁²))\n",
+    )
+end
+
+function Base.summary(io::IO, 𝓟::DiagonalQuadraticPreconditioner)
+    return print(io, "DiagonalQuadraticPreconditioner with ω₀² = $(sfmt(𝓟.ω₀²)), ω₁² = $(sfmt(𝓟.ω₁²))")
 end

@@ -116,7 +116,7 @@ function add_output_variables!(output_writer::OutputWriter; kwargs...)
 end
 
 function Base.delete!(output_writer::OutputWriter, variable_name::String)
-    # check if the key is a dimension
+    # check if the key is a coordinate
     if haskey(output_writer.coordinates, Symbol(variable_name))
         throw(ArgumentError("Cannot delete a coordinate from the output file."))
     end
@@ -146,6 +146,10 @@ function write_variable!(dset::HDF5.Dataset, output_variable::OutputVariable{T,N
     return nothing
 end
 
+"""$(TYPEDSIGNATURES)
+
+Compute and write the output variables to the output file.
+"""
 function write!(ow::OutputWriter)
     # open the file
     h5open(ow.filepath, "r+") do h5
@@ -168,9 +172,9 @@ Write attributes to the output file.
 Takes in keyword arguments which are written as attributes to the root group of the output
 file.
 
-!!! warn
-    This is just a thin wrapper around [`HDF5.write_attribute`](@ref) and will error if the
-    value is not compatible with HDF5.
+!!! warning
+    This is just a thin wrapper around [`HDF5.write_attribute`](https://juliaio.github.io/HDF5.jl/stable/interface/attributes/#HDF5.write_attribute)
+    and will error if the value is not compatible with HDF5.
 """
 function write_attributes!(ow::OutputWriter; attributes...)
     h5open(ow.filepath, "r+") do h5

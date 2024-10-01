@@ -15,7 +15,7 @@ function compute_u!(problem::Problem{T}, u::XZVariable{T}) where {T}
     Tᶜ!(u, u_XC)
 
     # negate to get u
-    u *= -1
+    u .*= -1.0
     return nothing
 end
 

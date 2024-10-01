@@ -42,3 +42,7 @@ end
     kz = zwavenumbers_full(spectral)
     return reshape(kx, :, 1), reshape(kz, 1, :)
 end
+
+@inline resolved_fourier_indices(spectral::Spectral) = 1:(spectral.CNX)
+@inline resolved_sine_indices(spectral::Spectral) = 1:(spectral.CNZ)
+@inline resolved_cosine_indices(spectral::Spectral) = 2:(spectral.CNZ + 1)

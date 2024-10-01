@@ -12,11 +12,6 @@ conditions, computing output.
 
 # Fields
 $(TYPEDFIELDS)
-
-!!! warning
-    Some care is required as variables share underlying memory. Since the code never requires
-    sine and cosine variables at the same time, `FS_tmp` and `FC_tmp` use the same data
-    array as do `XS_tmp` and `XC_tmp`. `XZ_tmp` and `XZ_tmp2` have their own data arrays.
 """
 struct Scratch{T}
     FS_tmp::FSVariable{T}
@@ -28,13 +23,11 @@ struct Scratch{T}
 end
 
 function Scratch(domain::Domain{T}) where {T}
-    fsc_array = zeros(Complex{T}, size(domain.spectral))
-    xsc_array = zeros(T, size(domain.grid))
     return Scratch{T}(
-        FSVariable(domain, fsc_array),
-        FCVariable(domain, fsc_array),
-        XSVariable(domain, xsc_array),
-        XCVariable(domain, xsc_array),
+        FSVariable(domain),
+        FCVariable(domain),
+        XSVariable(domain),
+        XCVariable(domain),
         XZVariable(domain),
         XZVariable(domain),
     )
@@ -102,5 +95,7 @@ end
 
 Domains.get_domain(problem::Problem) = problem.domain
 
+"""$(TYPEDSIGNATURES)"""
 get_time(problem::Problem) = get_time(problem.state)
+"""$(TYPEDSIGNATURES)"""
 get_iteration(problem::Problem) = get_iteration(problem.state)

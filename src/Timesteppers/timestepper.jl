@@ -75,13 +75,27 @@ struct Timestepper{T}
     end
 end
 
+"""
+```
+Timestepper(problem::Problem{T}, h::T, [𝓟::AbstractPreconditioner]; c=nothing, cg_max_iterations=nothing, cg_tol=nothing)
+```
+
+Constructor for `Timestepper`. The timestep `h` is required and a preconditioner may optionally
+be passed.
+
+# Keyword arguments
+
+* `c`: use a non-default value for the free parameter in the timestepping stepping scheme. See [Sharp_Fine_Burrage_1990](@citet) for valid ranges of values.
+* `cg_max_iterations`: maximum number of iterations for the conjugate gradient solver.
+* `cg_tol`: tolerance for the conjugate gradient solver.
+"""
 function Timestepper(
     problem::Problem{T},
-    h::T;
+    h::T,
+    𝓟=nothing;
     c=nothing,
     cg_max_iterations=nothing,
     cg_tol=nothing,
-    𝓟=nothing,
 ) where {T}
     𝓒 = isnothing(c) ? DIRKNCoefficients(T) : DIRKNCoefficients(c)
     aᵢᵢh² = 𝓒.a₁₁ * h^2
@@ -96,7 +110,7 @@ end
 function Base.show(io::IO, ::MIME"text/plain", ts::Timestepper)
     return print(
         io,
-        "Problem:\n",
+        "Timestepper:\n",
         "  ├───────── problem: $(summary(ts.problem))\n",
         "  ├──────── timestep: h = $(sfmt(ts.h))\n",
         "  ├─────────────── 𝓒: $(summary(ts.𝓒))\n",

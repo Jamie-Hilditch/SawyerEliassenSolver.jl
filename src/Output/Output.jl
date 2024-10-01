@@ -1,4 +1,8 @@
+"""
+"""
 module Output
+
+using Base: @propagate_inbounds
 
 using DocStringExtensions
 using HDF5
