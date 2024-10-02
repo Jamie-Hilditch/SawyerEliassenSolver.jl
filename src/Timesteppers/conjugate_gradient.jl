@@ -65,7 +65,7 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
     )
 
     # termination condition
-    condition = tol * real(dot(b, b))
+    condition = tol * real(b ⋅ b)
     @debug "Stopping condition = $(condition)"
 
     # compute the explicit residual every √max_iterations iterations

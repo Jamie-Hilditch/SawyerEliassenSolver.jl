@@ -10,7 +10,6 @@
 using CairoMakie
 using HDF5
 using Printf
-using Statistics
 
 using SawyerEliassenSolver
 
@@ -143,7 +142,7 @@ write!(output_writer)
 
 # Run the simulation for 10 inertial periods.
 
-for _ in 1:100
+for _ in 1:10
     advance!(ts, 5)
     write!(output_writer)
 end
@@ -202,4 +201,42 @@ record(fig, "barotropic_zeta_refraction.mp4", 1:length(output[:time]); framerate
 end
 nothing #hide
 
-# ![](barotropic_zeta_refraction.mp4)
+![](barotropic_zeta_refraction.mp4)
+
+# ## Performance with and without preconditioning
+# Let's time how long it takes to run 10 inertial periods with and without preconditioning.
+# First create a clean problem.
+
+function setup_problem()
+    grid = Grid(NX, NZ, (-LX / 2, LX / 2), LZ)
+    domain = Domain(grid; dealias_x=dealias)
+    xgrid, zgrid = gridpoints(grid)
+    background_flow = BackgroundFlow(grid)
+    background_flow.Vx .= Vx.(xgrid);
+    background_flow.Bz .= N²;
+    problem = Problem(domain, background_flow)
+    set_ζ!(problem; u=u₀)
+    return domain, problem
+end;
+
+# ### Without preconditioning
+# Create the timestep and advance 1 step before timing.
+
+domain, problem = setup_problem()
+ts = Timestepper(problem, 2π / 50)
+advance!(ts)
+
+#-
+
+@time advance!(ts, 500)
+
+# ### With preconditioning
+
+domain, problem = setup_problem()
+preconditioner = DiagonalQuadraticPreconditioner(domain, ω₀², ω₁²)
+ts = Timestepper(problem, 2π / 50, preconditioner)
+advance!(ts)
+
+#-
+
+@time advance!(ts, 500)
