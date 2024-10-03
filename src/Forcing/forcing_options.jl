@@ -93,8 +93,7 @@ end
 ) where {T,P}
     @boundscheck consistent_domains(F, XZ) ||
         throw(ArgumentError("`F` and `XZ` must have the same domain."))
-    x = reshape(F.domain.grid.x, :, 1)
-    z = reshape(F.domain.grid.z, 1, :)
+    x, z = gridpoints(F)
     @inbounds @. XZ = F.func(x, z, tuple(t), tuple(F.params))
     return nothing
 end
@@ -126,8 +125,7 @@ end
 ) where {T,P}
     @boundscheck consistent_domains(F, out) ||
         throw(ArgumentError("`F` and `out` must have the same domain."))
-    kx = F.domain.spectral.kx
-    kz = F.domain.spectral.kz
+    kx, kz = wavenumbers_full(F)
     @inbounds @. F.func(kx, kz, tuple(t), tuple(params))
     return nothing
 end
