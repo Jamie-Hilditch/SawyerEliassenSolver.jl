@@ -94,7 +94,7 @@ end
     @boundscheck consistent_domains(F, XZ) ||
         throw(ArgumentError("`F` and `XZ` must have the same domain."))
     x, z = gridpoints(F)
-    @inbounds @. XZ = F.func(x, z, tuple(t), tuple(F.params))
+    @inbounds XZ .= F.func.(x, z, tuple(t), tuple(F.params))
     return nothing
 end
 
