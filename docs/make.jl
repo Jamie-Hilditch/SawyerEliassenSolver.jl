@@ -87,4 +87,8 @@ makedocs(;
     checkdocs=:exports,
 )
 
+# clean up h5 files
+@info "Cleaning up temporary .h5 created by examples..."
+rm(joinpath(OUTPUT_DIR, "*.h5"))
+
 deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.git")
