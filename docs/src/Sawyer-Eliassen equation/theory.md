@@ -31,7 +31,13 @@ where ``\mathcal{J}(\psi, \cdot) \equiv (\partial{\psi}/\partial x) \partial/ \p
 The dynamics are controlled by a single second-order in time equation for the stream-function
 ```math
 \begin{equation}
-    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial^2\psi}{\partial t^2} = -\frac{\partial ~}{\partial x}\mathcal{J}(\psi,B) + f\frac{\partial ~}{\partial z}\mathcal{J}(\psi,V + fx) + \frac{\partial^2 \mathcal{F}^{(x)}}{\partial x\partial t} - \frac{\partial^2 \mathcal{F}^{(z)}}{\partial z\partial t} - f\frac{\partial\mathcal{F}^{(y)}}{\partial z} + \frac{\partial\mathcal{B}}{\partial x}
+    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial^2\psi}{\partial t^2} = -\frac{\partial ~}{\partial x}\mathcal{J}(\psi,B) + f\frac{\partial ~}{\partial z}\mathcal{J}(\psi,V + fx) + \mathfrak{F}(x,z,t)
+\end{equation}
+```
+where the forcing is 
+```math
+\begin{equation}
+    \mathfrak{F}(x,z,t) = \frac{\partial^2 \mathcal{F}^{(x)}}{\partial x\partial t} - \frac{\partial^2 \mathcal{F}^{(z)}}{\partial z\partial t} - f\frac{\partial\mathcal{F}^{(y)}}{\partial z} + \frac{\partial\mathcal{B}}{\partial x}
 \end{equation}
 ```
 In expanding the RHS some cancellations can be made thanks to the assumption of thermal wind balance and the Sawyer-Eliassen equation is reached

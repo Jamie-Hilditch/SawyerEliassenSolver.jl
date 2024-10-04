@@ -1,6 +1,9 @@
 .vscode
 /docs/Manifest.toml
 /docs/build/
+/docs/src/literated/
 Manifest.toml
 *.h5
 *.pb.gz
+*.mp4
+*.mem
