@@ -89,21 +89,21 @@ Domains.get_domain(F::AbstractForcingFunction) = F.domain
 end
 
 @inline function evaluate_physical_forcing!(
-    F::PointwisePhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
+    F::PointwisePhysicalForcing{T,P}, out::XZVariable{T}, t::T
 ) where {T,P}
-    @boundscheck consistent_domains(F, XZ) ||
-        throw(ArgumentError("`F` and `XZ` must have the same domain."))
+    @boundscheck consistent_domains(F, out) ||
+        throw(ArgumentError("`F` and `out` must have the same domain."))
     x, z = gridpoints(F)
-    @inbounds XZ .= F.func.(x, z, tuple(t), tuple(F.params))
+    @inbounds out .= F.func.(x, z, tuple(t), tuple(F.params))
     return nothing
 end
 
 @inline function evaluate_physical_forcing!(
-    F::GlobalPhysicalForcing{T,P}, XZ::XZVariable{T}, t::T
+    F::GlobalPhysicalForcing{T,P}, out::XZVariable{T}, t::T
 ) where {T,P}
-    @boundscheck consistent_domains(F, XZ) ||
-        throw(ArgumentError("`F` and `XZ` must have the same domain."))
-    F.func(F, XZ, t, F.params)
+    @boundscheck consistent_domains(F, out) ||
+        throw(ArgumentError("`F` and `out` must have the same domain."))
+    F.func(F, out, t, F.params)
     return nothing
 end
 
@@ -126,7 +126,7 @@ end
     @boundscheck consistent_domains(F, out) ||
         throw(ArgumentError("`F` and `out` must have the same domain."))
     kx, kz = wavenumbers_full(F)
-    @inbounds @. F.func(kx, kz, tuple(t), tuple(params))
+    @inbounds out .= F.func.(kx, kz, tuple(t), tuple(F.params))
     return nothing
 end
 

@@ -122,13 +122,16 @@ Check that these variables have the same domain.
 """
 @inline consistent_domains(A...) = isempty(A) || allequal(map(get_domain, A))
 
+# forward some functions onto domain
 xgridpoints(x) = xgridpoints(get_domain(x))
 zgridpoints(x) = zgridpoints(get_domain(x))
 gridpoints(x) = gridpoints(get_domain(x))
 xwavenumbers(x) = xwavenumbers(get_domain(x))
 zwavenumbers(x) = zwavenumbers(get_domain(x))
 wavenumbers(x) = wavenumbers(get_domain(x))
-
+xwavenumbers_full(x) = xwavenumbers_full(get_domain(x))
+zwavenumbers_full(x) = zwavenumbers_full(get_domain(x))
+wavenumbers_full(x) = wavenumbers_full(get_domain(x))
 resolved_fourier_indices(x) = resolved_fourier_indices(get_domain(x))
 resolved_sine_indices(x) = resolved_sine_indices(get_domain(x))
 resolved_cosine_indices(x) = resolved_cosine_indices(get_domain(x))

@@ -201,7 +201,7 @@ record(fig, "barotropic_zeta_refraction.mp4", 1:length(output[:time]); framerate
 end
 nothing #hide
 
-![](barotropic_zeta_refraction.mp4)
+# ![](barotropic_zeta_refraction.mp4)
 
 # ## Performance with and without preconditioning
 # Let's time how long it takes to run 10 inertial periods with and without preconditioning.
@@ -240,3 +240,7 @@ advance!(ts)
 #-
 
 @time advance!(ts, 500)
+
+# We see that the preconditioner speeds up the simulation by a factor of 10. This is because the
+# preconditioner drastically reduces the number of iterations required by the iterative solver from
+# approximately 150 to 3.
