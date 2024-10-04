@@ -21,7 +21,7 @@ where
 ```
 
 ## Pseudospectral discretisation ##
-The Sawyer-Eliassen operator ``\mathcal{L}`` is varies in space but not time whereas the forcings are functions of space and time. We use a pseudospectral descretisation solving for ``\zeta`` in spectral space. Enforcing the boundary conditions in ``z`` we express ``\zeta`` in Fourier-sine modes. ``u`` and ``w`` are then computed in Fourier-cosine and Fourier-sine space respectively. Products between the background flow and waves are computed in physical space and a user prescribed number of the highest wavenumber modes are zeroed-out in order to dealias the solution. ``v`` and ``b`` only ever need to exist in physical space
+The Sawyer-Eliassen operator ``\mathcal{L}`` varies in space but not time whereas the forcings are functions of space and time. We use a pseudospectral discretisation solving for ``\zeta`` in spectral space. Enforcing the boundary conditions in ``z`` we express ``\zeta`` in Fourier-sine modes. ``u`` and ``w`` are then computed in Fourier-cosine and Fourier-sine space respectively. Products between the background flow and waves are computed in physical space and a user prescribed number of the highest wavenumber modes are zeroed-out in order to dealias the solution. ``v`` and ``b`` only ever exist in physical space.
 
 ## Diagonally Implicit Runge-Kutta Nyström ##
 
