@@ -1,8 +1,10 @@
 @inline trial_function_for_cosine_operators(z) = cos(π * z) - cos(5 * π * z)
-@inline derivative_of_trial_function_for_cosine_operators(z) = -π * sin(π * z) + 5 * π * sin(5 * π * z)
+@inline derivative_of_trial_function_for_cosine_operators(z) =
+    -π * sin(π * z) + 5 * π * sin(5 * π * z)
 @inline second_derivative_of_trial_function_for_cosine_operators(z) =
     -π^2 * cos(π * z) + 25 * π^2 * cos(5 * π * z)
-@inline integral_of_trial_function_for_cosine_operators(z) = 1 / π * sin(π * z) - 1 / (5 * π) * sin(5 * π * z)
+@inline integral_of_trial_function_for_cosine_operators(z) =
+    1 / π * sin(π * z) - 1 / (5 * π) * sin(5 * π * z)
 @inline second_integral_of_trial_function_for_cosine_operators(z) =
     -1 / π^2 * cos(π * z) + 1 / (25 * π^2) * cos(5 * π * z)
 

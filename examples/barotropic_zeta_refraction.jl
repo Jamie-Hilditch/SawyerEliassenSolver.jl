@@ -80,7 +80,7 @@ kx = xwavenumbers_full(domain)
 fig = Figure(; size=(1200, 600))
 Label(fig[1, 1], "Gaussian vorticity filament"; tellwidth=false)
 ax_physical = Axis(fig[2, 1]; xlabel=L"x", ylabel=L"V_x")
-lines!(ax_physical, xgrid[:,1], Vx_physical[:,1]; color=:black)
+lines!(ax_physical, xgrid[:, 1], Vx_physical[:, 1]; color=:black)
 xlims!(ax_physical, -1, 1)
 
 ax_spectral = Axis(fig[3, 1]; xlabel=L"k_x", ylabel=L"\Phi_{V_x}")
@@ -212,8 +212,8 @@ function setup_problem()
     domain = Domain(grid; dealias_x=dealias)
     xgrid, zgrid = gridpoints(grid)
     background_flow = BackgroundFlow(grid)
-    background_flow.Vx .= Vx.(xgrid);
-    background_flow.Bz .= N²;
+    background_flow.Vx .= Vx.(xgrid)
+    background_flow.Bz .= N²
     problem = Problem(domain, background_flow)
     set_ζ!(problem; u=u₀)
     return domain, problem

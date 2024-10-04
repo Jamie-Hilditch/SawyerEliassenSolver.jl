@@ -1,4 +1,4 @@
-const DUMMY_COORDINATES_FOR_CONSTRUCTOR = [1.0,2.0,3.0,4.0,5.0]
+const DUMMY_COORDINATES_FOR_CONSTRUCTOR = [1.0, 2.0, 3.0, 4.0, 5.0]
 const DIMENSION_OPTIONS_FOR_CONSTRUCTOR = (
     x=DUMMY_COORDINATES_FOR_CONSTRUCTOR,
     z=DUMMY_COORDINATES_FOR_CONSTRUCTOR,
@@ -14,7 +14,7 @@ function create_problem_for_testing_output_writer(FT)
 end
 
 function create_dimensions_for_testing_output_writer(FT)
-    coordinates = Vector{FT}([1.0,2.0,3.0,4.0,5.0])
+    coordinates = Vector{FT}([1.0, 2.0, 3.0, 4.0, 5.0])
     dimension_names = (:x, :z, :p, :q)
     combinations = powerset(dimension_names)
     return map(names -> (; (names .=> tuple(coordinates))...), combinations)
@@ -30,13 +30,13 @@ function test_output_writer_constructor_no_dims(FT)
         @test isfile(filepath)
 
         # check we can overwrite it
-        OutputWriter(problem, filepath, overwrite=true)
+        OutputWriter(problem, filepath; overwrite=true)
         @test isfile(filepath)
 
         # check we can't overwrite it
         @test_throws ArgumentError OutputWriter(problem, filepath)
     finally
-        rm(filepath, force=true)
+        rm(filepath; force=true)
     end
 end
 
@@ -50,13 +50,13 @@ function test_output_writer_constructor_with_dims(FT, dims)
         @test isfile(filepath)
 
         # check we can overwrite it
-        OutputWriter(problem, filepath, dims, overwrite=true)
+        OutputWriter(problem, filepath, dims; overwrite=true)
         @test isfile(filepath)
 
         # check we can't overwrite it
         @test_throws ArgumentError OutputWriter(problem, filepath, dims)
     finally
-        rm(filepath, force=true)
+        rm(filepath; force=true)
     end
 end
 

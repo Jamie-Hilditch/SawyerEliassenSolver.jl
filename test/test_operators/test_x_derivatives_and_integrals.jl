@@ -3,10 +3,12 @@ NX = 16
 NZ = 4
 
 @inline trial_function_for_x_operators(x) = sin(π * x) + cos(2 * π * x)
-@inline derivative_of_trial_function_for_x_operators(x) = π * cos(π * x) - 2 * π * sin(2 * π * x)
+@inline derivative_of_trial_function_for_x_operators(x) =
+    π * cos(π * x) - 2 * π * sin(2 * π * x)
 @inline second_derivative_of_trial_function_for_x_operators(x) =
     -π^2 * sin(π * x) - 4 * π^2 * cos(2 * π * x)
-@inline integral_of_trial_function_for_x_operators(x) = -1 / π * cos(π * x) + 1 / (2 * π) * sin(2 * π * x)
+@inline integral_of_trial_function_for_x_operators(x) =
+    -1 / π * cos(π * x) + 1 / (2 * π) * sin(2 * π * x)
 @inline second_integral_of_trial_function_for_x_operators(x) =
     -1 / π^2 * sin(π * x) - 1 / (4 * π^2) * cos(2 * π * x)
 

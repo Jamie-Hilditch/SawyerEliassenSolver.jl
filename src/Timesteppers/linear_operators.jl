@@ -49,7 +49,9 @@ end
 
 𝓛ᴵ = 1 + aᵢᵢ h² 𝓛
 """
-@propagate_inbounds function 𝓛ᴵ!(problem::Problem{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢh²::T) where {T}
+@propagate_inbounds function 𝓛ᴵ!(
+    problem::Problem{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢh²::T
+) where {T}
     𝓛!(problem, out, in)
     @inbounds out .*= aᵢᵢh²
     @inbounds out .+= in

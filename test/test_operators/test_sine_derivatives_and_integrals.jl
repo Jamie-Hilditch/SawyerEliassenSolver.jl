@@ -1,8 +1,10 @@
 @inline trial_function_for_sine_operators(z) = sin(π * z) - sin(5 * π * z)
-@inline derivative_of_trial_function_for_sine_operators(z) = π * cos(π * z) - 5 * π * cos(5 * π * z)
+@inline derivative_of_trial_function_for_sine_operators(z) =
+    π * cos(π * z) - 5 * π * cos(5 * π * z)
 @inline second_derivative_of_trial_function_for_sine_operators(z) =
     -π^2 * sin(π * z) + 25 * π^2 * sin(5 * π * z)
-@inline integral_of_trial_function_for_sine_operators(z) = -1 / π * cos(π * z) + 1 / (5 * π) * cos(5 * π * z)
+@inline integral_of_trial_function_for_sine_operators(z) =
+    -1 / π * cos(π * z) + 1 / (5 * π) * cos(5 * π * z)
 @inline second_integral_of_trial_function_for_sine_operators(z) =
     -1 / π^2 * sin(π * z) + 1 / (25 * π^2) * sin(5 * π * z)
 
@@ -96,8 +98,6 @@ function test_sine_second_integral(FT)
     output_XS = ∫dz²(input_XS)
     @test expected_output ≈ sine_transform(output_XS)
 end
-
-
 
 @testset "z - sine derivatives" for FT in FLOAT_TYPES
     @info "\tTesting z derivatives in sine space for $(FT)"

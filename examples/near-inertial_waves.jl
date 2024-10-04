@@ -182,8 +182,8 @@ nothing #hide
 
 x_grid, z_grid = gridpoints(domain)
 u_theory = [
-    u(x, z, 2π / f, W₁) + u(x, z, 2π / f, W₂)
-    for x in xgridpoints(domain), z in zgridpoints(domain)
+    u(x, z, 2π / f, W₁) + u(x, z, 2π / f, W₂) for x in xgridpoints(domain),
+    z in zgridpoints(domain)
 ];
 
 function run_one_inertial_period(problem, nsteps::Int)
@@ -209,18 +209,31 @@ end;
 # The lower bound for the error is determined by the tolerance of the iterative solver.
 
 fig = Figure(; size=(1200, 400))
-ax = Axis(fig[1, 1]; xlabel="Δt [Inertial periods]", ylabel="RMS Error", xscale=log10, yscale=log10)
+ax = Axis(
+    fig[1, 1];
+    xlabel="Δt [Inertial periods]",
+    ylabel="RMS Error",
+    xscale=log10,
+    yscale=log10,
+)
 number_of_steps = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
 
 for nsteps in number_of_steps
     problem = Problem(domain, background_flow)
     u_sim = run_one_inertial_period(problem, nsteps)
     rms = rms_error(u_sim, u_theory)
-    scatter!(ax, 1 / nsteps, rms, color=:red, marker=:cross)
+    scatter!(ax, 1 / nsteps, rms; color=:red, marker=:cross)
 end
 
-lines!(ax, 1 ./ number_of_steps, 1e3 ./ number_of_steps .^ 3; color=:black, label="Δt³", linewidth=2)
-axislegend(position=:lt)
+lines!(
+    ax,
+    1 ./ number_of_steps,
+    1e3 ./ number_of_steps .^ 3;
+    color=:black,
+    label="Δt³",
+    linewidth=2,
+)
+axislegend(; position=:lt)
 
 current_figure() #hide
 fig

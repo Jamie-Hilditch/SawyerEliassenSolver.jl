@@ -51,10 +51,7 @@ struct DiagonalQuadraticPreconditioner{T} <: AbstractPreconditioner{T}
 end
 
 @inline function solve_preconditioner_equation!(
-    P::DiagonalQuadraticPreconditioner{T},
-    out::FSVariable{T},
-    in::FSVariable{T},
-    aᵢᵢh²::T,
+    P::DiagonalQuadraticPreconditioner{T}, out::FSVariable{T}, in::FSVariable{T}, aᵢᵢh²::T
 ) where {T}
     (; domain, ω₀², ω₁²) = P
     CNX = domain.spectral.CNX
@@ -78,5 +75,8 @@ function Base.show(io::IO, ::MIME"text/plain", 𝓟::DiagonalQuadraticPreconditi
 end
 
 function Base.summary(io::IO, 𝓟::DiagonalQuadraticPreconditioner)
-    return print(io, "DiagonalQuadraticPreconditioner with ω₀² = $(sfmt(𝓟.ω₀²)), ω₁² = $(sfmt(𝓟.ω₁²))")
+    return print(
+        io,
+        "DiagonalQuadraticPreconditioner with ω₀² = $(sfmt(𝓟.ω₀²)), ω₁² = $(sfmt(𝓟.ω₁²))",
+    )
 end

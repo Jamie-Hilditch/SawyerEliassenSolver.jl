@@ -28,7 +28,9 @@ struct ConjugateGradientSolver{T}
     end
 end
 
-function ConjugateGradientSolver(problem::Problem{T}, aᵢᵢh²::T, ::Nothing, cg_tol::T) where {T}
+function ConjugateGradientSolver(
+    problem::Problem{T}, aᵢᵢh²::T, ::Nothing, cg_tol::T
+) where {T}
     # without roundoff error the conjugate gradient method converges in at most n iterations
     # where n is the dimension of the problem
     domain = get_domain(problem)
@@ -39,13 +41,15 @@ end
 function ConjugateGradientSolver(
     problem::Problem{T}, aᵢᵢh²::T, max_iterations::Int, ::Nothing
 ) where {T}
-    return ConjugateGradientSolver(problem, aᵢᵢh², max_iterations, convert(T, CG_TOL_DEFAULT))
+    return ConjugateGradientSolver(
+        problem, aᵢᵢh², max_iterations, convert(T, CG_TOL_DEFAULT)
+    )
 end
 
-function ConjugateGradientSolver(problem::Problem{T}, aᵢᵢh²::T, ::Nothing, ::Nothing) where {T}
-    return ConjugateGradientSolver(
-        problem, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT)
-    )
+function ConjugateGradientSolver(
+    problem::Problem{T}, aᵢᵢh²::T, ::Nothing, ::Nothing
+) where {T}
+    return ConjugateGradientSolver(problem, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT))
 end
 
 Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
@@ -60,9 +64,8 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
     # extract variables from cgs
     (; problem, p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
 
-    @boundscheck consistent_domains(problem, x, b, 𝓟) || throw(
-        ArgumentError("`cgs`, `x`, `b` and `𝓟` must have the same domain.")
-    )
+    @boundscheck consistent_domains(problem, x, b, 𝓟) ||
+        throw(ArgumentError("`cgs`, `x`, `b` and `𝓟` must have the same domain."))
 
     # termination condition
     condition = tol * real(b ⋅ b)

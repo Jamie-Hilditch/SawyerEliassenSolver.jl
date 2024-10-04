@@ -1,6 +1,7 @@
 
 function compute_u!(problem::Problem{T}, u::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(u, problem) || throw(ArgumentError("`u` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(u, problem) ||
+        throw(ArgumentError("`u` and `problem` must have the same domain."))
     # use the scratch variables for storage
     Ψ, u_FC, u_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
 
@@ -20,9 +21,12 @@ function compute_u!(problem::Problem{T}, u::XZVariable{T}) where {T}
 end
 
 function compute_∂u∂x!(problem::Problem{T}, ∂u∂x::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(∂u∂x, problem) || throw(ArgumentError("`∂u∂x` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(∂u∂x, problem) ||
+        throw(ArgumentError("`∂u∂x` and `problem` must have the same domain."))
     # use the scratch variables for storage
-    Ψ, u_FC, ∂u∂x_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
+    Ψ, u_FC, ∂u∂x_XC = problem.scratch.FS_tmp,
+    problem.scratch.FC_tmp,
+    problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
     ∇⁻²!(Ψ, problem.state.ζ)
@@ -43,9 +47,12 @@ function compute_∂u∂x!(problem::Problem{T}, ∂u∂x::XZVariable{T}) where {
 end
 
 function compute_∂²u∂x²!(problem::Problem{T}, ∂²u∂x²::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(∂²u∂x², problem) || throw(ArgumentError("`∂²u∂x²` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(∂²u∂x², problem) ||
+        throw(ArgumentError("`∂²u∂x²` and `problem` must have the same domain."))
     # use the scratch variables for storage
-    Ψ, u_FC, ∂²u∂x²_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
+    Ψ, u_FC, ∂²u∂x²_XC = problem.scratch.FS_tmp,
+    problem.scratch.FC_tmp,
+    problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
     ∇⁻²!(Ψ, problem.state.ζ)
@@ -54,7 +61,7 @@ function compute_∂²u∂x²!(problem::Problem{T}, ∂²u∂x²::XZVariable{T})
     @inbounds ∂z!(u_FC, Ψ)
 
     # compute the x derivatives in place
-    @inbounds ∂x!(u_FC,2)
+    @inbounds ∂x!(u_FC, 2)
 
     # transform to XZ
     Tᴴ!(∂²u∂x²_XC, u_FC)
@@ -66,7 +73,8 @@ function compute_∂²u∂x²!(problem::Problem{T}, ∂²u∂x²::XZVariable{T})
 end
 
 function compute_∂u∂z!(problem::Problem{T}, ∂u∂z::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(∂u∂z, problem) || throw(ArgumentError("`∂u∂z` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(∂u∂z, problem) ||
+        throw(ArgumentError("`∂u∂z` and `problem` must have the same domain."))
     # use the scratch variables for storage
     Ψ, ∂u∂z_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
@@ -86,9 +94,12 @@ function compute_∂u∂z!(problem::Problem{T}, ∂u∂z::XZVariable{T}) where {
 end
 
 function compute_∂²u∂z²!(problem::Problem{T}, ∂²u∂z²::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(u, problem) || throw(ArgumentError("`∂²u∂z²` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(u, problem) ||
+        throw(ArgumentError("`∂²u∂z²` and `problem` must have the same domain."))
     # use the scratch variables for storage
-    Ψ, u_FC, ∂²u∂z²_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
+    Ψ, u_FC, ∂²u∂z²_XC = problem.scratch.FS_tmp,
+    problem.scratch.FC_tmp,
+    problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
     ∇⁻²!(Ψ, problem.state.ζ)
@@ -109,7 +120,8 @@ function compute_∂²u∂z²!(problem::Problem{T}, ∂²u∂z²::XZVariable{T})
 end
 
 function compute_∂²u∂x∂z!(problem::Problem{T}, ∂²u∂x∂z::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(∂²u∂x∂z, problem) || throw(ArgumentError("`∂²u∂x∂z` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(∂²u∂x∂z, problem) ||
+        throw(ArgumentError("`∂²u∂x∂z` and `problem` must have the same domain."))
     # use the scratch variables for storage
     Ψ, ∂²u∂x∂z_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
@@ -131,7 +143,6 @@ function compute_∂²u∂x∂z!(problem::Problem{T}, ∂²u∂x∂z::XZVariable
     return nothing
 end
 
-
 # define unsafe versions of the functions with no bounds checking
 @inline _compute_u!(problem, u) = @inbounds compute_u!(problem, u)
 @inline _compute_∂u∂x!(problem, ∂u∂x) = @inbounds compute_∂u∂x!(problem, ∂u∂x)
@@ -144,12 +155,17 @@ end
 """$(TYPEDSIGNATURES)"""
 u(problem::Problem) = OutputVariable(problem, _compute_u!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂u∂x(problem::Problem) = OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
+∂u∂x(problem::Problem) =
+    OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂x²(problem::Problem) = OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂x²(problem::Problem) =
+    OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂u∂z(problem::Problem) = OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
+∂u∂z(problem::Problem) =
+    OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂z²(problem::Problem) = OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂z²(problem::Problem) =
+    OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂²u∂x∂z(problem::Problem) = OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)
+∂²u∂x∂z(problem::Problem) =
+    OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)

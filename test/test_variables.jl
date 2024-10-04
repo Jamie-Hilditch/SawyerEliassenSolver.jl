@@ -1,5 +1,5 @@
-const real_variable_types=(XZVariable, XSVariable, XCVariable)
-const complex_variable_types=(FZVariable, FSVariable, FCVariable)
+const real_variable_types = (XZVariable, XSVariable, XCVariable)
+const complex_variable_types = (FZVariable, FSVariable, FCVariable)
 
 function test_data_element_type(domain)
     FT = eltype(domain)

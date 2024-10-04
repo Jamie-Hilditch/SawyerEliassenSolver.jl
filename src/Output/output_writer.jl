@@ -23,7 +23,7 @@ function initialise_output_file(
         end
 
         # create the time dimension
-        dset = create_dataset(h5, "time", T, dataspace(tuple(0),tuple(-1)), chunk=(1,))
+        dset = create_dataset(h5, "time", T, dataspace(tuple(0), tuple(-1)); chunk=(1,))
         HDF5.API.h5ds_set_scale(dset.id, "time")
     end
 end
@@ -46,10 +46,7 @@ struct OutputWriter{T,D}
         overwrite::Bool=false,
     ) where {T}
         # add `x` and `z` to dimensions if not already defined
-        default_coordinates = (
-            x=xgridpoints(problem.domain),
-            z=zgridpoints(problem.domain),
-        )
+        default_coordinates = (x=xgridpoints(problem.domain), z=zgridpoints(problem.domain))
         all_coordinates = merge(default_coordinates, coordinates)
 
         # initialise the output file
@@ -57,26 +54,30 @@ struct OutputWriter{T,D}
 
         # initialise an empty dict for the variables
         output_variables = Dict{String,OutputVariable}()
-        return new{T,typeof(all_coordinates)}(problem, filepath, all_coordinates, output_variables)
+        return new{T,typeof(all_coordinates)}(
+            problem, filepath, all_coordinates, output_variables
+        )
     end
 end
 
 """$(TYPEDSIGNATURES)"""
-function OutputWriter(problem::Problem{T}, filepath::String; overwrite::Bool=false) where {T}
+function OutputWriter(
+    problem::Problem{T}, filepath::String; overwrite::Bool=false
+) where {T}
     return OutputWriter(problem, filepath, NamedTuple(); overwrite=overwrite)
 end
 
 function Base.show(io::IO, ::MIME"text/plain", ow::OutputWriter)
-    coordinates_string = join(keys(ow.coordinates),", ")
-    variables_string = join(keys(ow._output_variables),", ")
-return print(
-    io,
-    "OutputWriter:\n",
-    "  ├─────── filepath: $(ow.filepath)\n",
-    "  ├──────── problem: $(summary(ow.problem))\n",
-    "  ├──── coordinates: $(coordinates_string)\n",
-    "  └────── variables: $(variables_string)\n",
-)
+    coordinates_string = join(keys(ow.coordinates), ", ")
+    variables_string = join(keys(ow._output_variables), ", ")
+    return print(
+        io,
+        "OutputWriter:\n",
+        "  ├─────── filepath: $(ow.filepath)\n",
+        "  ├──────── problem: $(summary(ow.problem))\n",
+        "  ├──── coordinates: $(coordinates_string)\n",
+        "  └────── variables: $(variables_string)\n",
+    )
 end
 
 function Base.summary(io::IO, ow::OutputWriter)
@@ -96,12 +97,15 @@ function add_output_variables!(output_writer::OutputWriter; kwargs...)
 
         # Iterate over the keyword arguments
         for (path_symbol, output_variable) in kwargs
-
             path = String(path_symbol)
 
             # Check if the variable already exists
             if haskey(h5, path)
-                throw(ArgumentError("$path already exists in the output file. Variables can be deleted using `delete!(output_writer, variable_name)`."))
+                throw(
+                    ArgumentError(
+                        "$path already exists in the output file. Variables can be deleted using `delete!(output_writer, variable_name)`.",
+                    ),
+                )
             end
 
             # Create a dataset for the output variable
@@ -109,8 +113,6 @@ function add_output_variables!(output_writer::OutputWriter; kwargs...)
 
             # Store the output variable in the output writer
             output_writer._output_variables[path] = output_variable
-
-
         end
     end
 end
@@ -125,24 +127,28 @@ function Base.delete!(output_writer::OutputWriter, variable_name::String)
         delete_object(h5, variable_name)
     end
     # delete the variable from the output writer dict
-    delete!(output_writer._output_variables, variable_name)
+    return delete!(output_writer._output_variables, variable_name)
 end
 
-Base.delete!(output_writer::OutputWriter, variable_name::Symbol) = delete!(output_writer, String(variable_name))
+function Base.delete!(output_writer::OutputWriter, variable_name::Symbol)
+    return delete!(output_writer, String(variable_name))
+end
 
 function extend_time_dimension(dset::HDF5.Dataset)
     dims, _ = HDF5.get_extent_dims(dset)
     new_dims = (dims[1:(end - 1)]..., dims[end] + 1)
-    HDF5.set_extent_dims(dset, new_dims)
+    return HDF5.set_extent_dims(dset, new_dims)
 end
 
-function write_variable!(dset::HDF5.Dataset, output_variable::OutputVariable{T,N,O,A}) where {T,N,O,A}
+function write_variable!(
+    dset::HDF5.Dataset, output_variable::OutputVariable{T,N,O,A}
+) where {T,N,O,A}
     # compute the output
     compute!(output_variable)
     # save the output
     extend_time_dimension(dset)
     indices = ntuple(i -> Colon(), N)
-    dset[indices...,end] = output_variable.output_array
+    dset[indices..., end] = output_variable.output_array
     return nothing
 end
 
@@ -179,7 +185,7 @@ file.
 function write_attributes!(ow::OutputWriter; attributes...)
     h5open(ow.filepath, "r+") do h5
         for (key, value) in attributes
-            HDF5.write_attribute(h5,String(key), value)
+            HDF5.write_attribute(h5, String(key), value)
         end
     end
 end

@@ -27,11 +27,11 @@ function setup_simulation()
     problem = Problem(domain, bg)
 
     function initial_conditions(x, z)
-        sin(2 * π * x / LX) * cos(5 * π * z / LZ) +
-        1 / 2 * sin(5 * 2 * π * x / LX) * cos(π * z / LZ)
+        return sin(2 * π * x / LX) * cos(5 * π * z / LZ) +
+               1 / 2 * sin(5 * 2 * π * x / LX) * cos(π * z / LZ)
     end
 
-    set_ζ!(problem, u=initial_conditions)
+    set_ζ!(problem; u=initial_conditions)
 
     # timestepper
     preconditioner = DiagonalQuadraticPreconditioner(domain, 1.0, N^2)
@@ -39,7 +39,6 @@ function setup_simulation()
 
     return timestepper
 end
-
 
 # profile backtraces
 ts = setup_simulation()

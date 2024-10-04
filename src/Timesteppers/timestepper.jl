@@ -45,8 +45,6 @@ function AuxillaryVariables(domain::Domain{T}) where {T}
     return AuxillaryVariables{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
 end
 
-
-
 """$(TYPEDEF)
 Object that stores all the variables and operators required to advance a problem one timestep.
 """
