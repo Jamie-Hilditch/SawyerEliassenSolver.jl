@@ -142,7 +142,7 @@ write!(output_writer)
 
 # Run the simulation for 10 inertial periods.
 
-for _ in 1:10
+for _ in 1:100
     advance!(ts, 5)
     write!(output_writer)
 end
