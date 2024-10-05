@@ -19,7 +19,7 @@ sawyer_eliassen_pages = [
 
 # examples
 const EXAMPLES_DIR = joinpath(@__DIR__, "..", "examples")
-const OUTPUT_DIR = joinpath(@__DIR__, "literated")
+const OUTPUT_DIR = joinpath(@__DIR__, "src/literated")
 
 example_scripts = [
     "Near-inertial waves" => "near-inertial_waves.jl",
@@ -34,7 +34,7 @@ example_pages = map(example_scripts) do example
         example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
     )
     page_name = replace(script, ".jl" => ".md")
-    name => joinpath("..", "/literated", page_name)
+    name => joinpath("literated", page_name)
 end
 
 # library
@@ -89,6 +89,6 @@ makedocs(;
 
 # clean up h5 files
 @info "Cleaning up temporary .h5 created by examples..."
-readdir(OUTPUT_DIR; join=true) |> filter(x -> endswith(x, ".h5")) .|> rm
+readdir(OUTPUT_DIR, join=true) |> filter(x -> endswith(x, ".h5")) .|> rm
 
 deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.git")
