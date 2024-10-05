@@ -1,7 +1,7 @@
 .vscode
 /docs/Manifest.toml
 /docs/build/
-/docs/src/literated/
+/docs/literated/
 Manifest.toml
 *.h5
 *.pb.gz

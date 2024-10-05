@@ -19,7 +19,7 @@ sawyer_eliassen_pages = [
 
 # examples
 const EXAMPLES_DIR = joinpath(@__DIR__, "..", "examples")
-const OUTPUT_DIR = joinpath(@__DIR__, "src/literated")
+const OUTPUT_DIR = joinpath(@__DIR__, "literated")
 
 example_scripts = [
     "Near-inertial waves" => "near-inertial_waves.jl",
