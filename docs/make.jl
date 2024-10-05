@@ -34,7 +34,7 @@ example_pages = map(example_scripts) do example
         example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
     )
     page_name = replace(script, ".jl" => ".md")
-    name => joinpath("literated", page_name)
+    name => joinpath("..", "/literated", page_name)
 end
 
 # library
