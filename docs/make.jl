@@ -89,6 +89,10 @@ makedocs(;
 
 # clean up h5 files
 @info "Cleaning up temporary .h5 created by examples..."
-readdir(OUTPUT_DIR; join=true) |> filter(x -> endswith(x, ".h5")) .|> rm
+for (root, dirs, files) in walkdir(@__DIR__)
+    files |> filter(x -> endswith(x, ".h5")) .|> (x -> joinpath(root, x)) .|> rm
+end
+
+# readdir(OUTPUT_DIR; join=true) |> filter(x -> endswith(x, ".h5")) .|> rm
 
 deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.git")
