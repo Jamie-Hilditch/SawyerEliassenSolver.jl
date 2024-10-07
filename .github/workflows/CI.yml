@@ -42,7 +42,7 @@ jobs:
       - uses: julia-actions/julia-buildpkg@v1
       - id: hack-for-julia18
         if: matrix.version == '1.8'
-        run: julia --project=test -e 'using Pkg; Pkg.add(name="JuliaInterpreter", version="0.9.35")'
+        run: julia --project=test -e 'using Pkg; Pkg.add(name="JuliaInterpreter", version="0.9.35"); Pkg.pin(name="JuliaInterpreter", version="0.9.35")'
       - uses: julia-actions/julia-runtest@v1
   docs:
     name: Documentation
