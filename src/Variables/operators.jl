@@ -163,7 +163,7 @@ end
 end
 
 # out-of-place physical z derivative in Fourier space
-@inline function ∂z!(out::FZVariable, in::FZVariable)
+@inline function ∂z!(out::V, in::V) where {V<:Union{XZVariable,FZVariable}}
     @boundscheck consistent_domains(out, in)
     size(in)[2] >= 5 ||
         throw(ArgumentError("z grid is too short to apply five point stencil"))
