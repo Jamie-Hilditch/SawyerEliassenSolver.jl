@@ -120,7 +120,8 @@ get_domain(domain::Domain) = domain
 """$(TYPEDSIGNATURES)
 Check that these variables have the same domain.
 """
-@inline consistent_domains(A...) = isempty(A) || allequal(map(get_domain, A))
+@inline consistent_domains(A...) = allequal(map(get_domain, A))
+@inline consistent_domains() = true
 
 # forward some functions onto domain
 xgridpoints(x) = xgridpoints(get_domain(x))
