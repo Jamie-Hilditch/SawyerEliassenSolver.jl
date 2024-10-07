@@ -162,6 +162,32 @@ end
     return nothing
 end
 
+# out-of-place physical z derivative in Fourier space
+@inline function ∂z!(out::FZVariable, in::FZVariable)
+    @boundscheck consistent_domains(out, in)
+    size(in)[2] >= 5 ||
+        throw(ArgumentError("z grid is too short to apply five point stencil"))
+
+    @inbounds @. out[:, 1] =
+        -25 / 12 * in[:, 1] + 4 * in[:, 2] - 3 * in[:, 3] + 4 / 3 * in[:, 4] -
+        1 / 4 * in[:, 5]
+    @inbounds @. out[:, 2] =
+        -1 / 4 * in[:, 1] - 5 / 6 * in[:, 2] + 3 / 2 * in[:, 3] - 1 / 2 * in[:, 4] +
+        1 / 12 * in[:, 5]
+    @inbounds @. out[:, 3:(end - 2)] =
+        1 / 12 * in[:, 1:(end - 4)] - 2 / 3 * in[:, 2:(end - 3)] +
+        2 / 3 * in[:, 4:(end - 1)] - 1 / 12 * in[:, 5:end]
+    @inbounds @. out[:, end - 1] =
+        -1 / 12 * in[:, end - 4] + 1 / 2 * in[:, end - 3] - 3 / 2 * in[:, end - 2] +
+        5 / 6 * in[:, end - 1] +
+        1 / 4 * in[:, end]
+    @inbounds @. out[:, end] =
+        1 / 4 * in[:, end - 4] - 4 / 3 * in[:, end - 3] + 3 * in[:, end - 2] -
+        4 * in[:, end - 1] + 25 / 12 * in[:, end]
+    out ./= zstepsize(in)
+    return nothing
+end
+
 # new output sine to cosine in physical X space
 @inline function ∂z(v::XSVariable)
     out = XCVariable(v.domain)
@@ -189,6 +215,8 @@ end
     @inbounds ∂z!(out, v)
     return out
 end
+
+#
 
 #######################
 ## 2nd Z derivatives ##
