@@ -162,7 +162,7 @@ end
     return nothing
 end
 
-# out-of-place physical z derivative in Fourier space
+# out-of-place physical z derivative
 @inline function ∂z!(out::V, in::V) where {V<:Union{XZVariable,FZVariable}}
     @boundscheck consistent_domains(out, in)
     size(in)[2] >= 5 ||
@@ -216,7 +216,12 @@ end
     return out
 end
 
-#
+# new output physical z derivative
+@inline function ∂z(v::V) where {V<:Union{XZVariable,FZVariable}}
+    out = similar(v)
+    @inbounds ∂z!(out, v)
+    return out
+end
 
 #######################
 ## 2nd Z derivatives ##
