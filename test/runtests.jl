@@ -1,6 +1,6 @@
 # this is a hack to avoid a bug in JET.jl when running CI on Julia 1.8
 if get(ENV, "CI", nothing) == "true" && (v"1.8" <= VERSION < v"1.9-")
-    using Pkg
+    import Pkg
     Pkg.add("JuliaInterpreter@0.9.35")
 end
 
