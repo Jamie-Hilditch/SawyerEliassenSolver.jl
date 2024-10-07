@@ -1,17 +1,17 @@
 function test_z_derivatives_method_types(FT)
-    grid = Grid(FT, NX, NZ, 1, 1)
+    grid = Grid(FT, 8, 8, 1, 1)
     domain = Domain(grid)
 
-    @test_throws MethodError ∂z(XZVariable(domain))
+    @test ∂z(XZVariable(domain)) isa XZVariable{FT}
     @test ∂z(XSVariable(domain)) isa XCVariable{FT}
     @test ∂z(XCVariable(domain)) isa XSVariable{FT}
-    @test_throws MethodError ∂z(FZVariable(domain))
+    @test ∂z(FZVariable(domain)) isa FZVariable{FT}
     @test ∂z(FSVariable(domain)) isa FCVariable{FT}
     @test ∂z(FCVariable(domain)) isa FSVariable{FT}
 end
 
 function test_z_second_derivatives_method_types(FT)
-    grid = Grid(FT, NX, NZ, 1, 1)
+    grid = Grid(FT, 8, 8, 1, 1)
     domain = Domain(grid)
 
     @test_throws MethodError ∂z²(XZVariable(domain))
@@ -23,7 +23,7 @@ function test_z_second_derivatives_method_types(FT)
 end
 
 function test_z_integral_method_types(FT)
-    grid = Grid(FT, NX, NZ, 1, 1)
+    grid = Grid(FT, 8, 8, 1, 1)
     domain = Domain(grid)
 
     @test_throws MethodError ∫dz(XZVariable(domain))
@@ -35,7 +35,7 @@ function test_z_integral_method_types(FT)
 end
 
 function test_z_second_integral_method_types(FT)
-    grid = Grid(FT, NX, NZ, 1, 1)
+    grid = Grid(FT, 8, 8, 1, 1)
     domain = Domain(grid)
 
     @test_throws MethodError ∫dz²(XZVariable(domain))
