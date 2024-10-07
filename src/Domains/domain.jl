@@ -122,7 +122,7 @@ Check that these variables have the same domain.
 """
 @inline function consistent_domains(a, B...)
     domain_of_a = get_domain(a)
-    all(b -> get_domain(b) === domain_of_a, B)
+    return all(b -> get_domain(b) === domain_of_a, B)
 end
 # could check that `a` actually has a domain but for now let the upstream function trigger a
 # method error on `get_domain`
