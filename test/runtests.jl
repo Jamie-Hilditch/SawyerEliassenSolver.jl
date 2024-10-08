@@ -46,6 +46,9 @@ const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
             @testset "cosine operators" begin
                 include("test_operators/test_cosine_derivatives_and_integrals.jl")
             end
+            @testset "physical z operators" begin
+                include("test_operators/test_physical_z_operators.jl")
+            end
         end
     end
 
