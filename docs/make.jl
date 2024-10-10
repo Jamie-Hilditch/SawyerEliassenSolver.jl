@@ -4,6 +4,9 @@ using DocumenterCitations
 # using DocumenterInterLinks
 using Literate
 
+# set the environment variable SKIP_EXAMPLES to use the skip rerunning the examples
+const RUN_EXAMPLES = isnothing(get(ENV, "SKIP_EXAMPLES", nothing))
+
 #metadata
 DocMeta.setdocmeta!(
     SawyerEliassenSolver, :DocTestSetup, :(using SawyerEliassenSolver); recursive=true
@@ -30,9 +33,11 @@ example_pages = map(example_scripts) do example
     name = first(example)
     script = last(example)
     example_filepath = joinpath(EXAMPLES_DIR, script)
-    Literate.markdown(
-        example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
-    )
+    if RUN_EXAMPLES
+        Literate.markdown(
+            example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
+        )
+    end
     page_name = replace(script, ".jl" => ".md")
     name => joinpath("literated", page_name)
 end
