@@ -35,7 +35,10 @@ example_pages = map(example_scripts) do example
     example_filepath = joinpath(EXAMPLES_DIR, script)
     if RUN_EXAMPLES
         Literate.markdown(
-            example_filepath, OUTPUT_DIR; flavor=Literate.DocumenterFlavor(), execute=true
+            example_filepath,
+            OUTPUT_DIR;
+            flavor=Literate.DocumenterFlavor(),
+            execute=true,
         )
     end
     page_name = replace(script, ".jl" => ".md")
