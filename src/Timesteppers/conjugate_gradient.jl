@@ -68,7 +68,7 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
         throw(ArgumentError("`cgs`, `x`, `b` and `𝓟` must have the same domain."))
 
     # termination condition
-    condition = tol * real(b ⋅ b)
+    condition = max(tol * real(b ⋅ b), √eps(T))
     @debug "Stopping condition = $(condition)"
 
     # compute the explicit residual every √max_iterations iterations
