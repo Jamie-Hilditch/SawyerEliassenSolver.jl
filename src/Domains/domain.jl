@@ -55,47 +55,6 @@ end
 
 Base.eltype(::Domain{T}) where {T} = T
 
-# forward some functions onto the grid
-Base.size(domain::Domain) = size(domain.grid)
-"""$(TYPEDSIGNATURES)"""
-xgridpoints(domain::Domain) = xgridpoints(domain.grid)
-"""$(TYPEDSIGNATURES)"""
-zgridpoints(domain::Domain) = zgridpoints(domain.grid)
-"""$(TYPEDSIGNATURES)"""
-gridpoints(domain::Domain) = gridpoints(domain.grid)
-
-# and forward some on to the spectral domain
-"""$(TYPEDSIGNATURES)
-The ``x`` wavenumbers ``k_x``.
-"""
-xwavenumbers(domain::Domain) = xwavenumbers(domain.spectral)
-"""$(TYPEDSIGNATURES)
-The ``z`` wavenumbers ``k_z``.
-"""
-zwavenumbers(domain::Domain) = zwavenumbers(domain.spectral)
-"""$(TYPEDSIGNATURES)
-``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
-"""
-wavenumbers(domain::Domain) = wavenumbers(domain.spectral)
-"""$(TYPEDSIGNATURES)
-The ``x`` wavenumbers ``k_x``.
-"""
-xwavenumbers_full(domain::Domain) = xwavenumbers_full(domain.spectral)
-"""$(TYPEDSIGNATURES)
-The ``z`` wavenumbers ``k_z``.
-"""
-zwavenumbers_full(domain::Domain) = zwavenumbers_full(domain.spectral)
-"""$(TYPEDSIGNATURES)
-``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
-"""
-wavenumbers_full(domain::Domain) = wavenumbers_full(domain.spectral)
-"""$(TYPEDSIGNATURES)"""
-resolved_fourier_indices(domain::Domain) = resolved_fourier_indices(domain.spectral)
-"""$(TYPEDSIGNATURES)"""
-resolved_sine_indices(domain::Domain) = resolved_sine_indices(domain.spectral)
-"""$(TYPEDSIGNATURES)"""
-resolved_cosine_indices(domain::Domain) = resolved_cosine_indices(domain.spectral)
-
 function Base.show(io::IO, ::MIME"text/plain", domain::Domain)
     return print(
         io,
@@ -129,10 +88,61 @@ end
 @inline consistent_domains(a) = true
 @inline consistent_domains() = true
 
+# forward some functions onto the grid
+Base.size(domain::Domain) = size(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+xgridpoints(domain::Domain) = xgridpoints(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+zgridpoints(domain::Domain) = zgridpoints(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+gridpoints(domain::Domain) = gridpoints(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+xstepsize(domain::Domain) = xstepsize(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+zstepsize(domain::Domain) = zstepsize(domain.grid)
+"""$(TYPEDSIGNATURES)"""
+stepsize(domain::Domain) = stepsize(domain.grid)
+
+# and forward some on to the spectral domain
+"""$(TYPEDSIGNATURES)
+The resolved ``x`` wavenumbers ``k_x``.
+"""
+xwavenumbers(domain::Domain) = xwavenumbers(domain.spectral)
+"""$(TYPEDSIGNATURES)
+The resolved ``z`` wavenumbers ``k_z``.
+"""
+zwavenumbers(domain::Domain) = zwavenumbers(domain.spectral)
+"""$(TYPEDSIGNATURES)
+Resolved ``k_x`` and ``k_z`` reshaped to size `(CNX,1)` and `(1,CNZ)` ready for broadcasting.
+"""
+wavenumbers(domain::Domain) = wavenumbers(domain.spectral)
+"""$(TYPEDSIGNATURES)
+The ``x`` wavenumbers ``k_x`` including unresolved zeroed-out wavenumbers.
+"""
+xwavenumbers_full(domain::Domain) = xwavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)
+The ``z`` wavenumbers ``k_z`` including unresolved zeroed-out wavenumbers.
+"""
+zwavenumbers_full(domain::Domain) = zwavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)
+``k_x`` and ``k_z`` including unresolved zeroed-out wavenumbers reshaped to size
+`(NX ÷ 2 + 1,1)` and `(1,NZ)` ready for broadcasting.
+"""
+wavenumbers_full(domain::Domain) = wavenumbers_full(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_fourier_indices(domain::Domain) = resolved_fourier_indices(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_sine_indices(domain::Domain) = resolved_sine_indices(domain.spectral)
+"""$(TYPEDSIGNATURES)"""
+resolved_cosine_indices(domain::Domain) = resolved_cosine_indices(domain.spectral)
+
 # forward some functions onto domain
 xgridpoints(x) = xgridpoints(get_domain(x))
 zgridpoints(x) = zgridpoints(get_domain(x))
 gridpoints(x) = gridpoints(get_domain(x))
+xstepsize(x) = xstepsize(get_domain(x))
+zstepsize(x) = zstepsize(get_domain(x))
+stepsize(x) = stepsize(get_domain(x))
 xwavenumbers(x) = xwavenumbers(get_domain(x))
 zwavenumbers(x) = zwavenumbers(get_domain(x))
 wavenumbers(x) = wavenumbers(get_domain(x))

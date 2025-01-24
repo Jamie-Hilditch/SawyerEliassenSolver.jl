@@ -1,7 +1,3 @@
-
-NX = 16
-NZ = 4
-
 @inline trial_function_for_x_operators(x) = sin(π * x) + cos(2 * π * x)
 @inline derivative_of_trial_function_for_x_operators(x) =
     π * cos(π * x) - 2 * π * sin(2 * π * x)
@@ -15,7 +11,7 @@ NZ = 4
 function test_physical_x_derivatives(FT)
     x_bounds = (-one(FT), one(FT))
     LZ = one(FT)
-    grid = Grid(NX, NZ, x_bounds, LZ)
+    grid = Grid(16, 4, x_bounds, LZ)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
@@ -67,7 +63,7 @@ end
 function test_physical_x_second_derivatives(FT)
     x_bounds = (-one(FT), one(FT))
     LZ = one(FT)
-    grid = Grid(NX, NZ, x_bounds, LZ)
+    grid = Grid(16, 4, x_bounds, LZ)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
@@ -119,7 +115,7 @@ end
 function test_physical_x_integrals(FT)
     x_bounds = (-one(FT), one(FT))
     LZ = one(FT)
-    grid = Grid(NX, NZ, x_bounds, LZ)
+    grid = Grid(16, 4, x_bounds, LZ)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)
@@ -171,7 +167,7 @@ end
 function test_physical_x_second_integrals(FT)
     x_bounds = (-one(FT), one(FT))
     LZ = one(FT)
-    grid = Grid(NX, NZ, x_bounds, LZ)
+    grid = Grid(16, 4, x_bounds, LZ)
     domain = Domain(grid)
 
     for x_variable_type in (XZVariable, XSVariable, XCVariable)

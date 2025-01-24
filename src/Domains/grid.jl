@@ -107,3 +107,10 @@ Get both the ``x`` and ``z`` gridpoints, reshaped to size `(NX,1)` and `(1,NZ)` 
     z = zgridpoints(grid)
     return reshape(x, :, 1), reshape(z, 1, :)
 end
+
+"""$(TYPEDSIGNATURES)"""
+@inline xstepsize(grid::Grid) = (grid.x_bounds[2] - grid.x_bounds[1]) / grid.NX
+"""$(TYPEDSIGNATURES)"""
+@inline zstepsize(grid::Grid) = (grid.z_bounds[2] - grid.z_bounds[1]) / (grid.NZ + 1)
+"""$(TYPEDSIGNATURES)"""
+@inline stepsize(grid::Grid) = xstepsize(grid), zstepsize(grid)
