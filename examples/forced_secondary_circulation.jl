@@ -50,5 +50,5 @@ const L::Float64 = 10
 const H::Float64 = 0.05
 
 function forcing(x, z, t)
-    exp(-x^2 / (2 * L^2) + z^2 / (2 * H^2)) * t * exp(-t^2)
+    return exp(-x^2 / (2 * L^2) + z^2 / (2 * H^2)) * t * exp(-t^2)
 end
