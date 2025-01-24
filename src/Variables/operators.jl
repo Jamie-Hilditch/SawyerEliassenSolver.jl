@@ -217,8 +217,14 @@ end
 end
 
 # new output physical z derivative
-@inline function ∂z(v::V) where {V<:Union{XZVariable,FZVariable}}
-    out = similar(v)
+@inline function ∂z(v::XZVariable)
+    out = XZVariable(v)
+    @inbounds ∂z!(out, v)
+    return out
+end
+
+@inline function ∂z(v::FZVariable)
+    out = FZVariable(v)
     @inbounds ∂z!(out, v)
     return out
 end
