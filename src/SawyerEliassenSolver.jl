@@ -5,7 +5,6 @@ using Printf
 using Reexport
 
 using FFTW: FFTW
-FFTW.set_num_threads(Threads.nthreads())
 
 include("Utils/Utils.jl")
 include("Domains/Domains.jl")
@@ -22,6 +21,15 @@ include("Output/Output.jl")
 @reexport using .Timesteppers
 @reexport using .Output
 
+"""Initialise the SawyerEliassenSolver module."""
+function __init__()
+    nthreads = Threads.nthreads()
+    FFTW.set_num_threads(nthreads)
+    if nthreads > 1
+        @info "SawyerEliassenSolver will use $nthreads threads for FFTW"
+    end
+end
+
 # add a module docstring.
 # N.B. to use DocStringExtensions i.e. $(EXPORTS) we need to define the docstring inside the module.
 
@@ -34,4 +42,5 @@ background flows.
 $(EXPORTS)
 """
 SawyerEliassenSolver
+
 end
