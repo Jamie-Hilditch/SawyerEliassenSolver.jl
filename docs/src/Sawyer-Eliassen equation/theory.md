@@ -1,6 +1,6 @@
 # The Sawyer-Eliassen equation 
 
-The Sawyer-Eliassen equation [Sawyer_Sutton_1956,Eliassen_1962](@citep) describes the ageostrophic overturning circulations at fronts. The derivation here largely follows [Mooers_1975](@citet) although we allow for arbitary momentum and buoyancy forcing. Consider a 2D set-up with a buoyancy field ``B(x,z)`` in thermal wind balance ``\partial B/\partial x = f\partial V/\partial x`` with a geostrophic velocity ``V(x,z)``. Assuming that perturbations from this state are also 2D the Boussinesq equations can be written.
+The Sawyer-Eliassen equation [Sawyer_Sutton_1956,Eliassen_1962](@citep) describes the ageostrophic overturning circulations at fronts. The derivation here largely follows [Mooers_1975](@citet) although we allow for arbitary momentum and buoyancy forcing. Consider a 2D set-up with a buoyancy field ``B(x,z)`` in thermal wind balance ``\partial B/\partial x = f\partial V/\partial z`` with a geostrophic velocity ``V(x,z)``. Assuming that perturbations from this state are also 2D the Boussinesq equations can be written.
 
 ```math
 \begin{align}
