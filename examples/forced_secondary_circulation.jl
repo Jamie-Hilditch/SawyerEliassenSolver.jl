@@ -54,21 +54,25 @@ domain = Domain(grid);
 # We specify the spatial and temporal parts of the RHS forcing as non-dimensional functions
 # and then provide the length and time scales as parameters.
 
-@inline forcing_spatial(x,z) = exp(-(x^2 + z^2) / 2)
+@inline forcing_spatial(x, z) = exp(-(x^2 + z^2) / 2)
 @inline forcing_temporal(t) = t * exp(-t^2 / 2)
 @inline forcing(x, z, t, p) = forcing_spatial(x / p.L, z / p.H) * forcing_temporal(t / p.τ)
 
 # We now construct the RHS forcing for the domain by passing in the function and parameters.
 # We choose a timescale of 3 inertial periods.
 
-const parameters = (; L = 20.0, H = 0.05, τ = 6π)
+const parameters = (; L=20.0, H=0.05, τ=6π)
 physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)
 
 # ### Time dependence of the forcing
 
 fig = fig = Figure(; size=(1200, 400))
 Label(fig[1, :], "Forcing time dependence"; tellwidth=false)
-ax = Axis(fig[2, :]; xlabel=L"t \ [\text{inertial periods}]", ylabel=L"\sigma\left(\frac{t}{\tau}\right)")
+ax = Axis(
+    fig[2, :];
+    xlabel=L"t \ [\text{inertial periods}]",
+    ylabel=L"\sigma\left(\frac{t}{\tau}\right)",
+)
 time = 0.0:0.1:10.0
 lines!(ax, time, forcing_temporal.(time / 3))
 xlims!(ax, 0, 10)
@@ -95,11 +99,11 @@ ts = Timestepper(problem, 2π / 50, preconditioner)
 
 output_writer = OutputWriter(problem, "forced_secondary_circulation.h5"; overwrite=true)
 add_output_variables!(
-    output_writer;
-    u=OutputVariables.u(problem),
-    w=OutputVariables.w(problem),
+    output_writer; u=OutputVariables.u(problem), w=OutputVariables.w(problem)
 )
-write_attributes!(output_writer; f=1.0, M²=M², N²=N², L=parameters.L, H=parameters.H, tau=parameters.τ)
+write_attributes!(
+    output_writer; f=1.0, M²=M², N²=N², L=parameters.L, H=parameters.H, tau=parameters.τ
+)
 write!(output_writer)
 
 # Run the simulation.
@@ -113,17 +117,17 @@ end
 
 output = h5open("forced_secondary_circulation.h5", "r") do h5
     (
-        u = read_dataset(h5, "u"),
-        w = read_dataset(h5, "w"),
+        u=read_dataset(h5, "u"),
+        w=read_dataset(h5, "w"),
         time=read_dataset(h5, "time"),
         x=read_dataset(h5, "x"),
-        z=read_dataset(h5,"z")
+        z=read_dataset(h5, "z"),
     )
 end;
 
 n = Observable(1)
-uₙ = @lift output[:u][:,:,$n]
-wₙ = @lift output[:w][:,:,$n]
+uₙ = @lift output[:u][:, :, $n]
+wₙ = @lift output[:w][:, :, $n]
 title = @lift @sprintf "t = %.2f inertial periods" output[:time][$n] / 2π
 
 fig = Figure(; size=(1200, 400))
@@ -135,16 +139,12 @@ linkaxes!(ax_u, ax_w)
 cf_u = heatmap!(
     ax_u, output[:x], output[:z], uₙ; colormap=:balance, colorrange=(-0.01, 0.01)
 )
-Colorbar(
-    fig[3, 1], cf_u; vertical=false, label=L"u", labelpadding=10
-)
+Colorbar(fig[3, 1], cf_u; vertical=false, label=L"u", labelpadding=10)
 
 cf_w = heatmap!(
     ax_w, output[:x], output[:z], wₙ; colormap=:balance, colorrange=(-1e-4, 1e-4)
 )
-Colorbar(
-    fig[3, 2], cf_w; vertical=false, label=L"w", labelpadding=10
-)
+Colorbar(fig[3, 2], cf_w; vertical=false, label=L"w", labelpadding=10)
 
 record(fig, "forced_secondary_circulation.mp4", 1:length(output[:time]); framerate=10) do i
     n[] = i
