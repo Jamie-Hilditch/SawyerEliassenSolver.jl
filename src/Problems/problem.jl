@@ -93,9 +93,24 @@ function Base.show(io::IO, ::MIME"text/plain", problem::Problem)
     )
 end
 
+"""$(TYPEDSIGNATURES)"""
+get_problem(problem::Problem) = problem
+
+# get the domain of a problem and use this as the fallback for get_domain
 Domains.get_domain(problem::Problem) = problem.domain
+Domains.get_domain(a::Any) = get_domain(get_problem(a))
 
 """$(TYPEDSIGNATURES)"""
 get_time(problem::Problem) = get_time(problem.state)
 """$(TYPEDSIGNATURES)"""
 get_iteration(problem::Problem) = get_iteration(problem.state)
+
+# forward some stuff onto background flow
+"""$(TYPEDSIGNATURES)"""
+get_f(problem::Problem) = get_f(problem.background)
+"""$(TYPEDSIGNATURES)"""
+get_Vx(problem::Problem) = get_Vx(problem.background)
+"""$(TYPEDSIGNATURES)"""
+get_Bx(problem::Problem) = get_Bx(problem.background)
+"""$(TYPEDSIGNATURES)"""
+get_Bz(problem::Problem) = get_Bz(problem.background)

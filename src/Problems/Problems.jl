@@ -21,7 +21,12 @@ export BackgroundFlow,
     compute_ζₜ!,
     set_vb!,
     get_time,
-    get_iteration
+    get_iteration,
+    get_f,
+    get_Vx,
+    get_Bx,
+    get_Bz,
+    get_problem
 
 include("background.jl")
 include("state.jl")

@@ -173,3 +173,5 @@ end
 @propagate_inbounds Base.getindex(v::OutputVariable, I::Vararg{Int,N}) where {N} =
     getindex(v.output_array, I...)
 @propagate_inbounds Base.getindex(v::OutputVariable, I...) = getindex(v.output_array, I...)
+
+Problems.get_problem(v::OutputVariable) = v.problem

@@ -94,7 +94,7 @@ function compute_∂u∂z!(problem::Problem{T}, ∂u∂z::XZVariable{T}) where {
 end
 
 function compute_∂²u∂z²!(problem::Problem{T}, ∂²u∂z²::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(u, problem) ||
+    @boundscheck consistent_domains(∂²u∂z², problem) ||
         throw(ArgumentError("`∂²u∂z²` and `problem` must have the same domain."))
     # use the scratch variables for storage
     Ψ, u_FC, ∂²u∂z²_XC = problem.scratch.FS_tmp,

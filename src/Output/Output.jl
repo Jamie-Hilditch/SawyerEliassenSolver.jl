@@ -19,10 +19,18 @@ export OutputVariable,
     add_output_variables!,
     write!,
     write_attributes!,
-    OutputVariables
+    OutputVariables,
+    ConstantOutputVariable,
+    write_constant_array!,
+    write_f!,
+    write_Vx!,
+    write_Bx!,
+    write_Bz!,
+    write_background_flow!
 
 include("output_variable.jl")
 include("output_writer.jl")
 include("OutputVariables/OutputVariables.jl")
+include("constant_output_variable.jl")
 
 end  # module Output
