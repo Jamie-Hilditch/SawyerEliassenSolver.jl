@@ -100,7 +100,6 @@ get_problem(problem::Problem) = problem
 Domains.get_domain(problem::Problem) = problem.domain
 Domains.get_domain(a::Any) = get_domain(get_problem(a))
 
-
 """$(TYPEDSIGNATURES)"""
 get_time(problem::Problem) = get_time(problem.state)
 """$(TYPEDSIGNATURES)"""

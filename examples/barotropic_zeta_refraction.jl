@@ -199,7 +199,13 @@ Colorbar(
     fig[3, 1], cf_∂u∂z; vertical=false, label=L"\partial u/\partial z", labelpadding=10
 )
 contour!(
-    ax_∂u∂z, output[:x], output[:z], output[:Vx]; levels=contour_levels, color=:black, labels=true
+    ax_∂u∂z,
+    output[:x],
+    output[:z],
+    output[:Vx];
+    levels=contour_levels,
+    color=:black,
+    labels=true,
 )
 
 cf_E = heatmap!(
@@ -207,7 +213,13 @@ cf_E = heatmap!(
 )
 Colorbar(fig[3, 2], cf_E; vertical=false, label=L"\mathcal{E}", labelpadding=10)
 contour!(
-    ax_E, output[:x], output[:z], output[:Vx]; levels=contour_levels, color=:black, labels=true
+    ax_E,
+    output[:x],
+    output[:z],
+    output[:Vx];
+    levels=contour_levels,
+    color=:black,
+    labels=true,
 )
 
 record(fig, "barotropic_zeta_refraction.mp4", 1:length(output[:time]); framerate=10) do i

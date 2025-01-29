@@ -26,7 +26,8 @@ Base.ndims(cov::ConstantOutputVariable) = ndims(cov.array)
     getindex(cov.array, i)
 @propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I::Vararg{Int,N}) where {N} =
     getindex(cov.array, I...)
-@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I...) = getindex(cov.array, I...)
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I...) =
+    getindex(cov.array, I...)
 
 function create_constant_output_variable!(
     h5::HDF5.File, path::String, cov::ConstantOutputVariable
@@ -75,7 +76,7 @@ function create_constant_output_variable!(
     end
 
     # finally save the data
-    indices = ntuple(i -> Colon(),N)
+    indices = ntuple(i -> Colon(), N)
     var_dset[indices...] = cov
     return nothing
 end
@@ -125,7 +126,7 @@ Write the current background ``V_x`` to the output writer.
 """
 function write_Vx!(output_writer::OutputWriter; name::String="Vx")
     problem = get_problem(output_writer)
-    write_constant_array!(output_writer, get_Vx(problem), name, (:x,:z))
+    write_constant_array!(output_writer, get_Vx(problem), name, (:x, :z))
     return nothing
 end
 
@@ -135,7 +136,7 @@ Write the current background ``B_x`` to the output writer.
 """
 function write_Bx!(output_writer::OutputWriter; name::String="Bx")
     problem = get_problem(output_writer)
-    write_constant_array!(output_writer, get_Bx(problem), name, (:x,:z))
+    write_constant_array!(output_writer, get_Bx(problem), name, (:x, :z))
     return nothing
 end
 
@@ -145,17 +146,17 @@ Write the current background ``B_z`` to the output writer.
 """
 function write_Bz!(output_writer::OutputWriter; name::String="Bz")
     problem = get_problem(output_writer)
-    write_constant_array!(output_writer, get_Bz(problem), name, (:x,:z))
+    write_constant_array!(output_writer, get_Bz(problem), name, (:x, :z))
     return nothing
 end
-
-
 
 """$(TYPEDSIGNATURES)
 
 Write the background flow to the output writer.
 """
-function write_background_flow!(ow::OutputWriter; f=nothing, Vx=nothing, Bx=nothing, Bz=nothing)
+function write_background_flow!(
+    ow::OutputWriter; f=nothing, Vx=nothing, Bx=nothing, Bz=nothing
+)
     isnothing(f) ? write_f!(ow) : write_f!(ow; name=String(f))
     isnothing(Vx) ? write_Vx!(ow) : write_Vx!(ow; name=String(Vx))
     isnothing(Bx) ? write_Bx!(ow) : write_Bx!(ow; name=String(Bx))
