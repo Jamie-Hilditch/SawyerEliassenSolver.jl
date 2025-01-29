@@ -15,7 +15,7 @@ where the non-linear terms have been absorbed into the arbitary RHS forcing. Int
 
 ```math
 \begin{equation}
-    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial\psi}{\partial t} = \frac{\partial b}{\partial x} - f\frac{\partial v}{\partial z} + \frac{\partial \mathcal{F}^{(x)}}{\partial x} - \frac{\partial \mathcal{F}^{(z)}}{\partial z}
+    \left(\frac{\partial^2 ~}{\partial x^2} + \frac{\partial^2 ~}{\partial z^2}\right)\frac{\partial\psi}{\partial t} = \frac{\partial b}{\partial x} - f\frac{\partial v}{\partial z} + \frac{\partial \mathcal{F}^{(z)}}{\partial x} - \frac{\partial \mathcal{F}^{(x)}}{\partial z}
 \end{equation}
 ```
 
@@ -37,7 +37,7 @@ The dynamics are controlled by a single second-order in time equation for the st
 where the forcing is 
 ```math
 \begin{equation}
-    \mathfrak{F}(x,z,t) = \frac{\partial^2 \mathcal{F}^{(x)}}{\partial x\partial t} - \frac{\partial^2 \mathcal{F}^{(z)}}{\partial z\partial t} - f\frac{\partial\mathcal{F}^{(y)}}{\partial z} + \frac{\partial\mathcal{B}}{\partial x}
+    \mathfrak{F}(x,z,t) = \frac{\partial^2 \mathcal{F}^{(z)}}{\partial x\partial t} - \frac{\partial^2 \mathcal{F}^{(x)}}{\partial z\partial t} - f\frac{\partial\mathcal{F}^{(y)}}{\partial z} + \frac{\partial\mathcal{B}}{\partial x}
 \end{equation}
 ```
 In expanding the RHS some cancellations can be made thanks to the assumption of thermal wind balance and the Sawyer-Eliassen equation is reached
