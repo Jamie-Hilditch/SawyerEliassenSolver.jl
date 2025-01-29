@@ -127,6 +127,8 @@ ts = Timestepper(problem, 2π / 50, preconditioner)
 
 # ## Output
 # Save ``u``, ``v``, ``w``, ``b`` and ``∂u/∂z`` every 5 timesteps.
+# We'll also save the background flow as [`ConstantOutputVariable`](@ref)s using
+# [`write_background_flow!`](@ref).
 
 output_writer = OutputWriter(problem, "barotropic_zeta_refraction.h5"; overwrite=true)
 add_output_variables!(
@@ -137,7 +139,8 @@ add_output_variables!(
     b=OutputVariables.b(problem),
     ∂u∂z=OutputVariables.∂u∂z(problem),
 )
-write_attributes!(output_writer; f=1, N²=N², Ro=Ro, L=L, H=H)
+write_background_flow!(output_writer)
+write_attributes!(output_writer; Ro=Ro, L=L, H=H)
 write!(output_writer)
 
 # Run the simulation for 10 inertial periods.
@@ -153,6 +156,7 @@ end
 # \mathcal{E} = \frac{1}{2}\left(u^2 + v^2 + w^2 + b^2/N^2\right)
 # ```
 # in the top 25% of the domain.
+# We'll also contour the background vorticity ``V_x``
 
 z_idx = (3 * NZ ÷ 4):NZ
 
@@ -162,9 +166,11 @@ output = h5open("barotropic_zeta_refraction.h5", "r") do h5
     w = h5["w"][:, z_idx, :]
     b = h5["b"][:, z_idx, :]
     E = (u .^ 2 .+ v .^ 2 .+ w .^ 2 .+ b .^ 2 / N²) / 2
+    Vx = h5["Vx"][:, z_idx]
     (
         E=E,
         ∂u∂z=h5["∂u∂z"][:, z_idx, :],
+        Vx=Vx,
         time=read_dataset(h5, "time"),
         x=read_dataset(h5, "x"),
         z=h5["z"][z_idx],
@@ -184,17 +190,25 @@ ax_∂u∂z = Axis(fig[2, 1]; ylabel="z")
 ax_E = Axis(fig[2, 2]; xlabel="x", ylabel="z")
 linkaxes!(ax_∂u∂z, ax_E)
 
+contour_levels = 0:1:4
+
 cf_∂u∂z = heatmap!(
     ax_∂u∂z, output[:x], output[:z], ∂u∂zₙ; colormap=:balance, colorrange=(-1000, 1000)
 )
 Colorbar(
     fig[3, 1], cf_∂u∂z; vertical=false, label=L"\partial u/\partial z", labelpadding=10
 )
+contour!(
+    ax_∂u∂z, output[:x], output[:z], output[:Vx]; levels=contour_levels, color=:black, labels=true
+)
 
 cf_E = heatmap!(
     ax_E, output[:x], output[:z], Eₙ; colormap=Reverse(:grays), colorrange=(0, 0.5)
 )
 Colorbar(fig[3, 2], cf_E; vertical=false, label=L"\mathcal{E}", labelpadding=10)
+contour!(
+    ax_E, output[:x], output[:z], output[:Vx]; levels=contour_levels, color=:black, labels=true
+)
 
 record(fig, "barotropic_zeta_refraction.mp4", 1:length(output[:time]); framerate=10) do i
     n[] = i

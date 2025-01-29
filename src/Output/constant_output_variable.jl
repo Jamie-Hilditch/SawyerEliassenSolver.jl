@@ -75,7 +75,9 @@ function create_constant_output_variable!(
     end
 
     # finally save the data
-    return var_dset .= cov.data
+    indices = ntuple(i -> Colon(),N)
+    var_dset[indices...] = cov
+    return nothing
 end
 
 """$(TYPEDSIGNATURES)
@@ -101,7 +103,8 @@ function write_constant_array!(
     dimension_labels::NTuple{N,Union{Symbol,Nothing}}=ntuple(nothing, Val(N)),
 ) where {T,N}
     cov = ConstantOutputVariable(array, dimension_labels)
-    return write_constant_variable!(output_writer, cov, name)
+    write_constant_variable!(output_writer, cov, name)
+    return nothing
 end
 
 ### Write the background flow to the output writer
@@ -113,6 +116,7 @@ Write the background ``f`` as an attribute to the output writer.
 function write_f!(output_writer::OutputWriter; name::String="f")
     problem = get_problem(output_writer)
     write_attributes!(output_writer, name => get_f(problem))
+    return nothing
 end
 
 """$(TYPEDSIGNATURES)
@@ -122,6 +126,7 @@ Write the current background ``V_x`` to the output writer.
 function write_Vx!(output_writer::OutputWriter; name::String="Vx")
     problem = get_problem(output_writer)
     write_constant_array!(output_writer, get_Vx(problem), name, (:x,:z))
+    return nothing
 end
 
 """$(TYPEDSIGNATURES)
@@ -131,6 +136,7 @@ Write the current background ``B_x`` to the output writer.
 function write_Bx!(output_writer::OutputWriter; name::String="Bx")
     problem = get_problem(output_writer)
     write_constant_array!(output_writer, get_Bx(problem), name, (:x,:z))
+    return nothing
 end
 
 """$(TYPEDSIGNATURES)
@@ -140,6 +146,7 @@ Write the current background ``B_z`` to the output writer.
 function write_Bz!(output_writer::OutputWriter; name::String="Bz")
     problem = get_problem(output_writer)
     write_constant_array!(output_writer, get_Bz(problem), name, (:x,:z))
+    return nothing
 end
 
 
@@ -153,4 +160,5 @@ function write_background_flow!(ow::OutputWriter; f=nothing, Vx=nothing, Bx=noth
     isnothing(Vx) ? write_Vx!(ow) : write_Vx!(ow; name=String(Vx))
     isnothing(Bx) ? write_Bx!(ow) : write_Bx!(ow; name=String(Bx))
     isnothing(Bz) ? write_Bz!(ow) : write_Bz!(ow; name=String(Bz))
+    return nothing
 end
