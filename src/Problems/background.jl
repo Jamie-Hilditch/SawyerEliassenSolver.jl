@@ -71,3 +71,12 @@ function Base.summary(io::IO, bg::BackgroundFlow)
         io, "BackgroundFlow with f = $(sfmt(bg.f)) and Vx,Bx,Bz = $(summary(bg.Vx))"
     )
 end
+
+"""$(TYPEDSIGNATURES)"""
+get_f(bg::BackgroundFlow) = bg.f
+"""$(TYPEDSIGNATURES)"""
+get_Vx(bg::BackgroundFlow) = bg.Vx
+"""$(TYPEDSIGNATURES)"""
+get_Bx(bg::BackgroundFlow) = bg.Bx
+"""$(TYPEDSIGNATURES)"""
+get_Bz(bg::BackgroundFlow) = bg.Bz

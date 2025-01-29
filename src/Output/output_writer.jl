@@ -86,6 +86,9 @@ function Base.summary(io::IO, ow::OutputWriter)
     )
 end
 
+"""$(TYPEDSIGNATURES)"""
+Problems.get_problem(ow::OutputWriter) = ow.problem
+
 """$(TYPEDSIGNATURES)
 
 Add `OutputVariable`s to the `OutputWriter`.
@@ -174,18 +177,23 @@ end
 """$(TYPEDSIGNATURES)
 
 Write attributes to the output file.
-
-Takes in keyword arguments which are written as attributes to the root group of the output
-file.
+Attributes should be provided as `(key,value)` or `key => value` where key
+can be converted to a string.
 
 !!! warning
     This is just a thin wrapper around [`HDF5.write_attribute`](https://juliaio.github.io/HDF5.jl/stable/interface/attributes/#HDF5.write_attribute)
     and will error if the value is not compatible with HDF5.
 """
-function write_attributes!(ow::OutputWriter; attributes...)
+function write_attributes!(ow::OutputWriter, attributes...)
     h5open(ow.filepath, "r+") do h5
-        for (key, value) in attributes
+        for (key,value) in attributes
             HDF5.write_attribute(h5, String(key), value)
         end
     end
 end
+
+"""$(TYPEDSIGNATURES)
+
+Write attributes to the output file providing the attributes as keyword arguments.
+"""
+write_attributes!(ow::OutputWriter; attributes...) = write_attributes!(ow, attributes...)

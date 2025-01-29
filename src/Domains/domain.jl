@@ -74,6 +74,8 @@ end
 """Get the domain this object is defined over."""
 function get_domain end
 
+# get domain falls back to get_domain(get_problem( )) defined in problem.jl
+
 get_domain(domain::Domain) = domain
 
 """$(TYPEDSIGNATURES)
