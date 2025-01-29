@@ -24,9 +24,9 @@ Base.ndims(cov::ConstantOutputVariable) = ndims(cov.array)
 
 @propagate_inbounds Base.getindex(cov::ConstantOutputVariable, i::Int) =
     getindex(cov.array, i)
-@propagate_inbounds Base.getindex(cov::OutputVariable, I::Vararg{Int,N}) where {N} =
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I::Vararg{Int,N}) where {N} =
     getindex(cov.array, I...)
-@propagate_inbounds Base.getindex(cov::OutputVariable, I...) = getindex(cov.array, I...)
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I...) = getindex(cov.array, I...)
 
 function create_constant_output_variable!(
     h5::HDF5.File, path::String, cov::ConstantOutputVariable
@@ -66,8 +66,8 @@ function create_constant_output_variable!(
         end
 
         # enforce that the length matches the dimension size
-        if length(dim_dset) != dimensions_sizes[i]
-            @warn "Not attaching dimension $dim_name as it has length $(length(dim_dset)) but dimension $i on $path has length $(dimensions_sizes[i])"
+        if length(dim_dset) != dims[i]
+            @warn "Not attaching dimension $dim_name as it has length $(length(dim_dset)) but dimension $i on $path has length $(dims[i])"
             continue
         end
 
@@ -99,7 +99,7 @@ function write_constant_array!(
     array::AbstractArray{T,N},
     name::String,
     dimension_labels::NTuple{N,Union{Symbol,Nothing}}=ntuple(nothing, Val(N)),
-)
+) where {T,N}
     cov = ConstantOutputVariable(array, dimension_labels)
     return write_constant_variable!(output_writer, cov, name)
 end
