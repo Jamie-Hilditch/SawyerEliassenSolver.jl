@@ -54,7 +54,7 @@ preconditioner = DiagonalQuadraticPreconditioner(domain, ω₀², ω₁²)</code
   ├─────────────── 𝓒: SawyerEliassenSolver.Timesteppers.DIRKNCoefficients{Float64}
   ├───────────── cgs: SawyerEliassenSolver.Timesteppers.ConjugateGradientSolver{Float64}
   └─────────────── 𝓟: DiagonalQuadraticPreconditioner with ω₀² = 1, ω₁² = 40000
-</code></pre><h2 id="Output"><a class="docs-heading-anchor" href="#Output">Output</a><a id="Output-1"></a><a class="docs-heading-anchor-permalink" href="#Output" title="Permalink"></a></h2><p>Save <span>$u$</span>, <span>$v$</span>, <span>$w$</span>, <span>$b$</span> and <span>$∂u/∂z$</span> every 5 timesteps.</p><pre><code class="language-julia hljs">output_writer = OutputWriter(problem, &quot;barotropic_zeta_refraction.h5&quot;; overwrite=true)
+</code></pre><h2 id="Output"><a class="docs-heading-anchor" href="#Output">Output</a><a id="Output-1"></a><a class="docs-heading-anchor-permalink" href="#Output" title="Permalink"></a></h2><p>Save <span>$u$</span>, <span>$v$</span>, <span>$w$</span>, <span>$b$</span> and <span>$∂u/∂z$</span> every 5 timesteps. We&#39;ll also save the background flow as <a href="../../library/output/#SawyerEliassenSolver.Output.ConstantOutputVariable"><code>ConstantOutputVariable</code></a>s using <a href="../../library/output/#SawyerEliassenSolver.Output.write_background_flow!-Tuple{OutputWriter}"><code>write_background_flow!</code></a>.</p><pre><code class="language-julia hljs">output_writer = OutputWriter(problem, &quot;barotropic_zeta_refraction.h5&quot;; overwrite=true)
 add_output_variables!(
     output_writer;
     u=OutputVariables.u(problem),
@@ -63,11 +63,12 @@ add_output_variables!(
     b=OutputVariables.b(problem),
     ∂u∂z=OutputVariables.∂u∂z(problem),
 )
-write_attributes!(output_writer; f=1, N²=N², Ro=Ro, L=L, H=H)
+write_background_flow!(output_writer)
+write_attributes!(output_writer; Ro=Ro, L=L, H=H)
 write!(output_writer)</code></pre><p>Run the simulation for 10 inertial periods.</p><pre><code class="language-julia hljs">for _ in 1:100
     advance!(ts, 5)
     write!(output_writer)
-end</code></pre><h2 id="Visualise-the-solution"><a class="docs-heading-anchor" href="#Visualise-the-solution">Visualise the solution</a><a id="Visualise-the-solution-1"></a><a class="docs-heading-anchor-permalink" href="#Visualise-the-solution" title="Permalink"></a></h2><p>We&#39;ll plot the across-filament vertical shear and the wave energy density</p><p class="math-container">\[\mathcal{E} = \frac{1}{2}\left(u^2 + v^2 + w^2 + b^2/N^2\right)\]</p><p>in the top 25% of the domain.</p><pre><code class="language-julia hljs">z_idx = (3 * NZ ÷ 4):NZ
+end</code></pre><h2 id="Visualise-the-solution"><a class="docs-heading-anchor" href="#Visualise-the-solution">Visualise the solution</a><a id="Visualise-the-solution-1"></a><a class="docs-heading-anchor-permalink" href="#Visualise-the-solution" title="Permalink"></a></h2><p>We&#39;ll plot the across-filament vertical shear and the wave energy density</p><p class="math-container">\[\mathcal{E} = \frac{1}{2}\left(u^2 + v^2 + w^2 + b^2/N^2\right)\]</p><p>in the top 25% of the domain. We&#39;ll also contour the background vorticity <span>$V_x$</span></p><pre><code class="language-julia hljs">z_idx = (3 * NZ ÷ 4):NZ
 
 output = h5open(&quot;barotropic_zeta_refraction.h5&quot;, &quot;r&quot;) do h5
     u = h5[&quot;u&quot;][:, z_idx, :]
@@ -75,9 +76,11 @@ output = h5open(&quot;barotropic_zeta_refraction.h5&quot;, &quot;r&quot;) do h5
     w = h5[&quot;w&quot;][:, z_idx, :]
     b = h5[&quot;b&quot;][:, z_idx, :]
     E = (u .^ 2 .+ v .^ 2 .+ w .^ 2 .+ b .^ 2 / N²) / 2
+    Vx = h5[&quot;Vx&quot;][:, z_idx]
     (
         E=E,
         ∂u∂z=h5[&quot;∂u∂z&quot;][:, z_idx, :],
+        Vx=Vx,
         time=read_dataset(h5, &quot;time&quot;),
         x=read_dataset(h5, &quot;x&quot;),
         z=h5[&quot;z&quot;][z_idx],
@@ -93,17 +96,37 @@ ax_∂u∂z = Axis(fig[2, 1]; ylabel=&quot;z&quot;)
 ax_E = Axis(fig[2, 2]; xlabel=&quot;x&quot;, ylabel=&quot;z&quot;)
 linkaxes!(ax_∂u∂z, ax_E)
 
+contour_levels = 0:1:4
+
 cf_∂u∂z = heatmap!(
     ax_∂u∂z, output[:x], output[:z], ∂u∂zₙ; colormap=:balance, colorrange=(-1000, 1000)
 )
 Colorbar(
     fig[3, 1], cf_∂u∂z; vertical=false, label=L&quot;\partial u/\partial z&quot;, labelpadding=10
 )
+contour!(
+    ax_∂u∂z,
+    output[:x],
+    output[:z],
+    output[:Vx];
+    levels=contour_levels,
+    color=:black,
+    labels=true,
+)
 
 cf_E = heatmap!(
     ax_E, output[:x], output[:z], Eₙ; colormap=Reverse(:grays), colorrange=(0, 0.5)
 )
 Colorbar(fig[3, 2], cf_E; vertical=false, label=L&quot;\mathcal{E}&quot;, labelpadding=10)
+contour!(
+    ax_E,
+    output[:x],
+    output[:z],
+    output[:Vx];
+    levels=contour_levels,
+    color=:black,
+    labels=true,
+)
 
 record(fig, &quot;barotropic_zeta_refraction.mp4&quot;, 1:length(output[:time]); framerate=10) do i
     n[] = i
@@ -119,9 +142,9 @@ end</code></pre><p><video src="../barotropic_zeta_refraction.mp4" controls="true
     return domain, problem
 end;</code></pre><h3 id="Without-preconditioning"><a class="docs-heading-anchor" href="#Without-preconditioning">Without preconditioning</a><a id="Without-preconditioning-1"></a><a class="docs-heading-anchor-permalink" href="#Without-preconditioning" title="Permalink"></a></h3><p>Create the timestep and advance 1 step before timing.</p><pre><code class="language-julia hljs">domain, problem = setup_problem()
 ts = Timestepper(problem, 2π / 50)
-advance!(ts)</code></pre><pre><code class="language-julia hljs">@time advance!(ts, 500)</code></pre><pre><code class="nohighlight hljs">222.338206 seconds (1.58 M allocations: 128.392 GiB, 3.16% gc time)
+advance!(ts)</code></pre><pre><code class="language-julia hljs">@time advance!(ts, 500)</code></pre><pre><code class="nohighlight hljs">219.475653 seconds (1.58 M allocations: 128.392 GiB, 3.14% gc time)
 </code></pre><h3 id="With-preconditioning"><a class="docs-heading-anchor" href="#With-preconditioning">With preconditioning</a><a id="With-preconditioning-1"></a><a class="docs-heading-anchor-permalink" href="#With-preconditioning" title="Permalink"></a></h3><pre><code class="language-julia hljs">domain, problem = setup_problem()
 preconditioner = DiagonalQuadraticPreconditioner(domain, ω₀², ω₁²)
 ts = Timestepper(problem, 2π / 50, preconditioner)
-advance!(ts)</code></pre><pre><code class="language-julia hljs">@time advance!(ts, 500)</code></pre><pre><code class="nohighlight hljs"> 20.408862 seconds (163.50 k allocations: 12.945 GiB, 3.69% gc time)
-</code></pre><p>We see that the preconditioner speeds up the simulation by a factor of 10. This is because the preconditioner drastically reduces the number of iterations required by the iterative solver from approximately 150 to 3.</p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../near-inertial_waves/">« Near-inertial waves</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Sunday 26 January 2025 21:56">Sunday 26 January 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+advance!(ts)</code></pre><pre><code class="language-julia hljs">@time advance!(ts, 500)</code></pre><pre><code class="nohighlight hljs"> 19.899938 seconds (163.50 k allocations: 12.945 GiB, 3.35% gc time)
+</code></pre><p>We see that the preconditioner speeds up the simulation by a factor of 10. This is because the preconditioner drastically reduces the number of iterations required by the iterative solver from approximately 150 to 3.</p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../near-inertial_waves/">« Near-inertial waves</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Wednesday 29 January 2025 22:31">Wednesday 29 January 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
