@@ -186,7 +186,7 @@ can be converted to a string.
 """
 function write_attributes!(ow::OutputWriter, attributes...)
     h5open(ow.filepath, "r+") do h5
-        for (key,value) in attributes
+        for (key, value) in attributes
             HDF5.write_attribute(h5, String(key), value)
         end
     end
