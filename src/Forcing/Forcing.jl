@@ -17,4 +17,12 @@ export AbstractForcingFunction,
     GlobalSpectralForcing
 
 include("forcing_options.jl")
+
+"""
+Module for implementing different RHS forcings.
+
+# Exports
+$(EXPORTS)
+"""
+Forcing
 end

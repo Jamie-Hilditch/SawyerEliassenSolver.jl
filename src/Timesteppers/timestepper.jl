@@ -120,3 +120,6 @@ end
 function Base.summary(io::IO, ts::Timestepper)
     return print(io, "Timestepper with timestep $(sfmt(ts.h))")
 end
+
+"""$(TYPEDSIGNATURES)"""
+Problems.get_problem(ts::Timestepper) = ts.problem

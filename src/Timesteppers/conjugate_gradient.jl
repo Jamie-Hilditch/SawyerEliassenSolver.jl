@@ -52,7 +52,7 @@ function ConjugateGradientSolver(
     return ConjugateGradientSolver(problem, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT))
 end
 
-Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.problem)
+Problems.get_problem(cgs::ConjugateGradientSolver) = cgs.problem
 
 @inline function solve_implicit_equation!(
     cgs::ConjugateGradientSolver{T},
