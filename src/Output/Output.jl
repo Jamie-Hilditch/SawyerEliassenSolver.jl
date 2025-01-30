@@ -27,8 +27,9 @@ export OutputVariable,
     write_Bx!,
     write_Bz!,
     write_background_flow!,
-    compute_background_buoyancy,
-    write_background_buoyancy!
+    integrate_background_gradients,
+    write_background_buoyancy!,
+    write_background_velocity!
 
 include("output_variable.jl")
 include("output_writer.jl")
