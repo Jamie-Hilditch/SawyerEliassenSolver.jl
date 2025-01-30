@@ -124,7 +124,7 @@ output = h5open("forced_secondary_circulation.h5", "r") do h5
         time=read_dataset(h5, "time"),
         x=read_dataset(h5, "x"),
         z=read_dataset(h5, "z"),
-        B=read_dataset(h5, "B")
+        B=read_dataset(h5, "B"),
     )
 end;
 
