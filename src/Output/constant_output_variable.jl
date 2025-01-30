@@ -163,3 +163,50 @@ function write_background_flow!(
     isnothing(Bz) ? write_Bz!(ow) : write_Bz!(ow; name=String(Bz))
     return nothing
 end
+
+"""$(TYPEDSIGNATURES)
+
+Compute the background buoyancy from the background buoyancy gradients.
+"""
+function compute_background_buoyancy(problem::Problem; out::XZVariable=XZVariable(problem))
+    @boundscheck consistent_domains(problem, out)
+    domain = get_domain(problem)
+
+    # first get horizontal buoyancy gradient in FZ space
+    out .= get_Bx(problem)
+    Bx_FZ = horizontal_transform(out)
+
+    # save the mean component and integrate the rest (note the integration sets the mean to 0)
+    Bx_mean = Bx_FZ[1,:]
+    ∫dx!(Bx_FZ)
+
+    # transform back to physical space and add on linear part
+    horizontal_transform!(out,BX_FZ)
+    out .+= xgridpoints(domain) * Bx_mean'
+
+    # Now we need to add on the mean z dependence
+    Bz = get_Bz(problem)
+    Bz_mean = mean(Bz,dims=1)
+
+    # integrate Bz_mean
+    # use trapezoid rule but don't subtract half the first value since
+    B_mean = @. (cumsum(Bz_mean) - Bz_mean / 2) .* zstepsize(domain)
+    out .+= B_mean'
+
+    return out
+
+end
+
+"""$(TYPEDSIGNATURES)
+
+Integrate the background buoyancy gradients and write to output writer.
+"""
+function write_background_buoyancy!(ow::OutputWriter; name::String="B")
+    problem = get_problem(ow)
+    B = problem.scratch.XZ_tmp
+
+    compute_background_buoyancy(problem, out=B)
+
+    write_constant_array!(ow, B, name, (:x,:z))
+    return nothing
+end
