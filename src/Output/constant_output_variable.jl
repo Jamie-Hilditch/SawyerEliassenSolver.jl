@@ -177,16 +177,16 @@ function compute_background_buoyancy(problem::Problem; out::XZVariable=XZVariabl
     Bx_FZ = horizontal_transform(out)
 
     # save the mean component and integrate the rest (note the integration sets the mean to 0)
-    Bx_mean = Bx_FZ[1,:]
+    Bx_mean = Bx_FZ[1, :]
     ∫dx!(Bx_FZ)
 
     # transform back to physical space and add on linear part
-    horizontal_transform!(out,BX_FZ)
+    horizontal_transform!(out, BX_FZ)
     out .+= xgridpoints(domain) * Bx_mean'
 
     # Now we need to add on the mean z dependence
     Bz = get_Bz(problem)
-    Bz_mean = mean(Bz,dims=1)
+    Bz_mean = mean(Bz; dims=1)
 
     # integrate Bz_mean
     # use trapezoid rule but don't subtract half the first value since
@@ -194,7 +194,6 @@ function compute_background_buoyancy(problem::Problem; out::XZVariable=XZVariabl
     out .+= B_mean'
 
     return out
-
 end
 
 """$(TYPEDSIGNATURES)
@@ -205,8 +204,8 @@ function write_background_buoyancy!(ow::OutputWriter; name::String="B")
     problem = get_problem(ow)
     B = problem.scratch.XZ_tmp
 
-    compute_background_buoyancy(problem, out=B)
+    compute_background_buoyancy(problem; out=B)
 
-    write_constant_array!(ow, B, name, (:x,:z))
+    write_constant_array!(ow, B, name, (:x, :z))
     return nothing
 end
