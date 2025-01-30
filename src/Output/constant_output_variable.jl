@@ -168,7 +168,9 @@ end
 
 Integrate periodic background gradients.
 """
-function integrate_background_gradients(Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx))
+function integrate_background_gradients(
+    Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx)
+)
     @boundscheck consistent_domains(Bx, Bz, out)
     domain = get_domain(Bx)
 
@@ -190,12 +192,11 @@ function integrate_background_gradients(Bx::XZVariable, Bz::XZVariable; out::XZV
     # integrate Bz_mean
     # use trapezoid rule but don't subtract half the first value
     # this is equivalent to setting the horizontal mean component to zero on the bottom boundary
-    B_mean = (cumsum(Bz_mean, dims=2) .- Bz_mean ./ 2) .* zstepsize(domain)
+    B_mean = (cumsum(Bz_mean; dims=2) .- Bz_mean ./ 2) .* zstepsize(domain)
     @info B_mean
     out .+= B_mean
 
     return out
-
 end
 
 """$(TYPEDSIGNATURES)
