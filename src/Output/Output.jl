@@ -6,6 +6,7 @@ using Base: @propagate_inbounds
 
 using DocStringExtensions
 using HDF5
+using Statistics
 
 using SawyerEliassenSolver.Domains
 using SawyerEliassenSolver.Variables
