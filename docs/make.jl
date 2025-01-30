@@ -27,6 +27,7 @@ const OUTPUT_DIR = joinpath(@__DIR__, "src/literated")
 example_scripts = [
     "Near-inertial waves" => "near-inertial_waves.jl",
     "Barotropic zeta refraction" => "barotropic_zeta_refraction.jl",
+    "Forced secondary circulation" => "forced_secondary_circulation.jl",
 ]
 
 example_pages = map(example_scripts) do example
