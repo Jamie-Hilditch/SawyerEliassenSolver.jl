@@ -30,8 +30,8 @@ jobs:
           - ubuntu-latest
           - macOS-latest
           - windows-latest
-        arch:
-          - x64
+        # arch:
+        #   - x64
         include:
           - version: '1.9'
             os: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.version }}
-          arch: ${{ matrix.arch }}
+          arch: x64
       - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - id: hack-for-julia18
