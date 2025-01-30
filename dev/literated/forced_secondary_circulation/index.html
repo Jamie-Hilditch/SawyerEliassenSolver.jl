@@ -28,23 +28,21 @@ physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code><
       (dft-vrank&gt;=1-x2/-1
         (dft-direct-16-x64 &quot;n1fv_16_avx2&quot;))))), FFTW r2r RODFT10 plan for 4096×256 array of Float64
 (rodft10e-r2hc-256-x4096
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))), FFTW r2r REDFT10 plan for 4096×256 array of Float64
+  (rdft-ct-dit/16
+    (hc2hc-direct-16/30 &quot;hf_16&quot;
+      (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
+      (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
+    (rdft-indirect-after
+      (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
+      (rdft-rank0-ip-sq/1-x16-x16)))), FFTW r2r REDFT10 plan for 4096×256 array of Float64
 (redft10e-r2hc-256-x4096
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))))), Main.var&quot;##239&quot;.forcing, (L = 20.0, H = 0.05, τ = 18.84955592153876))</code></pre><h3 id="Time-dependence-of-the-forcing"><a class="docs-heading-anchor" href="#Time-dependence-of-the-forcing">Time dependence of the forcing</a><a id="Time-dependence-of-the-forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Time-dependence-of-the-forcing" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = fig = Figure(; size=(1200, 400))
+  (rdft-ct-dit/16
+    (hc2hc-direct-16/30 &quot;hf_16&quot;
+      (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
+      (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
+    (rdft-indirect-after
+      (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
+      (rdft-rank0-ip-sq/1-x16-x16)))))), Main.var&quot;##239&quot;.forcing, (L = 20.0, H = 0.05, τ = 18.84955592153876))</code></pre><h3 id="Time-dependence-of-the-forcing"><a class="docs-heading-anchor" href="#Time-dependence-of-the-forcing">Time dependence of the forcing</a><a id="Time-dependence-of-the-forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Time-dependence-of-the-forcing" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = fig = Figure(; size=(1200, 400))
 Label(fig[1, :], &quot;Forcing time dependence&quot;; tellwidth=false)
 ax = Axis(
     fig[2, :];
@@ -114,4 +112,4 @@ Colorbar(fig[3, 2], cf_w; vertical=false, label=L&quot;w&quot;, labelpadding=10)
 
 record(fig, &quot;forced_secondary_circulation.mp4&quot;, 1:length(output[:time]); framerate=10) do i
     n[] = i
-end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Thursday 30 January 2025 00:30">Thursday 30 January 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Thursday 30 January 2025 01:30">Thursday 30 January 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
