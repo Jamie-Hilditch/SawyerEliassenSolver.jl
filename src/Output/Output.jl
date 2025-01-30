@@ -6,6 +6,7 @@ using Base: @propagate_inbounds
 
 using DocStringExtensions
 using HDF5
+using Statistics
 
 using SawyerEliassenSolver.Domains
 using SawyerEliassenSolver.Variables
@@ -26,7 +27,10 @@ export OutputVariable,
     write_Vx!,
     write_Bx!,
     write_Bz!,
-    write_background_flow!
+    write_background_flow!,
+    integrate_background_gradients,
+    write_background_buoyancy!,
+    write_background_velocity!
 
 include("output_variable.jl")
 include("output_writer.jl")

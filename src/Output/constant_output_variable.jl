@@ -163,3 +163,76 @@ function write_background_flow!(
     isnothing(Bz) ? write_Bz!(ow) : write_Bz!(ow; name=String(Bz))
     return nothing
 end
+
+"""$(TYPEDSIGNATURES)
+
+Integrate periodic background gradients.
+"""
+function integrate_background_gradients(
+    Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx)
+)
+    @boundscheck consistent_domains(Bx, Bz, out)
+    domain = get_domain(Bx)
+
+    # first get horizontal buoyancy gradient in FZ space
+    out .= Bx
+    Bx_FZ = horizontal_transform(out)
+
+    # save the mean component and integrate the rest (note the integration sets the mean to 0)
+    Bx_mean = Bx_FZ[1, :] ./ size(Bx_FZ, 1)
+    ∫dx!(Bx_FZ)
+
+    # transform back to physical space and add on linear part
+    horizontal_transform!(out, Bx_FZ)
+    out .+= xgridpoints(domain) * Bx_mean'
+
+    # Now we need to add on the mean z dependence
+    Bz_mean = mean(Bz; dims=1)
+
+    # integrate Bz_mean
+    # use trapezoid rule but don't subtract half the first value
+    # this is equivalent to setting the horizontal mean component to zero on the bottom boundary
+    B_mean = (cumsum(Bz_mean; dims=2) .- Bz_mean ./ 2) .* zstepsize(domain)
+    @info B_mean
+    out .+= B_mean
+
+    return out
+end
+
+"""$(TYPEDSIGNATURES)
+
+Integrate the background buoyancy gradients and write to output writer.
+"""
+function write_background_buoyancy!(ow::OutputWriter; name::String="B")
+    problem = get_problem(ow)
+    domain = get_domain(problem)
+    B = problem.scratch.XZ_tmp
+
+    # get background gradients as XZVariables
+    Bx = XZVariable(domain, get_Bx(problem))
+    Bz = XZVariable(domain, get_Bz(problem))
+
+    @inbounds integrate_background_gradients(Bx, Bz, out=B)
+
+    write_constant_array!(ow, B, name, (:x, :z))
+    return nothing
+end
+
+"""$(TYPEDSIGNATURES)
+
+Integrate the background velocity gradients and write to output writer.
+"""
+function write_background_velocity!(ow::OutputWriter; name::String="V")
+    problem = get_problem(ow)
+    domain = get_domain(problem)
+    V = problem.scratch.XZ_tmp
+
+    # get background gradients as XZVariables
+    Vx = XZVariable(domain, get_Vx(problem))
+    Vz = XZVariable(domain, get_Bx(problem)) ./ get_f(problem)
+
+    @inbounds integrate_background_gradients(Vx, Vz, out=V)
+
+    write_constant_array!(ow, V, name, (:x, :z))
+    return nothing
+end

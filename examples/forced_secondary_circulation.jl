@@ -96,6 +96,7 @@ ts = Timestepper(problem, 2π / 50, preconditioner)
 
 # ## Output
 # Let's save `u` and `w` to visualise the overturning circulation that we're forcing.
+# Also compute and save the background buoyancy.
 
 output_writer = OutputWriter(problem, "forced_secondary_circulation.h5"; overwrite=true)
 add_output_variables!(
@@ -104,6 +105,7 @@ add_output_variables!(
 write_attributes!(
     output_writer; f=1.0, M²=M², N²=N², L=parameters.L, H=parameters.H, tau=parameters.τ
 )
+write_background_buoyancy!(output_writer)
 write!(output_writer)
 
 # Run the simulation.
@@ -122,6 +124,7 @@ output = h5open("forced_secondary_circulation.h5", "r") do h5
         time=read_dataset(h5, "time"),
         x=read_dataset(h5, "x"),
         z=read_dataset(h5, "z"),
+        B=read_dataset(h5, "B"),
     )
 end;
 
@@ -140,11 +143,13 @@ cf_u = heatmap!(
     ax_u, output[:x], output[:z], uₙ; colormap=:balance, colorrange=(-0.01, 0.01)
 )
 Colorbar(fig[3, 1], cf_u; vertical=false, label=L"u", labelpadding=10)
+contour!(ax_u, output[:x], output[:z], output[:B]; color=:black)
 
 cf_w = heatmap!(
     ax_w, output[:x], output[:z], wₙ; colormap=:balance, colorrange=(-1e-4, 1e-4)
 )
 Colorbar(fig[3, 2], cf_w; vertical=false, label=L"w", labelpadding=10)
+contour!(ax_w, output[:x], output[:z], output[:B]; color=:black)
 
 record(fig, "forced_secondary_circulation.mp4", 1:length(output[:time]); framerate=10) do i
     n[] = i
