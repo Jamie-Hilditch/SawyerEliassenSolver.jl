@@ -115,7 +115,7 @@ function advance!(ts::Timestepper)
     # we'll alias the ζⁿ⁺ᶜ¹ and ζⁿ⁺ᶜ² variables for these computations
     Z, Ψ = ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ²
     @inbounds @. Z *= h * b₁ᵗ
-    @inbounds @. Z += h * b₁ᵗ * ζⁿ⁺ᶜ²
+    @inbounds @. Z += h * b₂ᵗ * ζⁿ⁺ᶜ²
     @inbounds ∇⁻²!(Ψ, Z)
 
     @inbounds advect_background_flow!(problem, Ψ)
