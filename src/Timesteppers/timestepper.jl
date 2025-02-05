@@ -29,20 +29,20 @@ end
 
 DIRKNCoefficients(::Type{T}) where {T} = DIRKNCoefficients(convert(T, DEFAULT_C))
 
-"""Auxillary variables for computing ζⁿ⁺¹ and ζₜⁿ⁺¹"""
-struct AuxillaryVariables{T}
+"""Auxiliary variables for computing ζⁿ⁺¹ and ζₜⁿ⁺¹"""
+struct AuxiliaryVariables{T}
     ζⁿ⁺ᶜ¹::FSVariable{T}
     ζⁿ⁺ᶜ²::FSVariable{T}
     tmp::FSVariable{T}
     rhs::FSVariable{T}
 end
 
-function AuxillaryVariables(domain::Domain{T}) where {T}
+function AuxiliaryVariables(domain::Domain{T}) where {T}
     ζⁿ⁺ᶜ¹ = FSVariable(domain)
     ζⁿ⁺ᶜ² = FSVariable(domain)
     tmp = FSVariable(domain)
     rhs = FSVariable(domain)
-    return AuxillaryVariables{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
+    return AuxiliaryVariables{T}(ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs)
 end
 
 """$(TYPEDEF)
@@ -52,7 +52,7 @@ struct Timestepper{T}
     problem::Problem{T}
     h::T
     𝓒::DIRKNCoefficients{T}
-    auxillary_variables::AuxillaryVariables{T}
+    auxiliary_variables::AuxiliaryVariables{T}
     cgs::ConjugateGradientSolver{T}
     𝓟::AbstractPreconditioner{T}
 
@@ -67,9 +67,9 @@ struct Timestepper{T}
             throw(ArgumentError("`problem`, `cgs` and `𝓟` must have the same domain."))
 
         domain = get_domain(problem)
-        auxillary_variables = AuxillaryVariables(domain)
+        auxiliary_variables = AuxiliaryVariables(domain)
 
-        return new{T}(problem, h, 𝓒, auxillary_variables, cgs, 𝓟)
+        return new{T}(problem, h, 𝓒, auxiliary_variables, cgs, 𝓟)
     end
 end
 

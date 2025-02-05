@@ -65,15 +65,17 @@ Advance the timestepper one timestep.
 """
 function advance!(ts::Timestepper)
     # unpack structs
-    (; problem, h, 𝓒, auxillary_variables, cgs, 𝓟) = ts
+    (; problem, h, 𝓒, auxiliary_variables, cgs, 𝓟) = ts
     (; a₁₁, a₂₁, a₂₂, b₁, b₂, b₁ᵗ, b₂ᵗ, c₁, c₂) = 𝓒
     (; ζ, ζₜ, v, b, clock) = problem.state
-    (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs) = auxillary_variables
+    (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs) = auxiliary_variables
 
     # get forcing at n + c₁
     @inbounds get_ζ_forcing!(problem, tmp, clock.t + c₁ * h)
     # construct rhs of implicit equation for ζⁿ⁺ᶜ¹
     @inbounds @. rhs = ζ + c₁ * h * ζₜ + a₁₁ * h^2 * tmp
+    # solve implicit equation for ζⁿ⁺ᶜ¹ using rhs as an initial guess
+    @inbounds ζⁿ⁺ᶜ¹ .= rhs
     @inbounds solve_implicit_equation!(cgs, ζⁿ⁺ᶜ¹, rhs, 𝓟)
 
     # start constructing the rhs of implicit equation at ζⁿ⁺ᶜ²
@@ -100,6 +102,7 @@ function advance!(ts::Timestepper)
     @inbounds @. ζₜ += b₂ᵗ * h * tmp
 
     # we have fully formed the rhs of the implicit equation for ζⁿ⁺ᶜ² so we solve
+    @inbounds ζⁿ⁺ᶜ² .= rhs
     @inbounds solve_implicit_equation!(cgs, ζⁿ⁺ᶜ², rhs, 𝓟)
 
     # now compute 𝓛ζⁿ⁺ᶜ² and add those terms to ζⁿ⁺¹ and ζₜⁿ⁺¹
