@@ -65,10 +65,10 @@ Advance the timestepper one timestep.
 """
 function advance!(ts::Timestepper)
     # unpack structs
-    (; problem, h, 𝓒, auxillary_variables, cgs, 𝓟) = ts
+    (; problem, h, 𝓒, auxiliary_variables, cgs, 𝓟) = ts
     (; a₁₁, a₂₁, a₂₂, b₁, b₂, b₁ᵗ, b₂ᵗ, c₁, c₂) = 𝓒
     (; ζ, ζₜ, v, b, clock) = problem.state
-    (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs) = auxillary_variables
+    (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs) = auxiliary_variables
 
     # get forcing at n + c₁
     @inbounds get_ζ_forcing!(problem, tmp, clock.t + c₁ * h)
