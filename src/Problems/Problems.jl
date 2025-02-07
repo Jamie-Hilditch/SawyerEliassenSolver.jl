@@ -26,7 +26,9 @@ export BackgroundFlow,
     get_Vx,
     get_Bx,
     get_Bz,
-    get_problem
+    get_problem,
+    get_ζ_forcing,
+    get_scratch
 
 include("background.jl")
 include("state.jl")
