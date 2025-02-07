@@ -108,7 +108,7 @@ end
 end
 
 @inline function evaluate_ζ_forcing!(
-    ::NoForcing, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
+    ::NoForcing{T}, out::FSVariable{T}, t::T, ::XSVariable{T}, ::XZVariable{T}
 ) where {T}
     @. out = 0
     return nothing

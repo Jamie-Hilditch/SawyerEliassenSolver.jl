@@ -94,6 +94,12 @@ function Base.show(io::IO, ::MIME"text/plain", problem::Problem)
 end
 
 """$(TYPEDSIGNATURES)"""
+get_ζ_forcing(problem::Problem) = problem.ζ_forcing
+
+"""$(TYPEDSIGNATURES)"""
+get_scratch(problem::Problem) = problem.scratch
+
+"""$(TYPEDSIGNATURES)"""
 get_problem(problem::Problem) = problem
 
 # get the domain of a problem and use this as the fallback for get_domain

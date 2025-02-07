@@ -1,9 +1,10 @@
 @inline function get_ζ_forcing!(problem::Problem{T}, out::FSVariable{T}, t::T) where {T}
     @boundscheck consistent_domains(problem, out) ||
         throw(ArgumentError("`problem` and `out` must have the same domain."))
-    ζ_forcing = problem.ζ_forcing
-    XS_tmp = problem.scratch.XS_tmp
-    XZ_tmp = problem.scratch.XZ_tmp
+    ζ_forcing = get_ζ_forcing(problem)
+    scratch = get_scratch(problem)
+    XS_tmp = scratch.XS_tmp
+    XZ_tmp = scratch.XZ_tmp
     evaluate_ζ_forcing!(ζ_forcing, out, t, XS_tmp, XZ_tmp)
     return nothing
 end
