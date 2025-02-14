@@ -1,7 +1,6 @@
 const CG_TOL_DEFAULT::Float64 = 10^-10 #10^-5
 
 struct ConjugateGradientSolver{T}
-    problem::Problem{T}
     p::FSVariable{T}
     q::FSVariable{T}
     r::FSVariable{T}
@@ -11,12 +10,10 @@ struct ConjugateGradientSolver{T}
     tol::T
 
     function ConjugateGradientSolver(
-        problem::Problem{T}, aᵢᵢh²::T, max_iterations::Int, cg_tol::T
+        domain::Domain{T}, aᵢᵢh²::T, max_iterations::Int, cg_tol::T
     ) where {T}
         cg_tol > 0 || throw(DomainError(cg_tol, "tolerance must be positive"))
-        domain = get_domain(problem)
         return new{T}(
-            problem,
             FSVariable(domain),
             FSVariable(domain),
             FSVariable(domain),
@@ -29,32 +26,32 @@ struct ConjugateGradientSolver{T}
 end
 
 function ConjugateGradientSolver(
-    problem::Problem{T}, aᵢᵢh²::T, ::Nothing, cg_tol::T
+    domain::Domain{T}, aᵢᵢh²::T, ::Nothing, cg_tol::T
 ) where {T}
     # without roundoff error the conjugate gradient method converges in at most n iterations
     # where n is the dimension of the problem
-    domain = get_domain(problem)
     max_iterations_default = prod(size(domain.spectral))
-    return ConjugateGradientSolver(problem, aᵢᵢh², max_iterations_default, cg_tol)
+    return ConjugateGradientSolver(domain, aᵢᵢh², max_iterations_default, cg_tol)
 end
 
 function ConjugateGradientSolver(
-    problem::Problem{T}, aᵢᵢh²::T, max_iterations::Int, ::Nothing
+    domain::Domain{T}, aᵢᵢh²::T, max_iterations::Int, ::Nothing
 ) where {T}
     return ConjugateGradientSolver(
-        problem, aᵢᵢh², max_iterations, convert(T, CG_TOL_DEFAULT)
+        domain, aᵢᵢh², max_iterations, convert(T, CG_TOL_DEFAULT)
     )
 end
 
 function ConjugateGradientSolver(
-    problem::Problem{T}, aᵢᵢh²::T, ::Nothing, ::Nothing
+    domain::Domain{T}, aᵢᵢh²::T, ::Nothing, ::Nothing
 ) where {T}
-    return ConjugateGradientSolver(problem, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT))
+    return ConjugateGradientSolver(domain, aᵢᵢh², nothing, convert(T, CG_TOL_DEFAULT))
 end
 
-Problems.get_problem(cgs::ConjugateGradientSolver) = cgs.problem
+Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.p)
 
 @inline function solve_implicit_equation!(
+    problem::Problem{T},
     cgs::ConjugateGradientSolver{T},
     x::FSVariable{T},
     b::FSVariable{T},
@@ -62,10 +59,11 @@ Problems.get_problem(cgs::ConjugateGradientSolver) = cgs.problem
 ) where {T}
     # some setup before we begin
     # extract variables from cgs
-    (; problem, p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
+    (; p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
 
-    @boundscheck consistent_domains(problem, x, b, 𝓟) ||
-        throw(ArgumentError("`cgs`, `x`, `b` and `𝓟` must have the same domain."))
+    @boundscheck consistent_domains(problem, cgs, x, b, 𝓟) || throw(
+        ArgumentError("`problem`, `cgs`, `x`, `b` and `𝓟` must have the same domain.")
+    )
 
     # termination condition
     condition = tol * real(b ⋅ b)

@@ -7,3 +7,4 @@ Manifest.toml
 *.pb.gz
 *.mp4
 *.mem
+*.out

@@ -1,7 +1,9 @@
 using Printf: @sprintf
 using Profile
-using PProf
+# using PProf
+using InteractiveUtils: @code_warntype
 
+# using AllocCheck
 using SawyerEliassenSolver
 
 const NX = 256
@@ -11,8 +13,8 @@ const LZ = 1.0
 const N = 100.0
 
 # output
-const PROFILING_FILEPATH = joinpath(@__DIR__, "barotropic_niws.profile.pb.gz")
-const ALLOCS_FILEPATH = joinpath(@__DIR__, "barotropic_niws.allocs.pb.gz")
+# const PROFILING_FILEPATH = joinpath(@__DIR__, "barotropic_niws.profile.pb.gz")
+# const ALLOCS_FILEPATH = joinpath(@__DIR__, "barotropic_niws.allocs.pb.gz")
 
 function setup_simulation()
     # create domain
@@ -40,21 +42,34 @@ function setup_simulation()
     return timestepper
 end
 
+# @check_allocs function run_simulation(ts::Timestepper)
+#     advance!(ts,100)
+# end
+
+# ts = setup_simulation()
+# try
+#     run_simulation(ts)
+# catch err
+#     for error in err.errors
+#         @show error
+#     end
+# end
+
 # profile backtraces
-ts = setup_simulation()
-advance!(ts)
+# ts = setup_simulation()
+# advance!(ts)
 
-Profile.init(; n=10^8)
-Profile.clear()
-Profile.clear_malloc_data()
-@profile advance!(ts, 100)
-pprof(; web=false, out=PROFILING_FILEPATH)
+# Profile.init(; n=10^8)
+# Profile.clear()
+# Profile.clear_malloc_data()
+# @profile advance!(ts, 100)
+# pprof(; web=false, out=PROFILING_FILEPATH)
 
-# profile memory allocations
+# # profile memory allocations
 ts = setup_simulation()
-advance!(ts)
+@code_warntype advance!(ts)
 
 Profile.clear()
 Profile.clear_malloc_data()
 Profile.Allocs.@profile advance!(ts, 100)
-PProf.Allocs.pprof(; web=false, out=ALLOCS_FILEPATH)
+# PProf.Allocs.pprof(; web=false, out=ALLOCS_FILEPATH)

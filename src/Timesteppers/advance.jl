@@ -71,44 +71,47 @@ function advance!(ts::Timestepper)
     (; ζ, ζₜ, v, b, clock) = problem.state
     (; ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ², tmp, rhs) = auxiliary_variables
 
+    # apparently squaring scalars sometimes allocates so pre-define h²
+    h² = h^2
+
     # get forcing at n + c₁
     @inbounds get_ζ_forcing!(problem, tmp, clock.t + c₁ * h)
     # construct rhs of implicit equation for ζⁿ⁺ᶜ¹
-    @inbounds @. rhs = ζ + c₁ * h * ζₜ + a₁₁ * h^2 * tmp
+    @inbounds @. rhs = ζ + c₁ * h * ζₜ + a₁₁ * h² * tmp
     # solve implicit equation for ζⁿ⁺ᶜ¹ using rhs as an initial guess
     @inbounds ζⁿ⁺ᶜ¹ .= rhs
-    @inbounds solve_implicit_equation!(cgs, ζⁿ⁺ᶜ¹, rhs, 𝓟)
+    @inbounds solve_implicit_equation!(problem, cgs, ζⁿ⁺ᶜ¹, rhs, 𝓟)
 
     # start constructing the rhs of implicit equation at ζⁿ⁺ᶜ²
     # include ζⁿ, ζₜⁿ and Fⁿ⁺ᶜ¹ terms
-    @inbounds @. rhs = ζ + c₂ * h * ζₜ + a₂₁ * h^2 * tmp
+    @inbounds @. rhs = ζ + c₂ * h * ζₜ + a₂₁ * h² * tmp
 
     # we no longer need ζⁿ and ζₜⁿ so we can start forming ζⁿ⁺¹ and ζₜⁿ⁺¹
     # add on the ζⁿ and Fⁿ⁺ᶜ¹ terms
-    @inbounds @. ζ += h * ζₜ + b₁ * h^2 * tmp
+    @inbounds @. ζ += h * ζₜ + b₁ * h² * tmp
     @inbounds @. ζₜ += b₁ᵗ * h * tmp
 
     # now we are done with Fⁿ⁺ᶜ¹ and can use tmp for 𝓛ζⁿ⁺ᶜ¹
     @inbounds 𝓛!(problem, tmp, ζⁿ⁺ᶜ¹)
     # add 𝓛ζⁿ⁺ᶜ¹ term to rhs and ζⁿ⁺¹, ζₜⁿ⁺¹
-    @inbounds @. rhs -= a₂₁ * h^2 * tmp
-    @inbounds @. ζ -= b₁ * h^2 * tmp
+    @inbounds @. rhs -= a₂₁ * h² * tmp
+    @inbounds @. ζ -= b₁ * h² * tmp
     @inbounds @. ζₜ -= b₁ᵗ * h * tmp
 
     # now we are done with 𝓛ζⁿ⁺ᶜ¹ and can use tmp for Fⁿ⁺ᶜ²
     @inbounds get_ζ_forcing!(problem, tmp, clock.t + c₂ * h)
     # add the Fⁿ⁺ᶜ² terms to rhs, ζⁿ⁺¹ and ζₜⁿ⁺¹
-    @inbounds @. rhs += a₂₂ * h^2 * tmp
-    @inbounds @. ζ += b₂ * h^2 * tmp
+    @inbounds @. rhs += a₂₂ * h² * tmp
+    @inbounds @. ζ += b₂ * h² * tmp
     @inbounds @. ζₜ += b₂ᵗ * h * tmp
 
     # we have fully formed the rhs of the implicit equation for ζⁿ⁺ᶜ² so we solve
     @inbounds ζⁿ⁺ᶜ² .= rhs
-    @inbounds solve_implicit_equation!(cgs, ζⁿ⁺ᶜ², rhs, 𝓟)
+    @inbounds solve_implicit_equation!(problem, cgs, ζⁿ⁺ᶜ², rhs, 𝓟)
 
     # now compute 𝓛ζⁿ⁺ᶜ² and add those terms to ζⁿ⁺¹ and ζₜⁿ⁺¹
     @inbounds 𝓛!(problem, tmp, ζⁿ⁺ᶜ²)
-    @inbounds @. ζ -= b₂ * h^2 * tmp
+    @inbounds @. ζ -= b₂ * h² * tmp
     @inbounds @. ζₜ -= b₂ᵗ * h * tmp
 
     # this concludes the computation of ζⁿ⁺¹ and ζₜⁿ⁺¹
