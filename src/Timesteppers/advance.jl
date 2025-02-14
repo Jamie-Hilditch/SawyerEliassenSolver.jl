@@ -107,7 +107,7 @@ function advance!(ts::Timestepper)
 
     # we have fully formed the rhs of the implicit equation for ζⁿ⁺ᶜ² so we solve
     @inbounds ζⁿ⁺ᶜ² .= rhs
-    @inbounds solve_implicit_equation!(problem,cgs, ζⁿ⁺ᶜ², rhs, 𝓟)
+    @inbounds solve_implicit_equation!(problem, cgs, ζⁿ⁺ᶜ², rhs, 𝓟)
 
     # now compute 𝓛ζⁿ⁺ᶜ² and add those terms to ζⁿ⁺¹ and ζₜⁿ⁺¹
     @inbounds 𝓛!(problem, tmp, ζⁿ⁺ᶜ²)
