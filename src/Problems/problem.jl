@@ -59,7 +59,7 @@ struct Problem{T,F,G,H}
     ) where {T}
         # first validate that the background and forcing match domain
         size(domain.grid) == size(background) ||
-        throw(ArgumentError("`domain` and `background` must be the same size."))
+            throw(ArgumentError("`domain` and `background` must be the same size."))
 
         consistent_domains(domain, ζ_forcing, v_forcing, b_forcing) ||
         throw(ArgumentError("`domain` must match forcing domains"))
