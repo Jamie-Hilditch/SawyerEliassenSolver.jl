@@ -62,7 +62,7 @@ struct Problem{T,F,G,H}
             throw(ArgumentError("`domain` and `background` must be the same size."))
 
         consistent_domains(domain, ζ_forcing, v_forcing, b_forcing) ||
-        throw(ArgumentError("`domain` must match forcing domains"))
+            throw(ArgumentError("`domain` must match forcing domains"))
 
         return new{T,typeof(ζ_forcing),typeof(v_forcing),typeof(b_forcing)}(
             domain,
