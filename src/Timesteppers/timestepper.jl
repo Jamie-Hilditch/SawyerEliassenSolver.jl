@@ -48,28 +48,28 @@ end
 """$(TYPEDEF)
 Object that stores all the variables and operators required to advance a problem one timestep.
 """
-struct Timestepper{T}
-    problem::Problem{T}
+struct Timestepper{T,F,G,H,P}
+    problem::Problem{T,F,G,H}
     h::T
     𝓒::DIRKNCoefficients{T}
     auxiliary_variables::AuxiliaryVariables{T}
     cgs::ConjugateGradientSolver{T}
-    𝓟::AbstractPreconditioner{T}
+    𝓟::P
 
     function Timestepper(
-        problem::Problem{T},
+        problem::Problem{T,F,G,H},
         h::T,
         𝓒::DIRKNCoefficients{T},
         cgs::ConjugateGradientSolver{T},
         𝓟::AbstractPreconditioner{T},
-    ) where {T}
+    ) where {T,F,G,H}
         consistent_domains(problem, cgs, 𝓟) ||
             throw(ArgumentError("`problem`, `cgs` and `𝓟` must have the same domain."))
 
         domain = get_domain(problem)
         auxiliary_variables = AuxiliaryVariables(domain)
 
-        return new{T}(problem, h, 𝓒, auxiliary_variables, cgs, 𝓟)
+        return new{T,F,G,H,typeof(𝓟)}(problem, h, 𝓒, auxiliary_variables, cgs, 𝓟)
     end
 end
 
@@ -97,9 +97,9 @@ function Timestepper(
 ) where {T}
     𝓒 = isnothing(c) ? DIRKNCoefficients(T) : DIRKNCoefficients(c)
     aᵢᵢh² = 𝓒.a₁₁ * h^2
-    cgs = ConjugateGradientSolver(problem, aᵢᵢh², cg_max_iterations, cg_tol)
+    domain = get_domain(problem)
+    cgs = ConjugateGradientSolver(domain, aᵢᵢh², cg_max_iterations, cg_tol)
     if isnothing(𝓟)
-        domain = get_domain(problem)
         𝓟 = IdentityPreconditioner(domain)
     end
     return Timestepper(problem, h, 𝓒, cgs, 𝓟)
