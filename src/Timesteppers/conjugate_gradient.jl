@@ -61,8 +61,9 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.p)
     # extract variables from cgs
     (; p, q, r, z, aᵢᵢh², max_iterations, tol) = cgs
 
-    @boundscheck consistent_domains(problem, cgs, x, b, 𝓟) ||
-        throw(ArgumentError("`problem`, `cgs`, `x`, `b` and `𝓟` must have the same domain."))
+    @boundscheck consistent_domains(problem, cgs, x, b, 𝓟) || throw(
+        ArgumentError("`problem`, `cgs`, `x`, `b` and `𝓟` must have the same domain.")
+    )
 
     # termination condition
     condition = tol * real(b ⋅ b)
