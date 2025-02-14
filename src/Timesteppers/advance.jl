@@ -80,7 +80,7 @@ function advance!(ts::Timestepper)
     @inbounds @. rhs = ζ + c₁ * h * ζₜ + a₁₁ * h² * tmp
     # solve implicit equation for ζⁿ⁺ᶜ¹ using rhs as an initial guess
     @inbounds ζⁿ⁺ᶜ¹ .= rhs
-    @inbounds solve_implicit_equation!(problem,cgs, ζⁿ⁺ᶜ¹, rhs, 𝓟)
+    @inbounds solve_implicit_equation!(problem, cgs, ζⁿ⁺ᶜ¹, rhs, 𝓟)
 
     # start constructing the rhs of implicit equation at ζⁿ⁺ᶜ²
     # include ζⁿ, ζₜⁿ and Fⁿ⁺ᶜ¹ terms
