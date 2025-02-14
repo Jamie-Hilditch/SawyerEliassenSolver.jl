@@ -6,17 +6,14 @@ using SawyerEliassenSolver
 
 using SpecialFunctions: erf
 
-
 NX, NZ = 128, 512
 const LX, LZ = 2, 0.1
 grid = Grid(NX, NZ, (-LX / 2, LX / 2), LZ)
-
 
 const N²::Float64 = 200^2
 const Ro = 0.5
 const L = 0.2
 Vx(x) = Ro * (-1 + 2 / L * exp(-π * x^2 / L^2));
-
 
 xgrid, zgrid = gridpoints(grid)
 background_flow = BackgroundFlow(grid)
@@ -52,7 +49,7 @@ function setup_timestepper(use_preconditioner::Bool=false)
     else
         ts = Timestepper(problem, 2π / 50)
     end
-    ts = Timestepper(problem, 2π / 50)
+    return ts = Timestepper(problem, 2π / 50)
 end;
 
 function run_simulation(ts)
