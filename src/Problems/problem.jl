@@ -55,7 +55,7 @@ struct Problem{T,F,G,H}
         background::BackgroundFlow{T},
         ζ_forcing::AbstractForcingFunction{T},
         v_forcing::Union{PhysicalForcing{T},NoForcing{T}},
-        b_forcing::Union{PhysicalForcing{T},NoForcing{T}}
+        b_forcing::Union{PhysicalForcing{T},NoForcing{T}},
     ) where {T}
         # first validate that the background and forcing match domain
         size(domain.grid) == size(background) ||
