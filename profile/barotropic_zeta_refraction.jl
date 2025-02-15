@@ -2,10 +2,12 @@
 
 using Printf
 using Profile
+using PProf
 using SawyerEliassenSolver
 
 using SpecialFunctions: erf
 
+const ALLOCS_FILEPATH = joinpath(@__DIR__, "barotropic_zeta_refraction.allocs.pb.gz")
 
 NX, NZ = 128, 512
 const LX, LZ = 2, 0.1
@@ -56,7 +58,7 @@ function setup_timestepper(use_preconditioner::Bool=false)
 end;
 
 function run_simulation(ts)
-    @timev advance!(ts, 10)
+    advance!(ts, 10)
 end;
 
 # ### Without preconditioning
@@ -67,7 +69,8 @@ advance!(ts)
 
 Profile.clear()
 Profile.clear_malloc_data()
-run_simulation(ts)
+Profile.Allocs.@profile run_simulation(ts)
+PProf.Allocs.pprof(; web=false, out=ALLOCS_FILEPATH)
 
 # ### With preconditioning
 
