@@ -56,7 +56,7 @@ function setup_timestepper(use_preconditioner::Bool=false)
 end;
 
 function run_simulation(ts)
-    advance!(ts, 10)
+    return advance!(ts, 10)
 end;
 
 # ### Without preconditioning
