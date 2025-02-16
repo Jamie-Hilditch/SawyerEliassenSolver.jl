@@ -2,6 +2,9 @@ struct Transforms{T<:SingleOrDouble}
     fourier
     sine
     cosine
+    inverse_fourier
+    inverse_sine
+    inverse_cosine
 end
 
 function Transforms(real_variable::Array{T,2}) where {T<:SingleOrDouble}
@@ -11,11 +14,11 @@ function Transforms(real_variable::Array{T,2}) where {T<:SingleOrDouble}
     sine = FFTW.plan_r2r(real_variable, FFTW.RODFT10, 2; flags=FFTW.PATIENT)
     cosine = FFTW.plan_r2r(real_variable, FFTW.REDFT10, 2; flags=FFTW.PATIENT)
     # plan the inverse transforms
-    inv(fourier)
-    inv(sine)
-    inv(cosine)
+    inverse_fourier = inv(fourier)
+    inverse_sine = inv(sine)
+    inverse_cosine = inv(cosine)
 
-    return Transforms{T}(fourier, sine, cosine)
+    return Transforms{T}(fourier, sine, cosine, inverse_fourier, inverse_sine, inverse_cosine)
 end
 
 Transforms(grid::Grid{T}) where {T} = Transforms(zeros(T, size(grid)))
