@@ -57,7 +57,7 @@ end
     CNX = domain.spectral.CNX
     CNZ = domain.spectral.CNZ
     kx, kz = wavenumbers(domain)
-    @inbounds @. out[1:CNX, 1:CNZ] =
+    @inbounds @views @. out[1:CNX, 1:CNZ] =
         in[1:CNX, 1:CNZ] / (1 + aᵢᵢh² * (ω₀² * kz^2 + ω₁² * kx^2) / (kx^2 + kz^2))
     @inbounds @. out[(CNX + 1):end, :] = 0
     @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
