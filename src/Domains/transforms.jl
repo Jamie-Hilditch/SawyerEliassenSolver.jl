@@ -18,7 +18,9 @@ function Transforms(real_variable::Array{T,2}) where {T<:SingleOrDouble}
     inverse_sine = inv(sine)
     inverse_cosine = inv(cosine)
 
-    return Transforms{T}(fourier, sine, cosine, inverse_fourier, inverse_sine, inverse_cosine)
+    return Transforms{T}(
+        fourier, sine, cosine, inverse_fourier, inverse_sine, inverse_cosine
+    )
 end
 
 Transforms(grid::Grid{T}) where {T} = Transforms(zeros(T, size(grid)))
