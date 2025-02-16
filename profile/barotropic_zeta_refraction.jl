@@ -57,6 +57,7 @@ end;
 
 function run_simulation(ts)
     advance!(ts, 10)
+    return nothing
 end;
 
 # ### Without preconditioning
