@@ -12,8 +12,8 @@ end
 
 """Unsafe horizontal transformation from Fourier to physical space."""
 @inline function Tᴴ!(out::XVariable{T}, in::FVariable{T}) where {T}
-    fourier = in.domain.transforms.fourier
-    ldiv!(out.data, fourier, in.data)
+    inverse_fourier = in.domain.transforms.inverse_fourier
+    mul!(out.data, inverse_fourier, in.data)
     return out
 end
 
@@ -31,8 +31,8 @@ end
 
 """Unsafe sine transformation from spectral to physical space."""
 @inline function Tˢ!(out::XZVariable{T}, in::XSVariable{T}) where {T}
-    sine = in.domain.transforms.sine
-    ldiv!(out.data, sine, in.data)
+    inverse_sine = in.domain.transforms.inverse_sine
+    mul!(out.data, inverse_sine, in.data)
     return out
 end
 
@@ -50,8 +50,8 @@ end
 
 """Unsafe cosine transformation from spectral to physical space."""
 @inline function Tᶜ!(out::XZVariable{T}, in::XCVariable{T}) where {T}
-    cosine = in.domain.transforms.cosine
-    ldiv!(out.data, cosine, in.data)
+    inverse_cosine = in.domain.transforms.inverse_cosine
+    mul!(out.data, inverse_cosine, in.data)
     return out
 end
 
