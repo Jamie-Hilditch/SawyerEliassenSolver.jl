@@ -37,7 +37,7 @@ function ∇⁻²! end
     kx = xwavenumbers(in)
     CNX = length(kx)
     @inbounds @. out[1, :] = 0
-    @inbounds @. out[2:CNX, :] = (1im * kx[2:CNX])^n * in[2:CNX, :]
+    @inbounds @views @. out[2:CNX, :] = (1im * kx[2:CNX])^n * in[2:CNX, :]
     @inbounds @. out[(CNX + 1):end, :] = 0
     return nothing
 end
@@ -126,7 +126,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -136,7 +136,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -147,7 +147,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = kz * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -157,7 +157,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 1:CNZ] = -kz * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -168,20 +168,20 @@ end
     size(in)[2] >= 5 ||
         throw(ArgumentError("z grid is too short to apply five point stencil"))
 
-    @inbounds @. out[:, 1] =
+    @inbounds @views @. out[:, 1] =
         -25 / 12 * in[:, 1] + 4 * in[:, 2] - 3 * in[:, 3] + 4 / 3 * in[:, 4] -
         1 / 4 * in[:, 5]
-    @inbounds @. out[:, 2] =
+    @inbounds @views @. out[:, 2] =
         -1 / 4 * in[:, 1] - 5 / 6 * in[:, 2] + 3 / 2 * in[:, 3] - 1 / 2 * in[:, 4] +
         1 / 12 * in[:, 5]
-    @inbounds @. out[:, 3:(end - 2)] =
+    @inbounds @views @. out[:, 3:(end - 2)] =
         1 / 12 * in[:, 1:(end - 4)] - 2 / 3 * in[:, 2:(end - 3)] +
         2 / 3 * in[:, 4:(end - 1)] - 1 / 12 * in[:, 5:end]
-    @inbounds @. out[:, end - 1] =
+    @inbounds @views @. out[:, end - 1] =
         -1 / 12 * in[:, end - 4] + 1 / 2 * in[:, end - 3] - 3 / 2 * in[:, end - 2] +
         5 / 6 * in[:, end - 1] +
         1 / 4 * in[:, end]
-    @inbounds @. out[:, end] =
+    @inbounds @views @. out[:, end] =
         1 / 4 * in[:, end - 4] - 4 / 3 * in[:, end - 3] + 3 * in[:, end - 2] -
         4 * in[:, end - 1] + 25 / 12 * in[:, end]
     out ./= zstepsize(in)
@@ -238,7 +238,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 1:CNZ] = -kz^2 * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -249,7 +249,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = -kz^2 * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = -kz^2 * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -274,7 +274,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -284,7 +284,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -295,7 +295,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = -1 / kz * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -305,7 +305,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 1:CNZ] = 1 / kz * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -347,7 +347,7 @@ end
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
     CNZ = length(kz)
-    @inbounds @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
+    @inbounds @views @. out[:, 1:CNZ] = -1 / kz^2 * in[:, 1:CNZ]
     @inbounds @. out[:, (CNZ + 1):end] = 0
     return nothing
 end
@@ -358,7 +358,7 @@ end
     kz = zwavenumbers(in)'
     CNZ = length(kz)
     @inbounds @. out[:, 1] = 0
-    @inbounds @. out[:, 2:(CNZ + 1)] = -1 / kz^2 * in[:, 2:(CNZ + 1)]
+    @inbounds @views @. out[:, 2:(CNZ + 1)] = -1 / kz^2 * in[:, 2:(CNZ + 1)]
     @inbounds @. out[:, (CNZ + 2):end] = 0
     return nothing
 end
@@ -382,7 +382,7 @@ end
     kx, kz = wavenumbers(in)
     CNX = length(kx)
     CNZ = length(kz)
-    @inbounds @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
+    @inbounds @views @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
     @inbounds @. out[(CNX + 1):end, :] = 0
     @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
 end
