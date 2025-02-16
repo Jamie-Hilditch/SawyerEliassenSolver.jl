@@ -30,7 +30,7 @@ using SawyerEliassenSolver
 # We non-dimensionalise by the half-height of the domain and `f`.
 # The background flow has uniform gradients and thus we require no dealiasing.
 
-const NX, NZ = 4096, 256
+const NX, NZ = 2048, 256
 const LX::Float64 = 1000
 const M²::Float64 = 100
 const N²::Float64 = 1e5
@@ -92,7 +92,7 @@ problem = Problem(domain, background_flow; ζ_forcing=physical_forcing)
 # We don't need to set any initial conditions but we'll use a preconditioner.
 
 preconditioner = DiagonalQuadraticPreconditioner(domain, 1.0, N²)
-ts = Timestepper(problem, 2π / 50, preconditioner)
+ts = Timestepper(problem, 2π / 20, preconditioner)
 
 # ## Output
 # Let's save `u` and `w` to visualise the overturning circulation that we're forcing.
@@ -110,7 +110,7 @@ write!(output_writer)
 
 # Run the simulation.
 
-for ii in 1:100
+for ii in 1:40
     advance!(ts, 5)
     write!(output_writer)
 end
