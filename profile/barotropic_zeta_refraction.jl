@@ -52,7 +52,7 @@ function setup_timestepper(use_preconditioner::Bool=false)
     else
         ts = Timestepper(problem, 2π / 50)
     end
-    return ts = Timestepper(problem, 2π / 50)
+    return ts
 end;
 
 function run_simulation(ts)
@@ -60,7 +60,7 @@ function run_simulation(ts)
     return nothing
 end;
 
-# ### Without preconditioning
+# ### With preconditioning
 # Create the timestep and advance 1 step before timing.
 
 ts = setup_timestepper(true)
@@ -70,12 +70,3 @@ Profile.clear()
 Profile.clear_malloc_data()
 Profile.Allocs.@profile run_simulation(ts)
 PProf.Allocs.pprof(; web=false, out=ALLOCS_FILEPATH)
-
-# ### With preconditioning
-
-# domain, problem = setup_problem()
-# preconditioner = DiagonalQuadraticPreconditioner(domain, ω₀², ω₁²)
-# ts = Timestepper(problem, 2π / 50, preconditioner)
-# advance!(ts)
-
-# @timev advance!(ts, 500)
