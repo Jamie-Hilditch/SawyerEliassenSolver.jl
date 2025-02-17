@@ -88,8 +88,9 @@ Domains.get_domain(cgs::ConjugateGradientSolver) = get_domain(cgs.p)
     #   αₖ = δₖ / pₖᵀApₖ is the step size
 
     # initialise the variables
-    @inbounds 𝓛ᴵ!(problem, q, x, aᵢᵢh²)
-    @inbounds @. r = b - q # r₀ = b - Ax₀
+
+    @inbounds @. x = 0 # x₀ = 0
+    @inbounds @. r = b # r₀ = b - Ax₀ = b
     @inbounds apply_preconditioner!(𝓟, z, r, aᵢᵢh²) # Mz₀ = r₀
     δ = r ⋅ z # δ = r₀ᵀz₀
     @inbounds @. p = z # p₀ = z₀
