@@ -267,6 +267,6 @@ advance!(ts)
 
 @time advance!(ts, 500)
 
-# We see that the preconditioner speeds up the simulation by a factor of 10. This is because the
+# We see that the preconditioner speeds up the simulation by more than a factor of 10. This is because the
 # preconditioner drastically reduces the number of iterations required by the iterative solver from
 # approximately 150 to 3.
