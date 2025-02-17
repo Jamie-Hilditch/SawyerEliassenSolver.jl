@@ -193,7 +193,6 @@ function integrate_background_gradients(
     # use trapezoid rule but don't subtract half the first value
     # this is equivalent to setting the horizontal mean component to zero on the bottom boundary
     B_mean = (cumsum(Bz_mean; dims=2) .- Bz_mean ./ 2) .* zstepsize(domain)
-    @info B_mean
     out .+= B_mean
 
     return out
