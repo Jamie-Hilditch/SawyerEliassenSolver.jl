@@ -246,7 +246,7 @@ function setup_problem()
 end;
 
 # ### Without preconditioning
-# Create the timestep and advance 1 step before timing.
+# Create the timestepper and advance 1 step before timing.
 
 domain, problem = setup_problem()
 ts = Timestepper(problem, 2π / 50)
