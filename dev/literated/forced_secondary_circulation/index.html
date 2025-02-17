@@ -31,7 +31,7 @@ physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code><
     (hc2hc-direct-16/30 &quot;hf_16&quot;
       (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
       (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
-    (rdft-indirect-before
+    (rdft-indirect-after
       (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
       (rdft-rank0-ip-sq/1-x16-x16)))), FFTW r2r REDFT10 plan for 2048×256 array of Float64
 (redft10e-r2hc-256-x2048
@@ -39,27 +39,25 @@ physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code><
     (hc2hc-direct-16/30 &quot;hf_16&quot;
       (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
       (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
-    (rdft-indirect-before
+    (rdft-indirect-after
       (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
       (rdft-rank0-ip-sq/1-x16-x16)))), 0.00048828125 * FFTW complex-to-real plan for 1025×256 array of ComplexF64
-(rdft2-vrank&gt;=1-x256/1
-  (rdft2-buffered-2048/1-2
-    (rdft2-ct-dif/2
-      (hc2c-direct-2/2/0 &quot;hc2cbdftv_2_avx2_128&quot;
-        (rdft2-hc2r-direct-2 &quot;r2cb_2&quot;)
-        (rdft2-hc2r10-direct-2 &quot;r2cbIII_2&quot;))
-      (dft-ct-dit/64
-        (dftw-direct-64/504 &quot;t2bv_64_avx2&quot;)
-        (dft-direct-16-x64 &quot;n2bv_16_avx2&quot;)))
-    (dft-r2hc-1
-      (rdft-rank0-memcpy/2050))
-    (rdft2-nop))), 0.001953125 * FFTW r2r RODFT01 plan for 2048×256 array of Float64
+(rdft2-buffered-2048-x8/256-6
+  (rdft2-ct-dif/32
+    (hc2c-direct-32/124/1-x8 &quot;hc2cbdftv_32_avx2&quot;
+      (rdft2-hc2r-direct-32 &quot;r2cb_32&quot;)
+      (rdft2-hc2r10-direct-32 &quot;r2cbIII_32&quot;))
+    (dft-vrank&gt;=1-x8/1
+      (dft-direct-64-x16 &quot;n1bv_64_avx2&quot;)))
+  (dft-r2hc-1
+    (rdft-rank0-iter-ci/2050-x8))
+  (rdft2-nop)), 0.001953125 * FFTW r2r RODFT01 plan for 2048×256 array of Float64
 (rodft01e-r2hc-256-x2048
   (rdft-ct-dit/16
     (hc2hc-direct-16/30 &quot;hf_16&quot;
       (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
       (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
-    (rdft-indirect-before
+    (rdft-indirect-after
       (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
       (rdft-rank0-ip-sq/1-x16-x16)))), 0.001953125 * FFTW r2r REDFT01 plan for 2048×256 array of Float64
 (redft01e-r2hc-256-x2048
@@ -67,7 +65,7 @@ physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code><
     (hc2hc-direct-16/30 &quot;hf_16&quot;
       (rdft-r2hc-direct-r2c-16 &quot;r2cf_16&quot;)
       (rdft-r2hc01-direct-r2c-16 &quot;r2cfII_16&quot;))
-    (rdft-indirect-before
+    (rdft-indirect-after
       (rdft-r2hc-direct-r2c-16-x16 &quot;r2cf_16&quot;)
       (rdft-rank0-ip-sq/1-x16-x16)))))), Main.var&quot;##239&quot;.forcing, (L = 20.0, H = 0.05, τ = 18.84955592153876))</code></pre><h3 id="Time-dependence-of-the-forcing"><a class="docs-heading-anchor" href="#Time-dependence-of-the-forcing">Time dependence of the forcing</a><a id="Time-dependence-of-the-forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Time-dependence-of-the-forcing" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = fig = Figure(; size=(1200, 400))
 Label(fig[1, :], &quot;Forcing time dependence&quot;; tellwidth=false)
@@ -144,4 +142,4 @@ contour!(ax_w, output[:x], output[:z], output[:B]; color=:black)
 
 record(fig, &quot;forced_secondary_circulation.mp4&quot;, 1:length(output[:time]); framerate=10) do i
     n[] = i
-end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.1 on <span class="colophon-date" title="Monday 17 February 2025 04:10">Monday 17 February 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.1 on <span class="colophon-date" title="Monday 17 February 2025 04:44">Monday 17 February 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
