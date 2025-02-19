@@ -1,6 +1,7 @@
 """$(TYPEDSIGNATURES)
 
 Integrate periodic gradients.
+`out` is the output variable and can be the same as `x_derivative` or `z_derivative`.
 """
 function integrate_periodic_gradients(
     x_derivative::XZVariable, z_derivative::XZVariable; out::XZVariable=XZVariable(x_derivative), FZ_working_space::FZVariable=FZVariable(x_derivative)
@@ -8,6 +9,9 @@ function integrate_periodic_gradients(
     @boundscheck consistent_domains(x_derivative, z_derivative, out)
     domain = get_domain(x_derivative)
     x_derivative_FZ = FZ_working_space
+
+    # the only thing we need from the z_derivative is the mean
+    z_derivative_mean = mean(z_derivative; dims=1)
 
     # first get horizontal buoyancy gradient in FZ space
     horizontal_transform!(x_derivative_FZ,x_derivative)
@@ -21,8 +25,6 @@ function integrate_periodic_gradients(
     out .+= xgridpoints(domain) * x_derivative_mean'
 
     # Now we need to add on the mean z dependence
-    z_derivative_mean = mean(z_derivative; dims=1)
-
     # integrate z_derivative_mean
     # use trapezoid rule but don't subtract half the first value
     # this is equivalent to setting the horizontal mean component to zero on the bottom boundary
