@@ -24,7 +24,7 @@ function _compute_pressure_gradients!(problem::Problem)
     Tᶜ!(∂p∂x, scratch.XC_tmp)
 
     # add on fv
-    @inbounds @. ∂p∂x += v * tuple(get_f(problem))
+    @inbounds ∂p∂x .+= v .* get_f(problem)
 
     # now compute wₜ = ∂Ψₜ/∂x in FS space
     @inbounds ∂x!(scratch.FS_tmp, Ψₜ)
