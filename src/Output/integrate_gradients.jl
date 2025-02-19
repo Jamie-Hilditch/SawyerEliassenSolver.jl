@@ -28,8 +28,8 @@ function integrate_periodic_gradients(
     # integrate z_derivative_mean
     # use trapezoid rule but don't subtract half the first value
     # this is equivalent to setting the horizontal mean component to zero on the bottom boundary
-    mean = (cumsum(z_derivative_mean; dims=2) .- z_derivative_mean ./ 2) .* zstepsize(domain)
-    out .+= mean
+    horizontal_mean = (cumsum(z_derivative_mean; dims=2) .- z_derivative_mean ./ 2) .* zstepsize(domain)
+    out .+= horizontal_mean
 
     return out
 end
