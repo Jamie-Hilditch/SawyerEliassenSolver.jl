@@ -34,4 +34,5 @@ end
 # define the output variables
 """$(TYPEDSIGNATURES)"""
 ψ(problem::Problem) = OutputVariable(problem, _compute_ψ!, (:x, :z), problem.scratch.XZ_tmp)
+"""$(TYPEDSIGNATURES)"""
 ζ(problem::Problem) = OutputVariable(problem, _compute_ζ!, (:x, :z), problem.scratch.XZ_tmp)
