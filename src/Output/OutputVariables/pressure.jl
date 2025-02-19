@@ -62,5 +62,5 @@ p(problem::Problem) = OutputVariable(
     _compute_p!,
     (:x, :z),
     problem.scratch.XZ_tmp,
-    FZVariable(get_domain(problem)),
+    tuple(FZVariable(get_domain(problem))),
 )
