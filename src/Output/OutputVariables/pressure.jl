@@ -40,3 +40,21 @@ function _compute_pressure_gradients!(problem::Problem)
 
     return ∂p∂x, ∂p∂z
 end
+
+"""$(TYPEDSIGNATURES)"""
+function _compute_p!(problem::Problem{T}, p::XZVariable{T}) where T
+    @boundscheck consistent_domains(problem, p)
+    scratch = get_scratch(problem)
+
+    # compute gradients
+    # these are stored in scratch.XZ_tmp and scratch.XZ_tmp2
+    ∂p∂x, ∂p∂z = _compute_pressure_gradients!(problem)
+    # integrate gradients
+    integrate_periodic_gradients(∂p∂x, ∂p∂z, out=p, FZ_working_space=scratch.FZ_tmp)
+    return p
+end
+
+@inline _compute_p!(problem, p) = @inbounds _compute_p!(problem, p)
+
+"""$(TYPEDSIGNATURES)"""
+p(problem::Problem) = OutputVariable(problem, _compute_p!, (:x, :z), problem.scratch.XZ_tmp)
