@@ -1,6 +1,6 @@
 function compute_Ψ!(problem::Problem{T}, Ψ::XZVariable{T}) where {T}
-    @boundscheck consistent_domains(ψ, problem) ||
-        throw(ArgumentError("`ψ` and `problem` must have the same domain."))
+    @boundscheck consistent_domains(Ψ, problem) ||
+        throw(ArgumentError("`Ψ `problem` must have the same domain."))
     # use the scratch variables for storage
     Ψ_FS, Ψ_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
