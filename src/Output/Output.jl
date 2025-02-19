@@ -38,5 +38,4 @@ include("integrate_gradients.jl")
 include("constant_output_variable.jl")
 include("OutputVariables/OutputVariables.jl")
 
-
 end  # module Output
