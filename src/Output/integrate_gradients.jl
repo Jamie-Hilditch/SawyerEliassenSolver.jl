@@ -6,7 +6,7 @@ Integrate periodic gradients.
 function integrate_periodic_gradients(
     x_derivative::XZVariable, z_derivative::XZVariable; out::XZVariable=XZVariable(x_derivative), FZ_working_space::FZVariable=FZVariable(x_derivative)
 )
-    @boundscheck consistent_domains(x_derivative, z_derivative, out)
+    @boundscheck consistent_domains(x_derivative, z_derivative, out, FZ_working_space)
     domain = get_domain(x_derivative)
     x_derivative_FZ = FZ_working_space
 

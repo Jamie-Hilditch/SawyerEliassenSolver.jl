@@ -177,7 +177,7 @@ function write_background_buoyancy!(ow::OutputWriter; name::String="B")
     Bx = XZVariable(domain, get_Bx(problem))
     Bz = XZVariable(domain, get_Bz(problem))
 
-    @inbounds integrate_periodic_gradients(Bx, Bz, out=B)
+    @inbounds integrate_periodic_gradients(Bx, Bz; out=B)
 
     write_constant_array!(ow, B, name, (:x, :z))
     return nothing
@@ -196,7 +196,7 @@ function write_background_velocity!(ow::OutputWriter; name::String="V")
     Vx = XZVariable(domain, get_Vx(problem))
     Vz = XZVariable(domain, get_Bx(problem)) ./ get_f(problem)
 
-    @inbounds integrate_periodic_gradients(Vx, Vz, out=V)
+    @inbounds integrate_periodic_gradients(Vx, Vz; out=V)
 
     write_constant_array!(ow, V, name, (:x, :z))
     return nothing
