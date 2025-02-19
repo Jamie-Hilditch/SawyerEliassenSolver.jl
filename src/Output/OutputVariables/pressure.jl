@@ -10,7 +10,7 @@ function _compute_pressure_gradients!(problem::Problem)
     scratch = get_scratch(problem)
     ∂p∂x = scratch.XZ_tmp
     ∂p∂z = scratch.XZ_tmp2
-    v,b = problem.state.v, problem.state.b
+    v, b = problem.state.v, problem.state.b
 
     # first compute Ψₜ from ζₜ
     Ψₜ = scratch.FS_tmp
