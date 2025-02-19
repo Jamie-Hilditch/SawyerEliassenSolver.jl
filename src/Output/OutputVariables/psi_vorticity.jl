@@ -36,7 +36,7 @@ end
 
 The streamfunction Ψ.
 """
-Ψ(problem::Problem) = OutputVariable(problem, _compute_ψ!, (:x, :z), problem.scratch.XZ_tmp)
+Ψ(problem::Problem) = OutputVariable(problem, _compute_Ψ!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)
 
 The vorticity ζ.
