@@ -28,7 +28,7 @@ export OutputVariable,
     write_Bx!,
     write_Bz!,
     write_background_flow!,
-    integrate_background_gradients,
+    integrate_periodic_gradients,
     write_background_buoyancy!,
     write_background_velocity!
 

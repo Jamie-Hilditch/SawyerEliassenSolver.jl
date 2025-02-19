@@ -166,16 +166,17 @@ end
 
 """$(TYPEDSIGNATURES)
 
-Integrate periodic background gradients.
+Integrate periodic gradients.
 """
-function integrate_background_gradients(
-    Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx)
+function integrate_periodic_gradients(
+    Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx), FZ_working_space::FZVariable=FZVariable(Bx)
 )
     @boundscheck consistent_domains(Bx, Bz, out)
     domain = get_domain(Bx)
+    Bx_FZ = FZ_working_space
 
     # first get horizontal buoyancy gradient in FZ space
-    Bx_FZ = horizontal_transform(Bx)
+    horizontal_transform!(Bx_FZ,Bx)
 
     # save the mean component and integrate the rest (note the integration sets the mean to 0)
     Bx_mean = Bx_FZ[1, :] ./ size(Bx, 1)
@@ -210,7 +211,7 @@ function write_background_buoyancy!(ow::OutputWriter; name::String="B")
     Bx = XZVariable(domain, get_Bx(problem))
     Bz = XZVariable(domain, get_Bz(problem))
 
-    @inbounds integrate_background_gradients(Bx, Bz, out=B)
+    @inbounds integrate_periodic_gradients(Bx, Bz, out=B)
 
     write_constant_array!(ow, B, name, (:x, :z))
     return nothing
@@ -229,7 +230,7 @@ function write_background_velocity!(ow::OutputWriter; name::String="V")
     Vx = XZVariable(domain, get_Vx(problem))
     Vz = XZVariable(domain, get_Bx(problem)) ./ get_f(problem)
 
-    @inbounds integrate_background_gradients(Vx, Vz, out=V)
+    @inbounds integrate_periodic_gradients(Vx, Vz, out=V)
 
     write_constant_array!(ow, V, name, (:x, :z))
     return nothing
