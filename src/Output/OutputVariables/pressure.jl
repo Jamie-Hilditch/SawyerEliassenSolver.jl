@@ -10,6 +10,7 @@ function _compute_pressure_gradients!(problem::Problem)
     scratch = get_scratch(problem)
     ∂p∂x = scratch.XZ_tmp
     ∂p∂z = scratch.XZ_tmp2
+    v,b = problem.state.v, problem.state.b
 
     # first compute Ψₜ from ζₜ
     Ψₜ = scratch.FS_tmp
@@ -23,7 +24,7 @@ function _compute_pressure_gradients!(problem::Problem)
     Tᶜ!(∂p∂x, scratch.XC_tmp)
 
     # add on fv
-    @inbounds @. ∂p∂x += problem.state.v * get_f(problem)
+    @inbounds @. ∂p∂x += v * get_f(problem)
 
     # now compute wₜ = ∂Ψₜ/∂x in FS space
     @inbounds ∂x!(scratch.FS_tmp, Ψₜ)
@@ -36,7 +37,7 @@ function _compute_pressure_gradients!(problem::Problem)
     ∂p∂z .*= -1
 
     # add on b
-    @inbounds @. ∂p∂z += problem.state.b
+    @inbounds @. ∂p∂z += b
 
     return ∂p∂x, ∂p∂z
 end
