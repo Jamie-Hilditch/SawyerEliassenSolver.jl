@@ -3,14 +3,17 @@
 Integrate periodic gradients.
 """
 function integrate_periodic_gradients(
-    Bx::XZVariable, Bz::XZVariable; out::XZVariable=XZVariable(Bx), FZ_working_space::FZVariable=FZVariable(Bx)
+    Bx::XZVariable,
+    Bz::XZVariable;
+    out::XZVariable=XZVariable(Bx),
+    FZ_working_space::FZVariable=FZVariable(Bx),
 )
     @boundscheck consistent_domains(Bx, Bz, out)
     domain = get_domain(Bx)
     Bx_FZ = FZ_working_space
 
     # first get horizontal buoyancy gradient in FZ space
-    horizontal_transform!(Bx_FZ,Bx)
+    horizontal_transform!(Bx_FZ, Bx)
 
     # save the mean component and integrate the rest (note the integration sets the mean to 0)
     Bx_mean = Bx_FZ[1, :] ./ size(Bx, 1)
