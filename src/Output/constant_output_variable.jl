@@ -175,11 +175,10 @@ function integrate_background_gradients(
     domain = get_domain(Bx)
 
     # first get horizontal buoyancy gradient in FZ space
-    out .= Bx
-    Bx_FZ = horizontal_transform(out)
+    Bx_FZ = horizontal_transform(Bx)
 
     # save the mean component and integrate the rest (note the integration sets the mean to 0)
-    Bx_mean = Bx_FZ[1, :] ./ size(Bx_FZ, 1)
+    Bx_mean = Bx_FZ[1, :] ./ size(Bx, 1)
     ∫dx!(Bx_FZ)
 
     # transform back to physical space and add on linear part
