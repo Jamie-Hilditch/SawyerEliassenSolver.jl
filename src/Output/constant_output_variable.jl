@@ -194,7 +194,8 @@ function write_background_velocity!(ow::OutputWriter; name::String="V")
 
     # get background gradients as XZVariables
     Vx = XZVariable(domain, get_Vx(problem))
-    Vz = XZVariable(domain, get_Bx(problem)) ./ get_f(problem)
+    Vz = XZVariable(domain, get_Bx(problem)) 
+    Vz ./= get_f(problem)
 
     @inbounds integrate_periodic_gradients(Vx, Vz; out=V)
 
