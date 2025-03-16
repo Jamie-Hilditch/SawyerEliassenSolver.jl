@@ -17,59 +17,10 @@ background_flow.Bz .= N²
 domain = Domain(grid);</code></pre><h2 id="Forcing"><a class="docs-heading-anchor" href="#Forcing">Forcing</a><a id="Forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Forcing" title="Permalink"></a></h2><p><span>$\zeta$</span> forcing can be applied in four different ways:</p><ul><li><a href="../../library/forcing/#SawyerEliassenSolver.Forcing.PointwisePhysicalForcing"><code>PointwisePhysicalForcing</code></a></li><li><a href="../../library/forcing/#SawyerEliassenSolver.Forcing.GlobalPhysicalForcing"><code>GlobalPhysicalForcing</code></a></li><li><a href="../../library/forcing/#SawyerEliassenSolver.Forcing.PointwiseSpectralForcing"><code>PointwiseSpectralForcing</code></a></li><li><a href="../../library/forcing/#SawyerEliassenSolver.Forcing.GlobalSpectralForcing"><code>GlobalSpectralForcing</code></a></li></ul><p>Here we implement Pointwise Physical Forcing where we specify the forcing as a function of <code>x</code>, <code>z</code> and <code>t</code>. The function can also optionally accepted parameters as the final arguments. We specify the spatial and temporal parts of the RHS forcing as non-dimensional functions and then provide the length and time scales as parameters.</p><pre><code class="language-julia hljs">@inline forcing_spatial(x, z) = exp(-(x^2 + z^2) / 2)
 @inline forcing_temporal(t) = t * exp(-t^2 / 2)
 @inline forcing(x, z, t, p) = forcing_spatial(x / p.L, z / p.H) * forcing_temporal(t / p.τ)</code></pre><pre><code class="nohighlight hljs">forcing (generic function with 1 method)</code></pre><p>We now construct the RHS forcing for the domain by passing in the function and parameters. We choose a timescale of 3 inertial periods.</p><pre><code class="language-julia hljs">const parameters = (; L=20.0, H=0.05, τ=6π)
-physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code></pre><pre><code class="nohighlight hljs">PointwisePhysicalForcing{Float64, @NamedTuple{L::Float64, H::Float64, τ::Float64}}(Domain{Float64}(Grid{Float64}(2048, 256, (-500.0, 500.0), (-1.0, 1.0)), SawyerEliassenSolver.Domains.Spectral{Float64}(1025, 256, 1024, 255, 0.006283185307179587, 1.5707963267948966), SawyerEliassenSolver.Domains.Transforms{Float64}(FFTW real-to-complex plan for 2048×256 array of Float64
-(rdft2-vrank&gt;=1-x256/1
-  (rdft2-ct-dit/32
-    (hc2c-direct-32/124/1 &quot;hc2cfdftv_32_avx2&quot;
-      (rdft2-r2hc-direct-32 &quot;r2cf_32&quot;)
-      (rdft2-r2hc01-direct-32 &quot;r2cfII_32&quot;))
-    (dft-direct-64-x16 &quot;n2fv_64_avx2&quot;))), FFTW r2r RODFT10 plan for 2048×256 array of Float64
-(rodft10e-r2hc-256-x2048
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))), FFTW r2r REDFT10 plan for 2048×256 array of Float64
-(redft10e-r2hc-256-x2048
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))), 0.00048828125 * FFTW complex-to-real plan for 1025×256 array of ComplexF64
-(rdft2-buffered-2048-x8/256-6
-  (rdft2-ct-dif/32
-    (hc2c-direct-32/124/1-x8 &quot;hc2cbdftv_32_avx2&quot;
-      (rdft2-hc2r-direct-32 &quot;r2cb_32&quot;)
-      (rdft2-hc2r10-direct-32 &quot;r2cbIII_32&quot;))
-    (dft-vrank&gt;=1-x8/1
-      (dft-direct-64-x16 &quot;n1bv_64_avx2&quot;)))
-  (dft-r2hc-1
-    (rdft-rank0-iter-ci/2050-x8))
-  (rdft2-nop)), 0.001953125 * FFTW r2r RODFT01 plan for 2048×256 array of Float64
-(rodft01e-r2hc-256-x2048
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))), 0.001953125 * FFTW r2r REDFT01 plan for 2048×256 array of Float64
-(redft01e-r2hc-256-x2048
-  (rdft-ct-dit/8
-    (hc2hc-direct-8/14 &quot;hf_8&quot;
-      (rdft-r2hc-direct-r2c-8 &quot;r2cf_8&quot;)
-      (rdft-r2hc01-direct-r2c-8 &quot;r2cfII_8&quot;))
-    (rdft-buffered-32-x8/8-6
-      (rdft-r2hc-direct-r2c-32-x8 &quot;r2cf_32&quot;)
-      (rdft-rank0-memcpy-loop/32-x8)
-      (rdft-nop)))))), Main.var&quot;##240&quot;.forcing, (L = 20.0, H = 0.05, τ = 18.84955592153876))</code></pre><h3 id="Time-dependence-of-the-forcing"><a class="docs-heading-anchor" href="#Time-dependence-of-the-forcing">Time dependence of the forcing</a><a id="Time-dependence-of-the-forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Time-dependence-of-the-forcing" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = fig = Figure(; size=(1200, 400))
+physical_forcing = PointwisePhysicalForcing(domain, forcing, parameters)</code></pre><pre><code class="nohighlight hljs">PointwisePhysicalForcing:
+  ├──── domain: Domain with eltype Float64 and physical size (2048, 256)
+  └──── params: (L = 20.0, H = 0.05, τ = 18.84955592153876)
+</code></pre><h3 id="Time-dependence-of-the-forcing"><a class="docs-heading-anchor" href="#Time-dependence-of-the-forcing">Time dependence of the forcing</a><a id="Time-dependence-of-the-forcing-1"></a><a class="docs-heading-anchor-permalink" href="#Time-dependence-of-the-forcing" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = fig = Figure(; size=(1200, 400))
 Label(fig[1, :], &quot;Forcing time dependence&quot;; tellwidth=false)
 ax = Axis(
     fig[2, :];
@@ -143,4 +94,4 @@ contour!(ax_w, output[:x], output[:z], output[:B]; color=:black)
 
 record(fig, &quot;forced_secondary_circulation.mp4&quot;, 1:length(output[:time]); framerate=10) do i
     n[] = i
-end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.1 on <span class="colophon-date" title="Sunday 16 March 2025 19:57">Sunday 16 March 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre><pre><code class="nohighlight hljs">&quot;forced_secondary_circulation.mp4&quot;</code></pre><p><video src="../forced_secondary_circulation.mp4" controls="true" title><a href="../forced_secondary_circulation.mp4"></a></video></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../barotropic_zeta_refraction/">« Barotropic zeta refraction</a><a class="docs-footer-nextpage" href="../../library/SawyerEliassenSolver/">SawyerEliassenSolver »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.9.0 on <span class="colophon-date" title="Sunday 16 March 2025 23:58">Sunday 16 March 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
