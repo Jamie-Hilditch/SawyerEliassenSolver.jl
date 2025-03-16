@@ -7,7 +7,7 @@ using SawyerEliassenSolver.Variables
 
 using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
 
-export AbstractForcingFunction,
+export AbstractForcing,
     NoForcing,
     PhysicalForcing,
     SpectralForcing,
