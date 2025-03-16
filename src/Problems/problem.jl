@@ -53,7 +53,7 @@ struct Problem{T,F,G,H}
     function Problem(
         domain::Domain{T},
         background::BackgroundFlow{T},
-        ζ_forcing::AbstractForcingFunction{T},
+        ζ_forcing::AbstractForcing{T},
         v_forcing::Union{PhysicalForcing{T},NoForcing{T}},
         b_forcing::Union{PhysicalForcing{T},NoForcing{T}},
     ) where {T}
