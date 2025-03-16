@@ -81,6 +81,28 @@ SpectralForcing{T} =
 
 Domains.get_domain(F::AbstractForcing) = F.domain
 
+# show methods
+function Base.show(io::IO, ::MIME"text/plain", forcing::NoForcing)
+    return print(
+        io,
+        "NoForcing:\n",
+        "  └──── domain: $(summary(get_domain(forcing)))\n",
+    )
+end
+function Base.show(io::IO, ::MIME"text/plain", forcing::AbstractForcing)
+    forcing_type = typeof(forcing)
+    forcing_type_name = nameof(forcing_type)
+    forcing_type_string = string(forcing_type_name)
+    return print(
+        io,
+        "$(forcing_type_string):\n",
+        "  ├──── domain: $(summary(get_domain(forcing)))\n",
+        "  └──── params: $(forcing.params)\n",
+    )
+end
+
+
+# evaluate forcing methods
 @inline function evaluate_physical_forcing!(
     ::NoForcing{T}, XZ::XZVariable{T}, t::T
 ) where {T}
