@@ -1,9 +1,9 @@
 
 """Abstract super type for all forcings."""
-abstract type AbstractForcingFunction{T} end
+abstract type AbstractForcing{T} end
 
 """Type representing no forcing."""
-struct NoForcing{T} <: AbstractForcingFunction{T}
+struct NoForcing{T} <: AbstractForcing{T}
     domain::Domain{T}
 end
 
@@ -17,7 +17,7 @@ Apply pointwise forcing to the Sawyer-Eliassen equation in physical space.
 # Fields
 $(TYPEDFIELDS)
 """
-struct PointwisePhysicalForcing{T,P} <: AbstractForcingFunction{T}
+struct PointwisePhysicalForcing{T,P} <: AbstractForcing{T}
     domain::Domain{T}
     func::Function
     params::P
@@ -33,7 +33,7 @@ Apply global forcing to the Sawyer-Eliassen equation in physical space.
 # Fields
 $(TYPEDFIELDS)
 """
-struct GlobalPhysicalForcing{T,P} <: AbstractForcingFunction{T}
+struct GlobalPhysicalForcing{T,P} <: AbstractForcing{T}
     domain::Domain{T}
     func::Function
     params::P
@@ -49,7 +49,7 @@ Apply pointwise forcing to the Sawyer-Eliassen equation in spectral space.
 # Fields
 $(TYPEDFIELDS)
 """
-struct PointwiseSpectralForcing{T,P} <: AbstractForcingFunction{T}
+struct PointwiseSpectralForcing{T,P} <: AbstractForcing{T}
     domain::Domain{T}
     func::Function
     params::P
@@ -66,7 +66,7 @@ Note that the `FSVariable{T}` has entries of type `Complex{T}`.
 # Fields
 $(TYPEDFIELDS)
 """
-struct GlobalSpectralForcing{T,P} <: AbstractForcingFunction{T}
+struct GlobalSpectralForcing{T,P} <: AbstractForcing{T}
     domain::Domain{T}
     func::Function
     params::P
@@ -79,7 +79,7 @@ PhysicalForcing{T} =
 SpectralForcing{T} =
     Union{PointwiseSpectralForcing{T,P},GlobalSpectralForcing{T,Q}} where {T,P,Q}
 
-Domains.get_domain(F::AbstractForcingFunction) = F.domain
+Domains.get_domain(F::AbstractForcing) = F.domain
 
 @inline function evaluate_physical_forcing!(
     ::NoForcing{T}, XZ::XZVariable{T}, t::T
