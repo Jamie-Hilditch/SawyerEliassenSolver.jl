@@ -18,7 +18,6 @@ function Base.show(io::IO, ::MIME"text/plain", forcing::AbstractForcing)
     )
 end
 
-
 """Type representing no forcing."""
 struct NoForcing{T} <: AbstractForcing{T}
     domain::Domain{T}
