@@ -16,7 +16,9 @@ export AbstractForcing,
     PointwiseSpectralForcing,
     GlobalSpectralForcing
 
-include("forcing_options.jl")
+include("abstract_forcing.jl")
+include("physical_forcing.jl")
+include("spectral_forcing.jl")
 
 """
 Module for implementing different RHS forcings.
