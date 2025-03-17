@@ -26,8 +26,6 @@ function PointwisePhysicalForcing(domain::Domain{T}, func::Function) where {T}
     return PointwisePhysicalForcing{T,Nothing}(domain, func, nothing)
 end
 
-
-
 """
     $(TYPEDEF)
 
@@ -60,7 +58,6 @@ end
 PhysicalForcing{T} =
     Union{PointwisePhysicalForcing{T,P},GlobalPhysicalForcing{T,Q}} where {T,P,Q}
 
-
 ####################
 # Evaluate forcing #
 ####################
@@ -85,7 +82,7 @@ end
 end
 
 @inline function _evaluate_physical_forcing!(
-    F::PointwisePhysicalForcing{T,P}, out::XZVariable{T}, t::T,
+    F::PointwisePhysicalForcing{T,P}, out::XZVariable{T}, t::T
 ) where {T,P}
     x, z = gridpoints(F)
     @inbounds out .= F.func.(x, z, t, tuple(F.params))
@@ -93,7 +90,7 @@ end
 end
 
 @inline function _evaluate_physical_forcing!(
-    F::PointwisePhysicalForcing{T,Nothing}, out::XZVariable{T}, t::T,
+    F::PointwisePhysicalForcing{T,Nothing}, out::XZVariable{T}, t::T
 ) where {T}
     x, z = gridpoints(F)
     @inbounds out .= F.func.(x, z, t)
@@ -101,14 +98,14 @@ end
 end
 
 @inline function _evaluate_physical_forcing!(
-    F::GlobalPhysicalForcing{T,P}, out::XZVariable{T}, t::T,
+    F::GlobalPhysicalForcing{T,P}, out::XZVariable{T}, t::T
 ) where {T,P}
     F.func(F, out, t, F.params)
     return nothing
 end
 
 @inline function _evaluate_physical_forcing!(
-    F::GlobalPhysicalForcing{T,Nothing}, out::XZVariable{T}, t::T,
+    F::GlobalPhysicalForcing{T,Nothing}, out::XZVariable{T}, t::T
 ) where {T}
     F.func(F, out, t)
     return nothing
