@@ -56,22 +56,19 @@ function GlobalSpectralForcing(domain::Domain{T}, func::Function) where {T}
 end
 
 """Union of types representing forcing in spectral (FS) space."""
-SpectralForcing{T} = Union{PointwiseSpectralForcing{T,P},GlobalSpectralForcing{T,Q}} where {T,P,Q}
+SpectralForcing{T} =
+    Union{PointwiseSpectralForcing{T,P},GlobalSpectralForcing{T,Q}} where {T,P,Q}
 
 ####################
 # Evaluate forcing #
 ####################
 
 @inline function evaluate_ζ_forcing!(
-    F::SpectralForcing{T},
-    out::FSVariable{T},
-    t::T,
-    XS::XSVariable{T},
-    XZ::XZVariable{T}
+    F::SpectralForcing{T}, out::FSVariable{T}, t::T, XS::XSVariable{T}, XZ::XZVariable{T}
 ) where {T}
     @boundscheck consistent_domains(F, out) ||
-    throw(ArgumentError("`F` and `out` must have the same domain."))
-    _evaluate_ζ_forcing!(F, out, t, XS, XZ)
+        throw(ArgumentError("`F` and `out` must have the same domain."))
+    return _evaluate_ζ_forcing!(F, out, t, XS, XZ)
 end
 
 @inline function _evaluate_ζ_forcing!(
@@ -106,7 +103,11 @@ end
 end
 
 @inline function _evaluate_ζ_forcing!(
-    F::GlobalSpectralForcing{T,Nothing}, out::FSVariable{T}, t::T, ::XSVariable, ::XZVariable
+    F::GlobalSpectralForcing{T,Nothing},
+    out::FSVariable{T},
+    t::T,
+    ::XSVariable,
+    ::XZVariable,
 ) where {T}
     F.func(out, t)
     return nothing
