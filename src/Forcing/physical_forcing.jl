@@ -23,7 +23,7 @@ Pointwise physical forcing with no parameters.
 `func` should have signature `func(x::T,z::T,t::T)::T where {T<:Union{Float32,Float64}}`.
 """
 function PointwisePhysicalForcing(domain::Domain{T}, func::Function) where {T}
-    return PointwisePhysicalForcing{T,P}(domain, func, nothing)
+    return PointwisePhysicalForcing{T,Nothing}(domain, func, nothing)
 end
 
 
@@ -53,7 +53,7 @@ Global physical forcing with no parameters.
 `func` should have signature `func(F::XZVariable{T},t::T)::T where {T<:Union{Float32,Float64}}`.
 """
 function GlobalPhysicalForcing(domain::Domain{T}, func::Function) where {T}
-    return GlobalPhysicalForcing{T,P}(domain, func, nothing)
+    return GlobalPhysicalForcing{T,Nothing}(domain, func, nothing)
 end
 
 """Union of types representing forcing in physical (XZ) space."""
