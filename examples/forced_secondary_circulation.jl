@@ -110,8 +110,8 @@ write!(output_writer)
 
 # Run the simulation.
 
-for ii in 1:40
-    advance!(ts, 5)
+for ii in 1:50
+    advance!(ts, 4)
     write!(output_writer)
 end
 
@@ -151,7 +151,7 @@ cf_w = heatmap!(
 Colorbar(fig[3, 2], cf_w; vertical=false, label=L"w", labelpadding=10)
 contour!(ax_w, output[:x], output[:z], output[:B]; color=:black)
 
-record(fig, "forced_secondary_circulation.mp4", 1:length(output[:time]); framerate=10) do i
+record(fig, "forced_secondary_circulation.mp4", 1:length(output[:time]); framerate=8) do i
     n[] = i
 end
 
