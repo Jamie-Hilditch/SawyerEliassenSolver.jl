@@ -5,9 +5,7 @@ abstract type AbstractForcing{T} end
 Domains.get_domain(F::AbstractForcing) = F.domain
 
 # show methods
-function Base.show(io::IO, ::MIME"text/plain", forcing::NoForcing)
-    return print(io, "NoForcing:\n", "  └──── domain: $(summary(get_domain(forcing)))\n")
-end
+
 function Base.show(io::IO, ::MIME"text/plain", forcing::AbstractForcing)
     forcing_type = typeof(forcing)
     forcing_type_name = nameof(forcing_type)
@@ -24,6 +22,10 @@ end
 """Type representing no forcing."""
 struct NoForcing{T} <: AbstractForcing{T}
     domain::Domain{T}
+end
+
+function Base.show(io::IO, ::MIME"text/plain", forcing::NoForcing)
+    return print(io, "NoForcing:\n", "  └──── domain: $(summary(get_domain(forcing)))\n")
 end
 
 @inline function evaluate_physical_forcing!(
