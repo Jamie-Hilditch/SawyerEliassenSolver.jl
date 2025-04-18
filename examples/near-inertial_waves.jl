@@ -182,8 +182,8 @@ nothing #hide
 
 x_grid, z_grid = gridpoints(domain)
 u_theory = [
-    u(x, z, 2π / f, W₁) + u(x, z, 2π / f, W₂) for
-    x in xgridpoints(domain), z in zgridpoints(domain)
+    u(x, z, 2π / f, W₁) + u(x, z, 2π / f, W₂) for x in xgridpoints(domain),
+    z in zgridpoints(domain)
 ];
 
 function run_one_inertial_period(problem, nsteps::Int)

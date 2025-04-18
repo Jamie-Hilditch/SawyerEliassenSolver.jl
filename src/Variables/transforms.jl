@@ -91,13 +91,11 @@ horizontal_transform(in::FZVariable) = Tᴴ!(XZVariable(in.domain), in)
 horizontal_transform(in::FSVariable) = Tᴴ!(XSVariable(in.domain), in)
 horizontal_transform(in::FCVariable) = Tᴴ!(XCVariable(in.domain), in)
 """$(TYPEDSIGNATURES)"""
-@propagate_inbounds horizontal_transform!(out::FVariable, in::XVariable) = transform!(
-    out, in
-)
+@propagate_inbounds horizontal_transform!(out::FVariable, in::XVariable) =
+    transform!(out, in)
 """$(TYPEDSIGNATURES)"""
-@propagate_inbounds horizontal_transform!(out::XVariable, in::FVariable) = transform!(
-    out, in
-)
+@propagate_inbounds horizontal_transform!(out::XVariable, in::FVariable) =
+    transform!(out, in)
 
 # sine transforms creating the output variable
 """Transform the variable from physical space to sine space or vice verse in the vertical."""

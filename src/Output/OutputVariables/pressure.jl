@@ -58,7 +58,7 @@ end
 
 """$(TYPEDSIGNATURES)"""
 function p(problem::Problem)
-    OutputVariable(
+    return OutputVariable(
         problem,
         _compute_p!,
         (:x, :z),

@@ -88,7 +88,8 @@ end
 """$(TYPEDSIGNATURES)
 `LinRange` of the ``x`` gridpoints.
 """
-@inline xgridpoints(grid::Grid) = LinRange(grid.x_bounds[1], grid.x_bounds[2], grid.NX + 1)[1:(end - 1)]
+@inline xgridpoints(grid::Grid) =
+    LinRange(grid.x_bounds[1], grid.x_bounds[2], grid.NX + 1)[1:(end - 1)]
 
 """$(TYPEDSIGNATURES)
 `LinRange` of the ``z`` gridpoints.

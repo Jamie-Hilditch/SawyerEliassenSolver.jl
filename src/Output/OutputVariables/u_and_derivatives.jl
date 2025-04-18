@@ -156,21 +156,21 @@ end
 u(problem::Problem) = OutputVariable(problem, _compute_u!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
 function ∂u∂x(problem::Problem)
-    OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
+    return OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
 end
 """$(TYPEDSIGNATURES)"""
 function ∂²u∂x²(problem::Problem)
-    OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
+    return OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
 end
 """$(TYPEDSIGNATURES)"""
 function ∂u∂z(problem::Problem)
-    OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
+    return OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
 end
 """$(TYPEDSIGNATURES)"""
 function ∂²u∂z²(problem::Problem)
-    OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
+    return OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
 end
 """$(TYPEDSIGNATURES)"""
 function ∂²u∂x∂z(problem::Problem)
-    OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)
+    return OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)
 end

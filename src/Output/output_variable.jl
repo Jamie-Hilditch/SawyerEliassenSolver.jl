@@ -170,9 +170,8 @@ end
 # methods for reading data from an output variables
 # Base.IndexStyle(::OutputVariable) = IndexLinear()
 @propagate_inbounds Base.getindex(v::OutputVariable, i::Int) = getindex(v.output_array, i)
-@propagate_inbounds Base.getindex(v::OutputVariable, I::Vararg{Int,N}) where {N} = getindex(
-    v.output_array, I...
-)
+@propagate_inbounds Base.getindex(v::OutputVariable, I::Vararg{Int,N}) where {N} =
+    getindex(v.output_array, I...)
 @propagate_inbounds Base.getindex(v::OutputVariable, I...) = getindex(v.output_array, I...)
 
 Problems.get_problem(v::OutputVariable) = v.problem
