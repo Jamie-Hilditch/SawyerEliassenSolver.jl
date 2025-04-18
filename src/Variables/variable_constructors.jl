@@ -14,8 +14,9 @@ Base.size(v::AbstractVariable) = size(parent(v))
 # @propagate_inbounds Base.getindex(v::AbstractVariable, I::Vararg{Int,N}) where {N} =
 #     getindex(v.data, I...)
 # @propagate_inbounds Base.getindex(v::AbstractVariable, I...) = getindex(v.data, I...)
-@propagate_inbounds Base.setindex!(v::AbstractVariable, value, i::Int) =
-    setindex!(v.data, value, i)
+@propagate_inbounds Base.setindex!(v::AbstractVariable, value, i::Int) = setindex!(
+    v.data, value, i
+)
 # @propagate_inbounds Base.setindex!(v::AbstractVariable, value, I::Vararg{Int,N}) where {N} =
 #     setindex!(v.data, value, I...)
 # @propagate_inbounds Base.setindex!(v::AbstractVariable, value, I...) =
@@ -171,8 +172,10 @@ function resolved end
 @inline resolved(v::XZVariable) = view(v.data, :, :)
 @inline resolved(v::FZVariable) = view(v.data, resolved_fourier_indices(v), :)
 @inline resolved(v::XSVariable) = view(v.data, :, resolved_sine_indices(v))
-@inline resolved(v::FSVariable) =
-    view(v.data, resolved_fourier_indices(v), resolved_sine_indices(v))
+@inline resolved(v::FSVariable) = view(
+    v.data, resolved_fourier_indices(v), resolved_sine_indices(v)
+)
 @inline resolved(v::XCVariable) = view(v.data, :, resolved_cosine_indices(v))
-@inline resolved(v::FCVariable) =
-    view(v.data, resolved_fourier_indices(v), resolved_cosine_indices(v))
+@inline resolved(v::FCVariable) = view(
+    v.data, resolved_fourier_indices(v), resolved_cosine_indices(v)
+)
