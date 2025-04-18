@@ -57,10 +57,12 @@ end
 @inline _compute_p!(problem, p, FZ_tmp) = @inbounds _compute_p!(problem, p, FZ_tmp)
 
 """$(TYPEDSIGNATURES)"""
-p(problem::Problem) = OutputVariable(
-    problem,
-    _compute_p!,
-    (:x, :z),
-    problem.scratch.XZ_tmp,
-    tuple(FZVariable(get_domain(problem))),
-)
+function p(problem::Problem)
+    OutputVariable(
+        problem,
+        _compute_p!,
+        (:x, :z),
+        problem.scratch.XZ_tmp,
+        tuple(FZVariable(get_domain(problem))),
+    )
+end

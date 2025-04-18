@@ -22,12 +22,15 @@ Base.size(cov::ConstantOutputVariable) = size(cov.array)
 Base.eltype(cov::ConstantOutputVariable) = eltype(cov.array)
 Base.ndims(cov::ConstantOutputVariable) = ndims(cov.array)
 
-@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, i::Int) =
-    getindex(cov.array, i)
-@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I::Vararg{Int,N}) where {N} =
-    getindex(cov.array, I...)
-@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I...) =
-    getindex(cov.array, I...)
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, i::Int) = getindex(
+    cov.array, i
+)
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I::Vararg{Int,N}) where {N} = getindex(
+    cov.array, I...
+)
+@propagate_inbounds Base.getindex(cov::ConstantOutputVariable, I...) = getindex(
+    cov.array, I...
+)
 
 function create_constant_output_variable!(
     h5::HDF5.File, path::String, cov::ConstantOutputVariable
