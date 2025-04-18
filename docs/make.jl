@@ -68,7 +68,7 @@ pages = [
 # format
 format = Documenter.HTML(;
     prettyurls=get(ENV, "CI", nothing) == "true",
-    canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver",
+    canonical="https://Jamie-Hilditch.github.io/SawyerEliassenSolver.jl",
     mathengine=MathJax3(),
     assets=String[],
     collapselevel=1,
@@ -89,7 +89,7 @@ bib = CitationBibliography(bib_filepath; style=:authoryear)
 makedocs(;
     modules=[SawyerEliassenSolver],
     authors="Jamie Hilditch <hilditch@stanford.edu> and contributors",
-    sitename="SawyerEliassenSolver",
+    sitename="SawyerEliassenSolver.jl",
     format=format,
     pages=pages,
     plugins=[bib],
@@ -104,4 +104,4 @@ end
 
 # readdir(OUTPUT_DIR; join=true) |> filter(x -> endswith(x, ".h5")) .|> rm
 
-deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.git")
+deploydocs(; repo="github.com/Jamie-Hilditch/SawyerEliassenSolver.jl.git")
