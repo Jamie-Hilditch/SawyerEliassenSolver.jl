@@ -155,17 +155,22 @@ end
 """$(TYPEDSIGNATURES)"""
 u(problem::Problem) = OutputVariable(problem, _compute_u!, (:x, :z), problem.scratch.XZ_tmp)
 """$(TYPEDSIGNATURES)"""
-∂u∂x(problem::Problem) =
+function ∂u∂x(problem::Problem)
     OutputVariable(problem, _compute_∂u∂x!, (:x, :z), problem.scratch.XZ_tmp)
+end
 """$(TYPEDSIGNATURES)"""
-∂²u∂x²(problem::Problem) =
+function ∂²u∂x²(problem::Problem)
     OutputVariable(problem, _compute_∂²u∂x²!, (:x, :z), problem.scratch.XZ_tmp)
+end
 """$(TYPEDSIGNATURES)"""
-∂u∂z(problem::Problem) =
+function ∂u∂z(problem::Problem)
     OutputVariable(problem, _compute_∂u∂z!, (:x, :z), problem.scratch.XZ_tmp)
+end
 """$(TYPEDSIGNATURES)"""
-∂²u∂z²(problem::Problem) =
+function ∂²u∂z²(problem::Problem)
     OutputVariable(problem, _compute_∂²u∂z²!, (:x, :z), problem.scratch.XZ_tmp)
+end
 """$(TYPEDSIGNATURES)"""
-∂²u∂x∂z(problem::Problem) =
+function ∂²u∂x∂z(problem::Problem)
     OutputVariable(problem, _compute_∂²u∂x∂z!, (:x, :z), problem.scratch.XZ_tmp)
+end

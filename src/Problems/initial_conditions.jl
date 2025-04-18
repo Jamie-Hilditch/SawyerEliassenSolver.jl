@@ -118,8 +118,9 @@ end
 """$(TYPEDSIGNATURES)"""
 @propagate_inbounds set_ζ!(problem::Problem, ζ) = set_ζ!(problem.state, ζ)
 """$(TYPEDSIGNATURES)"""
-@propagate_inbounds set_ζ!(problem::Problem; u=nothing, w=nothing) =
-    set_ζ!(problem.state; u=u, w=w)
+@propagate_inbounds set_ζ!(problem::Problem; u=nothing, w=nothing) = set_ζ!(
+    problem.state; u=u, w=w
+)
 
 """$(TYPEDSIGNATURES)
 Set `v` from a variable.
