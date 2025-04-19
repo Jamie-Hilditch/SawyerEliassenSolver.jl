@@ -101,8 +101,9 @@ end
 
 # nth x integral
 @inline ∫dx!(out::V, in::V, n::Int) where {V<:AbstractVariable} = ∂x!(out, in, -n)
-@inline ∫dx!(out::V, in::V, tmp::FVariable, n::Int) where {V<:XVariable} =
-    ∂x!(out, in, tmp, -n)
+@inline ∫dx!(out::V, in::V, tmp::FVariable, n::Int) where {V<:XVariable} = ∂x!(
+    out, in, tmp, -n
+)
 @inline ∫dx(v::AbstractVariable, n::Int) = ∂x(v, -n)
 @inline ∫dx!(v::AbstractVariable, n::Int) = ∂x!(v, -n)
 @inline ∫dx(v::XVariable, tmp::FVariable, n::Int) = ∂x(v, tmp, -n)
