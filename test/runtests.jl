@@ -4,6 +4,7 @@ using JET
 using Test
 
 using SawyerEliassenSolver
+using SawyerEliassenSolver.Forcing: evaluate_ζ_forcing!, evaluate_physical_forcing!
 
 const FLOAT_TYPES = (Float32, Float64)
 const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
