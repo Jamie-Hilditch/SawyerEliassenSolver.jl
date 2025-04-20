@@ -14,7 +14,9 @@ export AbstractForcing,
     PointwisePhysicalForcing,
     GlobalPhysicalForcing,
     PointwiseSpectralForcing,
-    GlobalSpectralForcing
+    GlobalSpectralForcing,
+    evaluate_ζ_forcing!,
+    evaluate_physical_forcing!
 
 include("abstract_forcing.jl")
 include("physical_forcing.jl")
