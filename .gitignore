@@ -8,3 +8,4 @@ Manifest.toml
 *.mp4
 *.mem
 *.out
+*.cov

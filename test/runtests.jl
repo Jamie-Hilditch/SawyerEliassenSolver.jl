@@ -4,6 +4,7 @@ using JET
 using Test
 
 using SawyerEliassenSolver
+using SawyerEliassenSolver.Forcing: evaluate_ζ_forcing!, evaluate_physical_forcing!
 
 const FLOAT_TYPES = (Float32, Float64)
 const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
@@ -50,6 +51,11 @@ const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
                 include("test_operators/test_physical_z_operators.jl")
             end
         end
+    end
+
+    @testset "Forcing" begin
+        @info "Testing forcing ..."
+        include("test_forcings.jl")
     end
 
     @testset "OutputWriter" begin

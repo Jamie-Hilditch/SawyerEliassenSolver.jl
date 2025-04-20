@@ -100,13 +100,13 @@ end
 @inline function _evaluate_physical_forcing!(
     F::GlobalPhysicalForcing{T,P}, out::XZVariable{T}, t::T
 ) where {T,P}
-    F.func(F, out, t, F.params)
+    F.func(out, t, F.params)
     return nothing
 end
 
 @inline function _evaluate_physical_forcing!(
     F::GlobalPhysicalForcing{T,Nothing}, out::XZVariable{T}, t::T
 ) where {T}
-    F.func(F, out, t)
+    F.func(out, t)
     return nothing
 end

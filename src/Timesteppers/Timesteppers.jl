@@ -11,8 +11,8 @@ using SawyerEliassenSolver.Problems
 
 using Base: @propagate_inbounds
 using SawyerEliassenSolver.Variables: Tᴴ!, Tˢ!, Tᶜ!
-using SawyerEliassenSolver.Problems: update_clock!
 using SawyerEliassenSolver.Forcing: evaluate_ζ_forcing!, evaluate_physical_forcing!
+using SawyerEliassenSolver.Problems: update_clock!
 
 export AbstractPreconditioner,
     IdentityPreconditioner, DiagonalQuadraticPreconditioner, Timestepper, advance!
