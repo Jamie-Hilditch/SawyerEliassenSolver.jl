@@ -52,6 +52,11 @@ const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
         end
     end
 
+    @testset "Forcing" begin
+        @info "Testing forcing ..."
+        include("test_forcings.jl")
+    end
+
     @testset "OutputWriter" begin
         @info "Testing OutputWriter ..."
         include("test_output_writer.jl")
