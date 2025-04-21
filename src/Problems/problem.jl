@@ -103,6 +103,8 @@ function Base.show(io::IO, ::MIME"text/plain", problem::Problem)
     )
 end
 
+Base.eltype(::Problem{T}) where {T} = T
+
 """$(TYPEDSIGNATURES)"""
 get_ζ_forcing(problem::Problem) = problem.ζ_forcing
 
