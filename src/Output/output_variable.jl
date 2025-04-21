@@ -47,7 +47,7 @@ function OutputVariable(
     problem::Problem{T},
     func::Function,
     dimension_labels::NTuple{N,Union{Symbol,Nothing}},
-    sizes::NTuple{N,Integer},
+    sizes::NTuple{N,Int},
     type::Type,
     args,
 ) where {T,N}
@@ -62,7 +62,7 @@ function OutputVariable(
     problem::Problem{T},
     func::Function,
     dimension_labels::NTuple{N,Union{Symbol,Nothing}},
-    sizes::NTuple{N,Integer},
+    sizes::NTuple{N,Int},
     type::Type,
 ) where {T,N}
     output_array = zeros(type, sizes)
@@ -78,7 +78,7 @@ Create an output variable specifying the dimension labels and sizes in a named t
 function OutputVariable(
     problem::Problem{T},
     func::Function,
-    dimensions::NamedTuple{S,NTuple{N,Integer}},
+    dimensions::NamedTuple{S,NTuple{N,Int}},
     type::Type,
     args,
 ) where {T,S,N}
@@ -91,7 +91,7 @@ end
 function OutputVariable(
     problem::Problem{T},
     func::Function,
-    dimensions::NamedTuple{S,NTuple{N,Integer}},
+    dimensions::NamedTuple{S,NTuple{N,Int}},
     type::Type,
 ) where {T,S,N}
     dimension_labels = keys(dimensions)
