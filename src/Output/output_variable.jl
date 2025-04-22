@@ -89,10 +89,7 @@ end
 
 """$(TYPEDSIGNATURES)"""
 function OutputVariable(
-    problem::Problem{T},
-    func::Function,
-    dimensions::NamedTuple{S,NTuple{N,Int}},
-    type::Type,
+    problem::Problem{T}, func::Function, dimensions::NamedTuple{S,NTuple{N,Int}}, type::Type
 ) where {T,S,N}
     dimension_labels = keys(dimensions)
     sizes = values(dimensions)

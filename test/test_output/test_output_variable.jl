@@ -28,15 +28,12 @@ function test_valid_output_variable_constructors(problem::Problem)
 
     # no args
     ov2 = OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        (:x, :z),
-        zeros(eltype(problem), 4, 4),
+        problem, dummy_function_for_output_variables, (:x, :z), zeros(eltype(problem), 4, 4)
     )
     @test ov2 isa OutputVariable
 
     # build output array from sizes and type
-    ov3 =  OutputVariable(
+    ov3 = OutputVariable(
         problem,
         dummy_function_for_output_variables,
         (:x, :z),
@@ -48,30 +45,19 @@ function test_valid_output_variable_constructors(problem::Problem)
 
     # build output array from sizes and type, no args
     ov4 = OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        (:x, :z),
-        (4, 4),
-        eltype(problem),
+        problem, dummy_function_for_output_variables, (:x, :z), (4, 4), eltype(problem)
     )
     @test ov4 isa OutputVariable
 
     # build output array from named tuple of sizes and type
     ov5 = OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        (; x=4, z=4),
-        eltype(problem),
-        tuple(),
+        problem, dummy_function_for_output_variables, (; x=4, z=4), eltype(problem), tuple()
     )
     @test ov5 isa OutputVariable
 
     # build output array from named tuple of sizes and type, no args
     ov6 = OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        (; x=4, z=4),
-        eltype(problem),
+        problem, dummy_function_for_output_variables, (; x=4, z=4), eltype(problem)
     )
     @test ov6 isa OutputVariable
 
@@ -87,29 +73,21 @@ function test_inconsistent_dimensions_and_array_sizes(problem::Problem)
         zeros(eltype(problem), 4, 4, 4),
     )
     @test_throws MethodError OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        (:x, :z),
-        (4, 4, 4),
+        problem, dummy_function_for_output_variables, (:x, :z), (4, 4, 4)
     )
 end
 
 function test_scalar_output_variable(problem::Problem)
     @test OutputVariable(
-        problem,
-        dummy_function_for_output_variables,
-        tuple(),
-        tuple(),
-        eltype(problem),
+        problem, dummy_function_for_output_variables, tuple(), tuple(), eltype(problem)
     ) isa OutputVariable
     @test OutputVariable(
         problem,
         dummy_function_for_output_variables,
         tuple(),
-        Array{eltype(problem), 0}(undef),
+        Array{eltype(problem),0}(undef),
     ) isa OutputVariable
 end
-
 
 @testset "OutputVariable Constructor" for FT in FLOAT_TYPES
     @info "\tTesting OutputVariable constructors for $FT"
