@@ -60,12 +60,12 @@ const TEST_OUTPUT_DIRECTORY = joinpath(@__DIR__, "_test_output")
 
     @testset "OutputWriter" begin
         @info "Testing OutputWriter ..."
-        include("test_output_writer.jl")
+        include("test_output/test_output_writer.jl")
     end
 
     @testset "Output Variables" begin
         @info "Testing output variables ..."
-        include("test_output_variables.jl")
+        include("test_output/test_output_variable.jl")
     end
 
     @info "Cleaning up test output directory at $TEST_OUTPUT_DIRECTORY"
