@@ -79,8 +79,42 @@ function test_valid_output_variable_constructors(problem::Problem)
     @test allequal(typeof, [ov1, ov2, ov3, ov4, ov5, ov6])
 end
 
+function test_inconsistent_dimensions_and_array_sizes(problem::Problem)
+    @test_throws MethodError OutputVariable(
+        problem,
+        dummy_function_for_output_variables,
+        (:x, :z),
+        zeros(eltype(problem), 4, 4, 4),
+    )
+    @test_throws MethodError OutputVariable(
+        problem,
+        dummy_function_for_output_variables,
+        (:x, :z),
+        (4, 4, 4),
+    )
+end
+
+function test_scalar_output_variable(problem::Problem)
+    @test OutputVariable(
+        problem,
+        dummy_function_for_output_variables,
+        tuple(),
+        tuple(),
+        eltype(problem),
+    ) isa OutputVariable
+    @test OutputVariable(
+        problem,
+        dummy_function_for_output_variables,
+        tuple(),
+        Array{eltype(problem), 0}(undef),
+    ) isa OutputVariable
+end
+
+
 @testset "OutputVariable Constructor" for FT in FLOAT_TYPES
     @info "\tTesting OutputVariable constructors for $FT"
     problem = create_problem_for_testing_output_writer(FT)
     test_valid_output_variable_constructors(problem)
+    test_inconsistent_dimensions_and_array_sizes(problem)
+    test_scalar_output_variable(problem)
 end
