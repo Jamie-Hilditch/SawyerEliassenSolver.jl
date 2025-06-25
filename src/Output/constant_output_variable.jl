@@ -177,8 +177,10 @@ function write_background_buoyancy!(ow::OutputWriter; name::String="B")
     B = problem.scratch.XZ_tmp
 
     # get background gradients as XZVariables
-    Bx = XZVariable(domain, get_Bx(problem))
-    Bz = XZVariable(domain, get_Bz(problem))
+    Bx = XZVariable(domain)
+    Bz = XZVariable(domain)
+    Bx .= get_Bx(problem)
+    Bz .= get_Bz(problem)
 
     @inbounds integrate_periodic_gradients(Bx, Bz; out=B)
 
@@ -196,9 +198,10 @@ function write_background_velocity!(ow::OutputWriter; name::String="V")
     V = problem.scratch.XZ_tmp
 
     # get background gradients as XZVariables
-    Vx = XZVariable(domain, get_Vx(problem))
-    Vz = XZVariable(domain, get_Bx(problem))
-    Vz ./= get_f(problem)
+    Vx = XZVariable(domain)
+    Vz = XZVariable(domain)
+    Vx .= get_Vx(problem)
+    Vz .= get_Bx(problem) ./ get_f(problem)  # Vz = Bx / f
 
     @inbounds integrate_periodic_gradients(Vx, Vz; out=V)
 
