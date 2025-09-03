@@ -6,11 +6,11 @@ using DocumenterCitations
 using Literate
 
 # command line arguments
-command_line_arg_parser = ArgParseSettings(autofix_names=true)
+command_line_arg_parser = ArgParseSettings(; autofix_names=true)
 @add_arg_table command_line_arg_parser begin
     "--skip-examples"
-        help = "Flag to skip rerunning the examples"
-        action = :store_true
+    help = "Flag to skip rerunning the examples"
+    action = :store_true
 end
 command_line_args = parse_args(command_line_arg_parser; as_symbols=true)
 
