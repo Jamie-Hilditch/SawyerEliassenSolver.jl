@@ -10,13 +10,13 @@ with the accompanying ``v`` and ``b`` equations
 ```math
 \begin{align}
     v_t & = -u(f + V_x) - wV_z + \mathcal{F}^{(y)} \\ 
-    b_t & = -uB_x - wBz + \mathcal{B}
+    b_t & = -uB_x - wB_z + \mathcal{B}
 \end{align}
 ```
 where 
 ```math
 \begin{equation*}
-        u = -\psi_z, \quad w = \psi_x, \quad \psi = \nabla^{-2}\zeta 
+        u = -\psi_z, \quad w = \psi_x, \quad \psi = -\nabla^{-2}\zeta 
 \end{equation*}
 ```
 
