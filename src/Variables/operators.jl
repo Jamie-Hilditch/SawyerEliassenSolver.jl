@@ -1,28 +1,28 @@
-"""Document me!"""
+"""Compute one or more (`n`) ``x``--derivatives."""
 function ∂x! end
-"""Document me!"""
+"""Compute one or more (`n`) ``x``--derivatives returning a new variable."""
 function ∂x end
-"""Document me!"""
+"""Compute one or more ``x``--antiderivatives inplace."""
 function ∫dx! end
-"""Document me!"""
+"""Compute one or more ``x``--antiderivatives returning a new variable."""
 function ∫dx end
-"""Document me!"""
+"""Compute a ``z``--derivative inplace."""
 function ∂z! end
-"""Document me!"""
+"""Compute a ``z``--derivative returning a new variable."""
 function ∂z end
-"""Document me!"""
+"""Compute a second ``z``--derivative inplace."""
 function ∂z²! end
-"""Document me!"""
+"""Compute a second ``z``--derivative returning a new variable."""
 function ∂z² end
-"""Document me!"""
+"""Compute a ``z``-antiderivative inplace."""
 function ∫dz! end
-"""Document me!"""
+"""Compute a ``z``--antiderivative returning a new variable."""
 function ∫dz end
-"""Document me!"""
+"""Compute a second ``z``--antiderivative inplace."""
 function ∫dz²! end
-"""Document me!"""
+"""Compute a second ``z``--antiderivative returning a new variable."""
 function ∫dz² end
-"""Document me!"""
+"""Solve the Poisson equation ``\\nabla^2\\psi = -\\zeta`` in Fourier--Sine space."""
 function solve_poisson! end
 
 ###################
@@ -32,6 +32,7 @@ function solve_poisson! end
 # out-of-place nth x derivative in Fourier space
 # propagate_inbounds so that we can skip bounds checks when we can guarantee out and in have
 # the same domain
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x!(out::V, in::V, n::Int) where {V<:FVariable}
     @boundscheck consistent_domains(out, in)
     kx = xwavenumbers(in)
@@ -43,6 +44,7 @@ function solve_poisson! end
 end
 
 # new output nth derivative in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x(v::FVariable, n::Int)
     out = similar(v)
     @inbounds ∂x!(out, v, n)
@@ -50,11 +52,13 @@ end
 end
 
 # inplace nth x derivatives in both Fourier and physical space
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x!(v::AbstractVariable, n::Int) = @inbounds ∂x!(v, v, n)
 
 # out-of-place nth x derivative in physical space
 # propagate_inbounds so that we can skip bounds checks when we can guarantee out and in have
 # the same domain
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x!(out::V, in::V, n::Int) where {V<:XVariable}
     v˜ = horizontal_transform(in)
     ∂x!(v˜, n)
@@ -63,6 +67,7 @@ end
 end
 
 # new output nth derivative in physical space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x(v::XVariable, n::Int)
     v˜ = horizontal_transform(v)
     ∂x!(v˜, n)
@@ -70,6 +75,7 @@ end
 end
 
 # out-of-place nth x derivative in physical space with scratch variable
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x!(out::V, in::V, tmp::FVariable, n::Int) where {V<:XVariable}
     horizontal_transform!(tmp, in) # n.b. this errors if in and tmp aren't compatible
     ∂x!(tmp, n)
@@ -78,6 +84,7 @@ end
 end
 
 # new output nth x derivative in physical space with scratch variable
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂x(v::XVariable, tmp::FVariable, n::Int)
     horizontal_transform!(tmp, v) # n.b. this errors if v and tmp aren't compatible
     ∂x!(tmp, n)
@@ -85,14 +92,21 @@ end
 end
 
 # inplace nth x derivatives in both physical space with scratch
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x!(v::XVariable, tmp::FVariable, n::Int) = ∂x!(v, v, tmp, n)
 
 # single derivative
+"""$(TYPEDSIGNATURES)"""
 @propagate_inbounds ∂x!(out::V, in::V) where {V<:AbstractVariable} = ∂x!(out, in, 1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x(v::AbstractVariable) = ∂x(v, 1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x!(out::V, in::V, tmp::FVariable) where {V<:XVariable} = ∂x!(out, in, tmp, 1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x!(v::AbstractVariable) = ∂x!(v, v, 1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x(v::XVariable, tmp::FVariable) = ∂x(v, tmp, 1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∂x!(v::XVariable, tmp::FVariable) = ∂x!(v, v, tmp, 1)
 
 #################
@@ -100,21 +114,33 @@ end
 #################
 
 # nth x integral
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(out::V, in::V, n::Int) where {V<:AbstractVariable} = ∂x!(out, in, -n)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(out::V, in::V, tmp::FVariable, n::Int) where {V<:XVariable} = ∂x!(
     out, in, tmp, -n
 )
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx(v::AbstractVariable, n::Int) = ∂x(v, -n)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(v::AbstractVariable, n::Int) = ∂x!(v, -n)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx(v::XVariable, tmp::FVariable, n::Int) = ∂x(v, tmp, -n)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(v::XVariable, tmp::FVariable, n::Int) = ∂x!(v, tmp, -n)
 
 # single x integral
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(out::V, in::V) where {V<:AbstractVariable} = ∂x!(out, in, -1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(out::V, in::V, tmp::FVariable) where {V<:XVariable} = ∂x!(out, in, tmp, -1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx(v::AbstractVariable) = ∂x(v, -1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(v::AbstractVariable) = ∂x!(v, -1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx(v::XVariable, tmp::FVariable) = ∂x(v, tmp, -1)
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dx!(v::XVariable, tmp::FVariable) = ∂x!(v, tmp, -1)
 
 ###################
@@ -122,6 +148,7 @@ end
 ###################
 
 # out-of-place sine to cosine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z!(out::XCVariable, in::XSVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -133,6 +160,7 @@ end
 end
 
 # out-of-place cosine to sine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z!(out::XSVariable, in::XCVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -143,6 +171,7 @@ end
 end
 
 # out-of-place sine to cosine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z!(out::FCVariable, in::FSVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -154,6 +183,7 @@ end
 end
 
 # out-of-place cosine to sine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z!(out::FSVariable, in::FCVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -164,6 +194,7 @@ end
 end
 
 # out-of-place physical z derivative
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z!(out::V, in::V) where {V<:Union{XZVariable,FZVariable}}
     @boundscheck consistent_domains(out, in)
     size(in)[2] >= 5 ||
@@ -190,6 +221,7 @@ end
 end
 
 # new output sine to cosine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::XSVariable)
     out = XCVariable(v.domain)
     @inbounds ∂z!(out, v)
@@ -197,6 +229,7 @@ end
 end
 
 # new output cosine to sine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::XCVariable)
     out = XSVariable(v.domain)
     @inbounds ∂z!(out, v)
@@ -204,6 +237,7 @@ end
 end
 
 # new output sine to cosine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::FSVariable)
     out = FCVariable(v.domain)
     @inbounds ∂z!(out, v)
@@ -211,6 +245,7 @@ end
 end
 
 # new output cosine to sine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::FCVariable)
     out = FSVariable(v.domain)
     @inbounds ∂z!(out, v)
@@ -218,12 +253,14 @@ end
 end
 
 # new output physical z derivative
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::XZVariable)
     out = XZVariable(v)
     @inbounds ∂z!(out, v)
     return out
 end
 
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z(v::FZVariable)
     out = FZVariable(v)
     @inbounds ∂z!(out, v)
@@ -235,6 +272,7 @@ end
 #######################
 
 # out-of-place sine to sine
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -245,6 +283,7 @@ end
 end
 
 # out-of-place cosine to cosine
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -256,9 +295,11 @@ end
 end
 
 # in-place 2nd z derivative
+"""$(TYPEDSIGNATURES)"""
 @inline ∂z²!(v::AbstractVariable) = @inbounds ∂z²!(v, v)
 
 # new output 2nd z derivative
+"""$(TYPEDSIGNATURES)"""
 @inline function ∂z²(v::T) where {T<:Union{XSVariable,FSVariable,XCVariable,FCVariable}}
     out = similar(v)
     @inbounds ∂z²!(out, v)
@@ -270,6 +311,7 @@ end
 #################
 
 # out-of-place sine to cosine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz!(out::XCVariable, in::XSVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -281,6 +323,7 @@ end
 end
 
 # out-of-place cosine to sine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz!(out::XSVariable, in::XCVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -291,6 +334,7 @@ end
 end
 
 # out-of-place sine to cosine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz!(out::FCVariable, in::FSVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -302,6 +346,7 @@ end
 end
 
 # out-of-place cosine to sine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz!(out::FSVariable, in::FCVariable)
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -312,6 +357,7 @@ end
 end
 
 # new output sine to cosine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz(v::XSVariable)
     out = XCVariable(v.domain)
     @inbounds ∫dz!(out, v)
@@ -319,6 +365,7 @@ end
 end
 
 # new output cosine to sine in physical X space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz(v::XCVariable)
     out = XSVariable(v.domain)
     @inbounds ∫dz!(out, v)
@@ -326,6 +373,7 @@ end
 end
 
 # new output sine to cosine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz(v::FSVariable)
     out = FCVariable(v.domain)
     @inbounds ∫dz!(out, v)
@@ -333,6 +381,7 @@ end
 end
 
 # new output cosine to sine in Fourier space
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz(v::FCVariable)
     out = FSVariable(v.domain)
     @inbounds ∫dz!(out, v)
@@ -344,6 +393,7 @@ end
 #####################
 
 # out-of-place sine to sine
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz²!(out::T, in::T) where {T<:Union{XSVariable,FSVariable}}
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -354,6 +404,7 @@ end
 end
 
 # out-of-place cosine to cosine
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz²!(out::T, in::T) where {T<:Union{XCVariable,FCVariable}}
     @boundscheck consistent_domains(out, in)
     kz = zwavenumbers(in)'
@@ -365,9 +416,11 @@ end
 end
 
 # in-place 2nd Z integral
+"""$(TYPEDSIGNATURES)"""
 @inline ∫dz²!(v::AbstractVariable) = @inbounds ∫dz²!(v, v)
 
 # new output 2nd z integral
+"""$(TYPEDSIGNATURES)"""
 @inline function ∫dz²(v::T) where {T<:Union{XSVariable,FSVariable,XCVariable,FCVariable}}
     out = similar(v)
     @inbounds ∫dz²!(out, v)
@@ -378,6 +431,7 @@ end
 ## Poisson equation ##
 ######################
 
+"""$(TYPEDSIGNATURES)"""
 @inline function solve_poisson!(out::FSVariable, in::FSVariable)
     @boundscheck consistent_domains(out, in)
     kx, kz = wavenumbers(in)
