@@ -41,7 +41,7 @@ example_pages = map(example_scripts) do example
     name = first(example)
     script = last(example)
     example_filepath = joinpath(EXAMPLES_DIR, script)
-    if !haskey(command_line_args, :skip_examples)
+    if !get(command_line_args, :skip_examples, false)
         Literate.markdown(
             example_filepath,
             OUTPUT_DIR;
