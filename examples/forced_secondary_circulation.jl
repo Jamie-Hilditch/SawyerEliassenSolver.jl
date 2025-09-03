@@ -32,7 +32,7 @@ using SawyerEliassenSolver
 
 const NX, NZ = 2048, 256
 const LX::Float64 = 1000
-const M²::Float64 = 100
+const M²::Float64 = -100
 const N²::Float64 = 1e5
 
 grid = Grid(NX, NZ, (-LX / 2, LX / 2), (-1, 1))
