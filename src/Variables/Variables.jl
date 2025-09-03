@@ -23,12 +23,12 @@ export XZVariable,
     resolved,
     ∂x!,
     ∂x,
+    ∫dx!,
+    ∫dx,
     ∂z!,
     ∂z,
     ∂z²!,
     ∂z²,
-    ∫dx!,
-    ∫dx,
     ∫dz!,
     ∫dz,
     ∫dz²!,
@@ -44,6 +44,14 @@ Module for different variable representations, transforms between representation
 
 # Exports
 $(EXPORTS)
+
+Most of the operators have many methods signatures to allow for different combinations of input and output variables.
+!!! note
+    To see all the method signatures for a particular function e.g. [`∂x!`](@ref), run
+    ```julia-repl
+    julia> ?
+    help?> ∂x!
+    ```
 """
 Variables
 end
