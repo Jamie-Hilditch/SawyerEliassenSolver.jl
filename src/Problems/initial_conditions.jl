@@ -169,7 +169,7 @@ end
 set_b!(problem::Problem, b) = set_b!(problem.state, b)
 
 """$(TYPEDSIGNATURES)
-Compute and set ζₜ by projecting `b` onto sine space, `v` onto cosine space and using `ζₜ = bx - fvz`
+Compute and set ζₜ by projecting `b` onto sine space, `v` onto cosine space and using `ζₜ = fvz - bx`
 """
 function compute_ζₜ!(problem::Problem)
     b = problem.state.b
@@ -180,11 +180,12 @@ function compute_ζₜ!(problem::Problem)
     bˣˢ = sine_transform(b)
     Tᴴ!(ζₜ, bˣˢ)
     ∂x!(ζₜ)
+    ζₜ .*= -1
 
     vˣᶜ = cosine_transform(v)
     vᶠᶜ = horizontal_transform(vˣᶜ)
     vzᶠˢ = ∂z(vᶠᶜ)
-    @inbounds @. ζₜ -= f * vzᶠˢ
+    @inbounds @. ζₜ += f * vzᶠˢ
     return nothing
 end
 
