@@ -5,7 +5,7 @@ function compute_w!(problem::Problem{T}, w::XZVariable{T}) where {T}
     Ψ, w_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute w = ψx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ)
@@ -23,7 +23,7 @@ function compute_∂w∂x!(problem::Problem{T}, ∂w∂x::XZVariable{T}) where {
     Ψ, ∂w∂x_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute wx = ψxx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ, 2)
@@ -41,7 +41,7 @@ function compute_∂²w∂x²!(problem::Problem{T}, ∂²w∂x²::XZVariable{T})
     Ψ, ∂²w∂x²_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute wxx = ψxxx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ, 3)
@@ -61,7 +61,7 @@ function compute_∂w∂z!(problem::Problem{T}, ∂w∂z::XZVariable{T}) where {
     problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute w = ψx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ)
@@ -82,7 +82,7 @@ function compute_∂²w∂z²!(problem::Problem{T}, ∂²w∂z²::XZVariable{T})
     Ψ, ∂²w∂z²_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute w = ψx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ)
@@ -105,7 +105,7 @@ function compute_∂²w∂x∂z!(problem::Problem{T}, ∂²w∂x∂z::XZVariable
     problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute wx = ψxx in FS space - this is an inplace operation
     @inbounds ∂x!(Ψ, 2)

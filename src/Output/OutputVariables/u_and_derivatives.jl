@@ -6,7 +6,7 @@ function compute_u!(problem::Problem{T}, u::XZVariable{T}) where {T}
     Ψ, u_FC, u_XC = problem.scratch.FS_tmp, problem.scratch.FC_tmp, problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -u = ψz in FC space
     @inbounds ∂z!(u_FC, Ψ)
@@ -29,7 +29,7 @@ function compute_∂u∂x!(problem::Problem{T}, ∂u∂x::XZVariable{T}) where {
     problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -u = ψz in FC space
     @inbounds ∂z!(u_FC, Ψ)
@@ -55,7 +55,7 @@ function compute_∂²u∂x²!(problem::Problem{T}, ∂²u∂x²::XZVariable{T})
     problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -u = ψz in FC space
     @inbounds ∂z!(u_FC, Ψ)
@@ -79,7 +79,7 @@ function compute_∂u∂z!(problem::Problem{T}, ∂u∂z::XZVariable{T}) where {
     Ψ, ∂u∂z_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -∂u/∂z = ∂²ψ/∂z² in FS space
     @inbounds ∂z²!(Ψ)
@@ -102,7 +102,7 @@ function compute_∂²u∂z²!(problem::Problem{T}, ∂²u∂z²::XZVariable{T})
     problem.scratch.XC_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -u = ψz in FC space
     @inbounds ∂z!(u_FC, Ψ)
@@ -126,7 +126,7 @@ function compute_∂²u∂x∂z!(problem::Problem{T}, ∂²u∂x∂z::XZVariable
     Ψ, ∂²u∂x∂z_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ from the vorticity ζ
-    ∇⁻²!(Ψ, problem.state.ζ)
+    solve_poisson!(Ψ, problem.state.ζ)
 
     # now compute -∂u/∂z = ∂²ψ/∂z² in FS space
     @inbounds ∂z²!(Ψ)

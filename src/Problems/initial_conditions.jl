@@ -42,7 +42,7 @@ function _add_u_to_ζ!(state::State, u::FCVariable)
     @boundscheck consistent_domains(state, u) ||
         throw(ArgumentError("`state` and `u` must have the same domain."))
     uz = ∂z(u)
-    state.ζ .-= uz
+    state.ζ .+= uz
     return nothing
 end
 
@@ -75,7 +75,7 @@ function _add_w_to_ζ!(state::State, w::FSVariable)
     @boundscheck consistent_domains(state, w) ||
         throw(ArgumentError("`state` and `w` must have the same domain."))
     wx = ∂x(w)
-    state.ζ .+= wx
+    state.ζ .-= wx
     return nothing
 end
 

@@ -1,11 +1,18 @@
+using ArgParse
 using SawyerEliassenSolver
 using Documenter
 using DocumenterCitations
 # using DocumenterInterLinks
 using Literate
 
-# set the environment variable SKIP_EXAMPLES to use the skip rerunning the examples
-const RUN_EXAMPLES = isnothing(get(ENV, "SKIP_EXAMPLES", nothing))
+# command line arguments
+command_line_arg_parser = ArgParseSettings(; autofix_names=true)
+@add_arg_table command_line_arg_parser begin
+    "--skip-examples"
+    help = "Flag to skip rerunning the examples"
+    action = :store_true
+end
+command_line_args = parse_args(command_line_arg_parser; as_symbols=true)
 
 #metadata
 DocMeta.setdocmeta!(
@@ -34,7 +41,7 @@ example_pages = map(example_scripts) do example
     name = first(example)
     script = last(example)
     example_filepath = joinpath(EXAMPLES_DIR, script)
-    if RUN_EXAMPLES
+    if !get(command_line_args, :skip_examples, false)
         Literate.markdown(
             example_filepath,
             OUTPUT_DIR;

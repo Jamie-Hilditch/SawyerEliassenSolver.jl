@@ -121,7 +121,7 @@ function advance!(ts::Timestepper)
     Z, Ψ = ζⁿ⁺ᶜ¹, ζⁿ⁺ᶜ²
     @inbounds @. Z *= h * b₁ᵗ
     @inbounds @. Z += h * b₂ᵗ * ζⁿ⁺ᶜ²
-    @inbounds ∇⁻²!(Ψ, Z)
+    @inbounds solve_poisson!(Ψ, Z)
 
     @inbounds advect_background_flow!(problem, Ψ)
 
