@@ -35,7 +35,6 @@ export XZVariable,
     ∫dz²,
     solve_poisson!
 
-
 include("variable_constructors.jl")
 include("transforms.jl")
 include("operators.jl")
