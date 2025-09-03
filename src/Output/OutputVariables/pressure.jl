@@ -14,7 +14,7 @@ function _compute_pressure_gradients!(problem::Problem)
 
     # first compute Ψₜ from ζₜ
     Ψₜ = scratch.FS_tmp
-    ∇⁻²!(Ψₜ, problem.state.ζₜ)
+    solve_poisson!(Ψₜ, problem.state.ζₜ)
 
     # now compute -uₜ = ∂Ψₜ/∂z in FC space
     @inbounds ∂z!(scratch.FC_tmp, Ψₜ)

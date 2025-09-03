@@ -5,7 +5,7 @@ function compute_Ψ!(problem::Problem{T}, Ψ::XZVariable{T}) where {T}
     Ψ_FS, Ψ_XS = problem.scratch.FS_tmp, problem.scratch.XS_tmp
 
     # first compute the streamfunction Ψ in FS space from the vorticity ζ
-    ∇⁻²!(Ψ_FS, problem.state.ζ)
+    solve_poisson!(Ψ_FS, problem.state.ζ)
 
     # transform to XZ
     Tᴴ!(Ψ_XS, Ψ_FS)

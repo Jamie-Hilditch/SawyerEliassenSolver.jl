@@ -12,31 +12,31 @@ The Sawyer-Eliassen operator 𝓛 is defined as `ζₜₜ = -𝓛ζ + F`
     (; FS_tmp, FC_tmp, XS_tmp, XC_tmp, XZ_tmp, XZ_tmp2) = problem.scratch
     (; f, Vx, Bx, Bz) = problem.background
 
-    # first compute ψ in fs with the inverse Laplacian, we can store this in the output array
-    @inbounds ∇⁻²!(out, in)
+    # first compute ψ in fs by solving the Poisson equation, we can store this in the output array
+    @inbounds solve_poisson!(out, in)
 
     # now we build 𝓛ζ in xz
     # use XZ_tmp2 to store 𝓛ζ
     𝓛ζ = XZ_tmp2
 
-    # first term is Bz * ψxx
+    # first term is -Bz * ψxx
     @inbounds ∂x!(FS_tmp, out, 2) # ψxx in fs
     Tᴴ!(XS_tmp, FS_tmp) # ψxx in xs
     Tˢ!(XZ_tmp, XS_tmp) # ψxx in xz
-    @inbounds @. 𝓛ζ = Bz * XZ_tmp
+    @inbounds @. 𝓛ζ = -Bz * XZ_tmp
 
-    # second term is  -2 * Bx * ψxz
+    # second term is  2 * Bx * ψxz
     @inbounds ∂z!(FC_tmp, out) # ψz in fc
     ∂x!(FC_tmp) # ψxz in fc
     Tᴴ!(XC_tmp, FC_tmp) # ψxz in xc
     Tᶜ!(XZ_tmp, XC_tmp) # ψxz in xz
-    @inbounds @. 𝓛ζ -= 2 * Bx * XZ_tmp
+    @inbounds @. 𝓛ζ += 2 * Bx * XZ_tmp
 
-    # third term is f * (f + Vx) * ψzz
+    # third term is -f * (f + Vx) * ψzz
     ∂z²!(out) # ψzz in fs, we don't need ψ again so do this inplace
     Tᴴ!(XS_tmp, out) # ψzz in xs
     Tˢ!(XZ_tmp, XS_tmp) # ψzz in xz
-    @inbounds @. 𝓛ζ += f * (f + Vx) * XZ_tmp
+    @inbounds @. 𝓛ζ -= f * (f + Vx) * XZ_tmp
 
     # finally transform 𝓛ζ to fs
     Tˢ!(XS_tmp, 𝓛ζ)

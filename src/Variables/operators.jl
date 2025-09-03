@@ -23,7 +23,7 @@ function ∫dz²! end
 """Document me!"""
 function ∫dz² end
 """Document me!"""
-function ∇⁻²! end
+function solve_poisson! end
 
 ###################
 ## X derivatives ##
@@ -374,16 +374,16 @@ end
     return out
 end
 
-#######################
-## Inverse Laplacian ##
-#######################
+######################
+## Poisson equation ##
+######################
 
-@inline function ∇⁻²!(out::FSVariable, in::FSVariable)
+@inline function solve_poisson!(out::FSVariable, in::FSVariable)
     @boundscheck consistent_domains(out, in)
     kx, kz = wavenumbers(in)
     CNX = length(kx)
     CNZ = length(kz)
-    @inbounds @views @. out[1:CNX, 1:CNZ] = -1 * in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
+    @inbounds @views @. out[1:CNX, 1:CNZ] = in[1:CNX, 1:CNZ] / (kx^2 + kz^2)
     @inbounds @. out[(CNX + 1):end, :] = 0
     @inbounds @. out[1:CNX, (CNZ + 1):end] = 0
 end
