@@ -29,7 +29,7 @@ julia> Pkg.add("SawyerEliassenSolver")
 > [!IMPORTANT]
 > Julia 1.8 or later is required
 >
-> SawyerEliassenSolver.jl is tested on Julia 1.8--1.11.
+> SawyerEliassenSolver.jl is tested on Julia 1.8&ndash;1.11.
 
 ## Citing
 
