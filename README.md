@@ -26,11 +26,9 @@ julia> using Pkg
 julia> Pkg.add("SawyerEliassenSolver")
 ```
 
-!!! compat "Required Julia version"
-    Julia 1.8 or later is required
-
-!!! info "Tested Julia versions"
-    SawyerEliassenSolver.jl is tested on Julia 1.8--1.11.
+> [!IMPORTANT]
+> Julia 1.8 or later is required
+> SawyerEliassenSolver.jl is tested on Julia 1.8--1.11.
 
 ## Citing
 
