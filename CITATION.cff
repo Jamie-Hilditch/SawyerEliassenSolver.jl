@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: SawyerEliassenSolver.jl
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: James P.
+    family-names: Hilditch
+    email: hilditch@stanford.edu
+    affiliation: Stanford University
+    orcid: 'https://orcid.org/0000-0002-7164-9953'
+repository-code: 'https://github.com/Jamie-Hilditch/SawyerEliassenSolver.jl'
+doi: 10.5281/zenodo.17072454
+license: MIT
+commit: 191cfe2e291a437a18a7e65dcf179cb5683c0e56
+version: 1.0.0
+date-released: '2025-09-07'
