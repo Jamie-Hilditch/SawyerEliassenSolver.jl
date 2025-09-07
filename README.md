@@ -31,7 +31,3 @@ julia> Pkg.add("SawyerEliassenSolver")
 > Julia 1.8 or later is required
 >
 > SawyerEliassenSolver.jl is tested on Julia 1.8&ndash;1.11.
-
-## Citing
-
-See [`CITATION.bib`](CITATION.bib) for the relevant reference(s).
