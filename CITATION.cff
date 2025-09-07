@@ -8,7 +8,6 @@ authors:
   - given-names: James P.
     family-names: Hilditch
     email: hilditch@stanford.edu
-    name-particle: James
     affiliation: Stanford University
     orcid: 'https://orcid.org/0000-0002-7164-9953'
 repository-code: 'https://github.com/Jamie-Hilditch/SawyerEliassenSolver.jl'
